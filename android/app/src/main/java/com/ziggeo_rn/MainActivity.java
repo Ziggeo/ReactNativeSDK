@@ -10,6 +10,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "ziggeo_rn";
+        return "ziggeo";
     }
+
 }
