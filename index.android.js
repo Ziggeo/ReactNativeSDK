@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('ziggeo_rn', () => ziggeo_rn);
+AppRegistry.registerComponent('ZiggeoAndroid', () => ziggeo_rn);
