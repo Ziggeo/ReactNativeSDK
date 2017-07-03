@@ -12,12 +12,15 @@ import android.support.v4.app.FragmentManager;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.androidsdk.IZiggeo;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.recording.CameraHelper;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
+import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Callback;
 
@@ -26,6 +29,9 @@ import okhttp3.Callback;
  */
 
 public class ZiggeoModule extends ReactContextBaseJavaModule implements IZiggeo {
+
+    private static final String FACING_BACK = "BACK";
+    private static final String FACING_FRONT = "FRONT";
 
     private Ziggeo ziggeo;
 
@@ -41,7 +47,7 @@ public class ZiggeoModule extends ReactContextBaseJavaModule implements IZiggeo 
 
     @Override
     public String getName() {
-        return "Ziggeo";
+        return "ZiggeoAndroid";
     }
 
     @ReactMethod
@@ -69,9 +75,13 @@ public class ZiggeoModule extends ReactContextBaseJavaModule implements IZiggeo 
     }
 
     @Override
-    @ReactMethod
-    public void setExtraArgsForCreateVideo(HashMap<String, String> hashMap) {
+    public void setExtraArgsForCreateVideo(Map<String, Object> hashMap) {
         ziggeo.setExtraArgsForCreateVideo(hashMap);
+    }
+
+    @ReactMethod
+    public void setExtraArgsForCreateVideo(ReadableMap readableMap) {
+        ziggeo.setExtraArgsForCreateVideo(ConversionUtil.toMap(readableMap));
     }
 
     @ReactMethod
@@ -114,6 +124,15 @@ public class ZiggeoModule extends ReactContextBaseJavaModule implements IZiggeo 
     @ReactMethod
     public void startRecorder() {
         ziggeo.startRecorder();
+    }
+
+    @javax.annotation.Nullable
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+        constants.put(FACING_BACK, CameraView.FACING_BACK);
+        constants.put(FACING_FRONT, CameraView.FACING_FRONT);
+        return constants;
     }
 
     @Override
