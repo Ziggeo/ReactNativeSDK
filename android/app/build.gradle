@@ -144,7 +144,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:25.3.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     //TODO change to release version
-    compile 'com.github.ZiggeoJitpackService:Android-SDK:80b6d50e45'
+    compile 'com.github.ZiggeoJitpackService:Android-SDK:8d55ebb608'
 }
 
 // Run this once to be able to run the application with BUCK

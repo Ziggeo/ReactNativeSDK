@@ -2,14 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 
-export default class App extends React.Component {
+export default class ziggeo_rn extends React.Component {
     async record() {
         var appToken = "ZIGGEO_APP_TOKEN";
         var ziggeo = NativeModules.ZiggeoAndroid;
         ziggeo.setAppToken(appToken);
         ziggeo.setCameraSwitchEnabled(true);
-        ziggeo.setCoverSelectorEnabled(true);
-        const recorderEmitter = new NativeEventEmitter(NativeModules.ZiggeoRecorder);
+        ziggeo.setCoverSelectorEnabled(false);
+        ziggeo.setMaxRecordingDuration(20);// 20 sec
+        // const recorderEmitter = new NativeEventEmitter(NativeModules.ZiggeoRecorder);
         ziggeo.startRecorder();
         // const subscription = recorderEmitter.addListener('UploadProgress',(progress)=>console.log("uploaded " + progress.bytesSent + " from " + progress.totalBytes + " total bytes"));
         // try
@@ -36,7 +37,6 @@ export default class App extends React.Component {
             title="Record"
             accessibilityLabel="Record"
             />
-          </View>
     );
   }
 }
