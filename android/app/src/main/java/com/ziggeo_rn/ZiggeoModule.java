@@ -4,19 +4,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.androidsdk.IZiggeo;
 import com.ziggeo.androidsdk.Ziggeo;
+import com.ziggeo.androidsdk.net.rest.ProgressCallback;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Callback;
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * Created by alex on 6/25/2017.
@@ -56,15 +60,61 @@ public class ZiggeoModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setVideoRecordingProcessCallback(@Nullable VideoRecordingCallback videoRecordingCallback) {
-        Log.d(TAG, "setVideoRecordingProcessCallback:" + videoRecordingCallback);
-        //TODO replace with js related callback
+    public void setVideoRecordingProcessCallback(@Nullable final Callback startCallback,
+                                                 @Nullable final Callback stopCallback,
+                                                 @Nullable final Callback errorCallback) {
+        Log.d(TAG, "setVideoRecordingProcessCallback:" + startCallback + ":" + stopCallback + ":" + errorCallback);
+        ziggeo.setVideoRecordingProcessCallback(new VideoRecordingCallback() {
+            @Override
+            public void onStarted() {
+                if (startCallback != null) {
+                    startCallback.invoke();
+                }
+            }
+
+            @Override
+            public void onStopped(@NonNull String path) {
+                if (stopCallback != null) {
+                    stopCallback.invoke(path);
+                }
+            }
+
+            @Override
+            public void onError() {
+                if (errorCallback != null) {
+                    errorCallback.invoke();
+                }
+            }
+        });
     }
 
     @ReactMethod
-    public void setNetworkRequestsCallback(@Nullable Callback callback) {
-        Log.d(TAG, "setNetworkRequestsCallback:" + callback);
-        //TODO replace with js related callback
+    public void setNetworkRequestsCallback(@Nullable final Callback progressCallback,
+                                           @Nullable final Callback successCallback,
+                                           @Nullable final Callback errorCallback) {
+        Log.d(TAG, "setNetworkRequestsCallback:" + progressCallback + ":" + successCallback + ":" + errorCallback);
+        ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
+            @Override
+            public void onProgressUpdate(int i) {
+                if (progressCallback != null) {
+                    progressCallback.invoke(i);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (errorCallback != null) {
+                    errorCallback.invoke(call.request().url(), e.toString());
+                }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (successCallback != null) {
+                    successCallback.invoke(response.body().string());
+                }
+            }
+        });
     }
 
     @ReactMethod

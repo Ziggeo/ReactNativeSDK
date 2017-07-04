@@ -2,30 +2,38 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { NativeEventEmitter, NativeModules } from 'react-native';
 
-export default class ziggeo_rn extends React.Component {
+export default class App extends React.Component {
     async record() {
         var appToken = "ZIGGEO_APP_TOKEN";
         var ziggeo = NativeModules.ZiggeoAndroid;
         ziggeo.setAppToken(appToken);
+        ziggeo.setMaxRecordingDuration(50) // 50 seconds
         ziggeo.setCameraSwitchEnabled(true);
-        ziggeo.setCoverSelectorEnabled(false);
-        ziggeo.setMaxRecordingDuration(20);// 20 sec
-        // const recorderEmitter = new NativeEventEmitter(NativeModules.ZiggeoRecorder);
+        ziggeo.setCoverSelectorEnabled(true);
+
+        ziggeo.setVideoRecordingProcessCallback(
+        () => {
+            console.log("started");
+        },
+        (s) => {
+            console.log("stopped:"+s);
+        },
+        () => {
+            console.log("error");
+        })
+
+        ziggeo.setNetworkRequestsCallback(
+            (progress) => {
+                console.log("progress:"+progress)
+            },
+            (response) => {
+                console.log("success:"+response)
+            },
+            (url, error) => {
+                console.log("error:"+error+" url:"+url)
+            })
+
         ziggeo.startRecorder();
-        // const subscription = recorderEmitter.addListener('UploadProgress',(progress)=>console.log("uploaded " + progress.bytesSent + " from " + progress.totalBytes + " total bytes"));
-        // try
-        // {
-        //     //record and upload the video and return its token
-        //     var token = await recorder.record();
-        //     var player = NativeModules.ZiggeoPlayer;
-        //     player.setAppToken(appToken);
-        //     player.play(token);
-        // }
-        // catch(e)
-        // {
-        //     //recorder error or recording was cancelled by user
-        //     alert(e);
-        // }
     }
     
     
@@ -37,6 +45,7 @@ export default class ziggeo_rn extends React.Component {
             title="Record"
             accessibilityLabel="Record"
             />
+            </View>
     );
   }
 }
