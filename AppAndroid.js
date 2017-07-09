@@ -15,11 +15,12 @@ export default class App extends React.Component {
     }
 
     componentWillUnmount() {
-
+        DeviceEventEmitter.removeListener('UploadProgress', (message) => console.log(message));
+        DeviceEventEmitter.removeListener('Error', (message) => console.log(message));
     }
 
     async record() {
-        var appToken = "60c0d757c31f5002f75f5e2b7fe96e83";
+        var appToken = "APP_TOKEN";
         var recorder = NativeModules.ZiggeoRecorder;
         recorder.setAppToken(appToken);
         recorder.setCameraSwitchEnabled(true);
@@ -35,7 +36,7 @@ export default class App extends React.Component {
         }
         catch(e){
             //recorder error or recording was cancelled by user
-            alert(e);
+           console.error(e);
         }
     }
     

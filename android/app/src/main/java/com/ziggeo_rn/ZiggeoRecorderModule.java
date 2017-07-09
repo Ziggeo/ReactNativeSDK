@@ -45,6 +45,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     public static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
 
+    public static final String ERROR_CODE_UNKNOWN = "-1";
+
     private IZiggeo ziggeo;
     private String recordedVideoToken;
 
@@ -88,6 +90,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     public void setMaxRecordingDuration(int maxDurationSeconds) {
         final long millis = maxDurationSeconds * 1000;
         Log.d(TAG, "setMaxRecordingDuration:" + millis);
+        ziggeo.setMaxRecordingDuration(millis);
     }
 
     @ReactMethod
@@ -110,10 +113,11 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     @Nullable
-    public void record(Promise promise) {
+    public void record(final Promise promise) {
         final ReactContext context = getReactApplicationContext();
         final CountDownLatch latch = new CountDownLatch(1);
         recordedVideoToken = null;
+
         ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
             @Override
             public void onProgressUpdate(int progress) {
@@ -125,11 +129,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "onFailure:" + e.toString());
-//                WritableMap params = Arguments.createMap();
-//                params.putString(PROGRESS_VALUE, e.toString());
-//                sendEvent(context, "UploadProgress", params);
-                //TODO throw?
-                latch.countDown();
+                promise.reject(ERROR_CODE_UNKNOWN, e.toString());
             }
 
             @Override
@@ -144,7 +144,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
                     recordedVideoToken = model.getVideo().getToken();
                     latch.countDown();
                 } else {
-                    //TODO throw
+                    promise.reject(String.valueOf(response.code()), response.message());
                 }
             }
         });
@@ -164,10 +164,10 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
             @Override
             public void onError() {
                 Log.e(TAG, "onError");
-                //TODO throw
-                latch.countDown();
+                promise.reject(ERROR_CODE_UNKNOWN, "");
             }
         });
+
         ziggeo.startRecorder();
         try {
             latch.await();
