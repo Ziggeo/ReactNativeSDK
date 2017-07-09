@@ -1,42 +1,33 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import { DeviceEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules } from 'react-native';
 
 export default class App extends React.Component {
 
-    componentDidMount() {
-        DeviceEventEmitter.addListener('UploadProgress', function(e: Event) {
-            console.log("UploadProgress: "+e.progress)
-        });
-
-        DeviceEventEmitter.addListener('Error', function(e: Event) {
-            console.log("Error: "+e)
-        });
-    }
-
-    componentWillUnmount() {
-        DeviceEventEmitter.removeListener('UploadProgress', (message) => console.log(message));
-        DeviceEventEmitter.removeListener('Error', (message) => console.log(message));
-    }
-
     async record() {
-        var appToken = "APP_TOKEN";
+        var appToken = "ZIGGEO_APP_TOKEN";
         var recorder = NativeModules.ZiggeoRecorder;
         recorder.setAppToken(appToken);
         recorder.setCameraSwitchEnabled(true);
         recorder.setCoverSelectorEnabled(true);
         recorder.setMaxRecordingDuration(50) // 50 seconds
+        recorder.setCamera(recorder.rearCamera);
+        
+        const recorderEmitter = new NativeEventEmitter(NativeModules.ZiggeoRecorder);
+        const subscription = recorderEmitter.addListener("UploadProgress", (progress) => console.log("UploadProgress:" + progress.progress));
 
-        try{
-             //record and upload the video and return its token
+        try
+        {
+            //record and upload the video and return its token
             var token = await recorder.record();
             var player = NativeModules.ZiggeoPlayer;
             player.setAppToken(appToken);
             player.play(token);
         }
-        catch(e){
+        catch(e)
+        {
             //recorder error or recording was cancelled by user
-           console.error(e);
+           alert(e);
         }
     }
     

@@ -38,8 +38,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
 
-    public static final String FACING_BACK = "BACK";
-    public static final String FACING_FRONT = "FRONT";
+    public static final String REAR_CAMERA = "rearCamera";
+    public static final String FRONT_CAMERA = "frontCamera";
     public static final String PROGRESS_VALUE = "progress";
     public static final String EVENT_PROGRESS = "UploadProgress";
     public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
@@ -65,6 +65,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     public void setAppToken(@NonNull String appToken) {
         Log.d(TAG, "setAppToken:" + appToken);
         ziggeo.setAppToken(appToken);
+        sendEvent(getReactApplicationContext(), "TestEvent", null);
     }
 
     @ReactMethod
@@ -112,7 +113,11 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    @Nullable
+    private void setCamera(int camera) {
+        ziggeo.setPreferredCameraFacing(camera);
+    }
+
+    @ReactMethod
     public void record(final Promise promise) {
         final ReactContext context = getReactApplicationContext();
         final CountDownLatch latch = new CountDownLatch(1);
@@ -187,8 +192,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put(FACING_BACK, CameraView.FACING_BACK);
-        constants.put(FACING_FRONT, CameraView.FACING_FRONT);
+        constants.put(REAR_CAMERA, CameraView.FACING_BACK);
+        constants.put(FRONT_CAMERA, CameraView.FACING_FRONT);
         return constants;
     }
 

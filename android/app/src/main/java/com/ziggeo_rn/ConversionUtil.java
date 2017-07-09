@@ -20,7 +20,6 @@ import javax.annotation.Nullable;
 /**
  * Helper utilities to convert from react-native types to POJOs
  */
-//TODO switch to react-native-eval dependency
 public final class ConversionUtil {
     /**
      * toObject extracts a value from a {@link ReadableMap} by its key,
@@ -30,7 +29,7 @@ public final class ConversionUtil {
      * @param key The key for the value to be converted
      * @return The converted POJO
      */
-    public static Object toObject(@Nullable ReadableMap readableMap, String key) {
+    public static String toObject(@Nullable ReadableMap readableMap, String key) {
         if (readableMap == null) {
             return null;
         }
@@ -57,17 +56,11 @@ public final class ConversionUtil {
             case String:
                 result = readableMap.getString(key);
                 break;
-            case Map:
-                result = toMap(readableMap.getMap(key));
-                break;
-            case Array:
-                result = toList(readableMap.getArray(key));
-                break;
             default:
                 throw new IllegalArgumentException("Could not convert object with key: " + key + ".");
         }
 
-        return result;
+        return String.valueOf(result);
     }
 
     /**
@@ -76,7 +69,7 @@ public final class ConversionUtil {
      * @param readableMap The ReadableMap to be conveted.
      * @return A HashMap containing the data that was in the ReadableMap.
      */
-    public static Map<String, Object> toMap(@Nullable ReadableMap readableMap) {
+    public static Map<String, String> toMap(@Nullable ReadableMap readableMap) {
         if (readableMap == null) {
             return null;
         }
@@ -86,7 +79,7 @@ public final class ConversionUtil {
             return null;
         }
 
-        Map<String, Object> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>();
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
             result.put(key, toObject(readableMap, key));
