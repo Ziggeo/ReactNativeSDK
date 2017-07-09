@@ -19,7 +19,8 @@ public class ZiggeoPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZiggeoModule(reactContext));
+        modules.add(new ZiggeoRecorderModule(reactContext));
+        modules.add(new ZiggeoPlayerModule(reactContext));
         return modules;
     }
 
