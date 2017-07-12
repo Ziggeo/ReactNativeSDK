@@ -10,7 +10,6 @@ export default class App extends React.Component {
         recorder.setAppToken(appToken);
         recorder.setCameraSwitchEnabled(true);
         recorder.setCoverSelectorEnabled(true);
-        recorder.setMaxRecordingDuration(50) // 50 seconds
         recorder.setCamera(recorder.rearCamera);
         
         const recorderEmitter = new NativeEventEmitter(NativeModules.ZiggeoRecorder);
