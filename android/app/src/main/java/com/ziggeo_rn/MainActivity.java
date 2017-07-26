@@ -10,7 +10,7 @@ public class MainActivity extends ReactFragmentActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "ZiggeoAndroid";
+        return "ZiggeoReactNative";
     }
 
 }
