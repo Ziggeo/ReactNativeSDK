@@ -31,7 +31,7 @@ export default {
 		ZiggeoRecorder.setCamera(camera);
   	},
 	record: function () {
-		ZiggeoRecorder.record();
+		return ZiggeoRecorder.record();
   	},
 	cancelRequest: function () {
 		ZiggeoRecorder.cancelRequest();
