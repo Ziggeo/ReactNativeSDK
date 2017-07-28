@@ -114,6 +114,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     private void setCamera(int camera) {
+        Log.d(TAG, "setCamera:" + camera);
         ziggeo.setPreferredCameraFacing(camera);
     }
 

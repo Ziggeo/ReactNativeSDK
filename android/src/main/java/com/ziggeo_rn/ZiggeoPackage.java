@@ -1,5 +1,7 @@
 package com.ziggeo_rn;
 
+import android.util.Log;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
@@ -16,11 +18,14 @@ import java.util.List;
 
 public class ZiggeoPackage implements ReactPackage {
 
+    private static final String TAG = ZiggeoPackage.class.getSimpleName();
+
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new ZiggeoRecorderModule(reactContext));
         modules.add(new ZiggeoPlayerModule(reactContext));
+
         return modules;
     }
 

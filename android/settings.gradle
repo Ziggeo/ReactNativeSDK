@@ -1,3 +1,0 @@
-rootProject.name = 'ziggeo_rn'
-
-include ':app'
