@@ -1,4 +1,4 @@
-package com.ziggeo_rn;
+package com.ziggeo;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

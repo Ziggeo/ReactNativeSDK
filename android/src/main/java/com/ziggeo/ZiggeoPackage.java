@@ -1,6 +1,4 @@
-package com.ziggeo_rn;
-
-import android.util.Log;
+package com.ziggeo;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;

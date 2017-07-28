@@ -1,4 +1,4 @@
-package com.ziggeo_rn.models;
+package com.ziggeo.models;
 
 import com.google.gson.annotations.SerializedName;
 

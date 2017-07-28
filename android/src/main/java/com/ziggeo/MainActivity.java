@@ -1,4 +1,4 @@
-package com.ziggeo_rn;
+package com.ziggeo;
 
 import com.facebook.react.ReactFragmentActivity;
 

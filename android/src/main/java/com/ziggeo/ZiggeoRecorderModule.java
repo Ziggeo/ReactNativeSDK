@@ -1,4 +1,4 @@
-package com.ziggeo_rn;
+package com.ziggeo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +20,7 @@ import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.net.rest.ProgressCallback;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
-import com.ziggeo_rn.models.ResponseModel;
+import com.ziggeo.models.ResponseModel;
 
 import java.io.IOException;
 import java.util.HashMap;
