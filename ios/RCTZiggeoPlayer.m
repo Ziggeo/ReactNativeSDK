@@ -15,7 +15,6 @@
 
 RCT_EXPORT_MODULE();
 
-
 RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
 {
   RCTLogInfo(@"application token set: %@", token);

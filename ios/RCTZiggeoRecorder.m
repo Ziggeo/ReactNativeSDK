@@ -54,7 +54,7 @@ RCT_EXPORT_METHOD(setCamera:(NSInteger)cameraDevice)
 
 -(void) ziggeoRecorderDidCancel
 {
-  if(_rejectBlock) _rejectBlock(@"cancelled", @"recording was cancelled", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"error":@"recording was cancelled"}]);
+  if(_rejectBlock) _rejectBlock(@"cancelled", @"recording was cancelled 22", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"error":@"recording was cancelled 23"}]);
   _rejectBlock = nil;
 }
 
