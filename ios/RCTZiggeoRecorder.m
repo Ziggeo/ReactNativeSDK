@@ -51,10 +51,35 @@ RCT_EXPORT_METHOD(setCamera:(NSInteger)cameraDevice)
   RCTLogInfo(@"camera device: %li", (long)cameraDevice);
   _camera = cameraDevice;
 }
+    
+RCT_EXPORT_METHOD(setAutostartRecordingAfter:(NSInteger)seconds)
+{
+    _autostartRecordingAfter = seconds;
+}
+    
+RCT_EXPORT_METHOD(setExtraArgsForCreateVideo:(NSDictionary*)map)
+{
+    _additionalRecordingParams = map;
+}
+    
+RCT_EXPORT_METHOD(setMaxRecordingDuration:(NSInteger)seconds)
+{
+    _maxRecordingDuration = seconds;
+}
+    
+RCT_EXPORT_METHOD(setSendImmediately:(BOOL)sendImmediately)
+{
+    _sendImmediately = sendImmediately;
+}
 
+RCT_EXPORT_METHOD(cancelRequest)
+{
+    
+}
+    
 -(void) ziggeoRecorderDidCancel
 {
-  if(_rejectBlock) _rejectBlock(@"cancelled", @"recording was cancelled 22", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"error":@"recording was cancelled 23"}]);
+  if(_rejectBlock) _rejectBlock(@"cancelled", @"recording was cancelled", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"error":@"recording was cancelled"}]);
   _rejectBlock = nil;
 }
 

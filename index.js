@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 const { ZiggeoPlayer } = NativeModules;
 const { ZiggeoRecorder } = NativeModules;
@@ -30,12 +30,15 @@ export default {
 	setCamera: function (camera) {
 		ZiggeoRecorder.setCamera(camera);
   	},
-	record: function () {
+	record: async function () {
 		return ZiggeoRecorder.record();
   	},
 	cancelRequest: function () {
 		ZiggeoRecorder.cancelRequest();
   	},
+	recorderEmitter: function() {
+		return recorderEmitter = new NativeEventEmitter(ZiggeoRecorder);
+	}
 
   	// ZiggeoPlayer
   	play: function (videoId: string) {

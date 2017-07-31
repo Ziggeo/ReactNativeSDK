@@ -1,20 +1,78 @@
-
 {
-  "name": "react-native-ziggeo-library",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "_args": [
+    [
+      {
+        "raw": "react-native-ziggeo-library@git+https://github.com/Ziggeo/ReactNativeSDK.git",
+        "scope": null,
+        "escapedName": "react-native-ziggeo-library",
+        "name": "react-native-ziggeo-library",
+        "rawSpec": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+        "spec": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+        "type": "hosted",
+        "hosted": {
+          "type": "github",
+          "ssh": "git@github.com:Ziggeo/ReactNativeSDK.git",
+          "sshUrl": "git+ssh://git@github.com/Ziggeo/ReactNativeSDK.git",
+          "httpsUrl": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+          "gitUrl": "git://github.com/Ziggeo/ReactNativeSDK.git",
+          "shortcut": "github:Ziggeo/ReactNativeSDK",
+          "directUrl": "https://raw.githubusercontent.com/Ziggeo/ReactNativeSDK/master/package.json"
+        }
+      },
+      "/Users/alex/work/up/ziggeo_github/ReactNativeSDK/ReactNativeDemo"
+    ]
+  ],
+  "_from": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+  "_id": "react-native-ziggeo-library@1.0.0",
+  "_inCache": true,
+  "_location": "/react-native-ziggeo-library",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "react-native-ziggeo-library@git+https://github.com/Ziggeo/ReactNativeSDK.git",
+    "scope": null,
+    "escapedName": "react-native-ziggeo-library",
+    "name": "react-native-ziggeo-library",
+    "rawSpec": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+    "spec": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+    "type": "hosted",
+    "hosted": {
+      "type": "github",
+      "ssh": "git@github.com:Ziggeo/ReactNativeSDK.git",
+      "sshUrl": "git+ssh://git@github.com/Ziggeo/ReactNativeSDK.git",
+      "httpsUrl": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+      "gitUrl": "git://github.com/Ziggeo/ReactNativeSDK.git",
+      "shortcut": "github:Ziggeo/ReactNativeSDK",
+      "directUrl": "https://raw.githubusercontent.com/Ziggeo/ReactNativeSDK/master/package.json"
+    }
   },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git+https://github.com/Ziggeo/ReactNativeSDK.git#f8ba301474d53921c0cbbb45c628eca04ca09bc8",
+  "_shasum": "4318cd436faa973d9cce628cc2eec7b600cad37c",
+  "_shrinkwrap": null,
+  "_spec": "react-native-ziggeo-library@git+https://github.com/Ziggeo/ReactNativeSDK.git",
+  "_where": "/Users/alex/work/up/ziggeo_github/ReactNativeSDK/ReactNativeDemo",
+  "author": "",
+  "dependencies": {},
+  "description": "We will presume that you are already familiar and have set up everything needed for the React Native setup on your system.  If not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):",
+  "devDependencies": {},
+  "gitHead": "f8ba301474d53921c0cbbb45c628eca04ca09bc8",
   "keywords": [
     "react-native"
   ],
-  "author": "",
   "license": "",
+  "main": "index.js",
+  "name": "react-native-ziggeo-library",
+  "optionalDependencies": {},
   "peerDependencies": {
     "react-native": "^0.41.2",
     "react-native-windows": "0.41.0-rc.1"
-
-  }
+  },
+  "readme": "# ReactNativeSDK\n## Setup\nWe will presume that you are already familiar and have set up everything needed for the React Native setup on your system. \nIf not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):\n\nThere you can select tab `Building Projects with Native Code` and find information about\n1. Setting up React Native project for `Windows` / `Mac` / `Linux`\n2. Setting up `xCode`\n3. Setting up `Android Studio`\n\nNow with everything set up, for Ziggeo to be added you would need to follow this guides:\n1. [iOs](https://facebook.github.io/react-native/docs/native-modules-ios.html)\n2. [Android](https://facebook.github.io/react-native/docs/native-modules-android.html)",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
 }

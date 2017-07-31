@@ -32,5 +32,4 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
     [playerController.player play];
   });
 }
-
 @end
