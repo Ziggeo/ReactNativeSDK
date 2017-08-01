@@ -40,7 +40,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
 
     public static final String REAR_CAMERA = "rearCamera";
     public static final String FRONT_CAMERA = "frontCamera";
-    public static final String PROGRESS_VALUE = "progress";
+    public static final String BYTES_SENT = "bytesSent";
+    public static final String BYTES_TOTAL = "totalBytes";
     public static final String EVENT_PROGRESS = "UploadProgress";
     public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     public static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
@@ -125,10 +126,17 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
         recordedVideoToken = null;
 
         ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
+
+            @Deprecated
             @Override
             public void onProgressUpdate(int progress) {
+            }
+
+            @Override
+            public void onProgressUpdate(long sent, long total) {
                 WritableMap params = Arguments.createMap();
-                params.putInt(PROGRESS_VALUE, progress);
+                params.putString(BYTES_SENT, String.valueOf(sent));
+                params.putString(BYTES_TOTAL, String.valueOf(total));
                 sendEvent(context, EVENT_PROGRESS, params);
             }
 

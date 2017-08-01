@@ -38,7 +38,7 @@ export default {
   	},
 	recorderEmitter: function() {
 		return recorderEmitter = new NativeEventEmitter(ZiggeoRecorder);
-	}
+	},
 
   	// ZiggeoPlayer
   	play: function (videoId: string) {
