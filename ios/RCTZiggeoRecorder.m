@@ -96,6 +96,7 @@ RCT_REMAP_METHOD(record,
     recorder.cameraFlipButtonVisible = _cameraFlipButtonVisible;
     recorder.cameraDevice = _camera;
     recorder.recorderDelegate = self;
+    recorder.extraArgsForCreateVideo = _additionalRecordingParams;
     m_ziggeo.videos.delegate = self;
     [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
   });
