@@ -33,6 +33,9 @@ export default {
 	record: async function () {
 		return ZiggeoRecorder.record();
   	},
+	upload: async function (fileName: string) {
+		return ZiggeoRecorder.upload(fileName);
+  	},
 	cancelRequest: function () {
 		ZiggeoRecorder.cancelRequest();
   	},

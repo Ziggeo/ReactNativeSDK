@@ -10,8 +10,9 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 #import <Ziggeo/Ziggeo.h>
+#import <UIKit/UIKit.h>
 
-@interface RCTZiggeoRecorder : RCTEventEmitter <RCTBridgeModule, ZiggeoRecorder2Delegate, ZiggeoVideosDelegate>
+@interface RCTZiggeoRecorder : RCTEventEmitter <RCTBridgeModule, ZiggeoRecorder2Delegate, ZiggeoVideosDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (strong, nonatomic) NSString *appToken;
 @property (nonatomic) BOOL cameraFlipButtonVisible;
