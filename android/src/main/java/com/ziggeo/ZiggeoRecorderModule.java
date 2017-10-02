@@ -1,10 +1,16 @@
 package com.ziggeo;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -15,13 +21,22 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.androidsdk.IZiggeo;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.net.rest.ProgressCallback;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.models.ResponseModel;
+import com.ziggeo.utils.ConversionUtil;
+import com.ziggeo.utils.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +49,8 @@ import okhttp3.Response;
  * Created by alex on 6/25/2017.
  */
 
-public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
+public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+    private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
 
@@ -42,6 +58,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     public static final String FRONT_CAMERA = "frontCamera";
     public static final String BYTES_SENT = "bytesSent";
     public static final String BYTES_TOTAL = "totalBytes";
+    public static final String FILE_NAME = "fileName";
     public static final String EVENT_PROGRESS = "UploadProgress";
     public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     public static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
@@ -51,10 +68,15 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     private IZiggeo ziggeo;
     private String recordedVideoToken;
 
+    private ReactContext context;
+    private Promise promise;
+
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         ziggeo = new Ziggeo(reactContext.getApplicationContext());
         ziggeo.setSendImmediately(false);
+        context = reactContext;
+        reactContext.addActivityEventListener(this);
     }
 
     @Override
@@ -62,11 +84,37 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
         return "ZiggeoRecorder";
     }
 
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult. resultCode:" + resultCode + " data:" + data);
+        switch (requestCode) {
+            case REQUEST_TAKE_GALLERY_VIDEO:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri uri = data.getData();
+                    String path = null;
+
+                    if (uri != null) {
+                        path = uri.getPath();
+                    }
+                    if (path == null || !new File(path).exists()) {
+                        path = FileUtils.getPath(context, uri);
+                    }
+                    upload(path, promise);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+
+    }
+
     @ReactMethod
     public void setAppToken(@NonNull String appToken) {
         Log.d(TAG, "setAppToken:" + appToken);
         ziggeo.setAppToken(appToken);
-        sendEvent(getReactApplicationContext(), "TestEvent", null);
+        sendEvent(context, "TestEvent", null);
     }
 
     @ReactMethod
@@ -121,16 +169,10 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void record(final Promise promise) {
-        final ReactContext context = getReactApplicationContext();
         final CountDownLatch latch = new CountDownLatch(1);
         recordedVideoToken = null;
 
         ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
-
-            @Deprecated
-            @Override
-            public void onProgressUpdate(int progress) {
-            }
 
             @Override
             public void onProgressUpdate(long sent, long total) {
@@ -141,13 +183,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
             }
 
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "onFailure:" + e.toString());
                 promise.reject(ERROR_CODE_UNKNOWN, e.toString());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 final String responseString = response.body().string();
                 response.body().close();
                 Log.d(TAG, "onResponse:" + response.toString());
@@ -195,6 +237,80 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule {
     public void cancelRequest() {
         Log.d(TAG, "cancelRequest");
         ziggeo.cancelRequest();
+    }
+
+    @ReactMethod
+    public void upload(Promise promise) {
+        this.promise = promise;
+
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
+    }
+
+    @ReactMethod
+    public void upload(@Nullable final String path, final Promise promise) {
+        if (TextUtils.isEmpty(path)) {
+            upload(promise);
+            return;
+        }
+        Dexter.withActivity(getCurrentActivity())
+                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Log.d(TAG, "onPermissionGranted");
+                        final File videoFile = new File(path);
+                        if (videoFile.exists()) {
+                            ziggeo.videos().create(videoFile, null, new ProgressCallback() {
+                                @Override
+                                public void onProgressUpdate(long sent, long total) {
+                                    WritableMap params = Arguments.createMap();
+                                    params.putString(BYTES_SENT, String.valueOf(sent));
+                                    params.putString(BYTES_TOTAL, String.valueOf(total));
+                                    params.putString(FILE_NAME, path);
+                                    sendEvent(context, EVENT_PROGRESS, params);
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.e(TAG, "onFailure:" + e.toString());
+                                    promise.reject(ERROR_CODE_UNKNOWN, e.toString());
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    final String responseString = response.body().string();
+                                    response.body().close();
+                                    Log.d(TAG, "onResponse:" + response.toString());
+                                    Log.d(TAG, "onResponse: BodyString:" + responseString);
+                                    if (!TextUtils.isEmpty(responseString)) {
+                                        Gson gson = new Gson();
+                                        ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
+                                        recordedVideoToken = model.getVideo().getToken();
+
+                                        promise.resolve(recordedVideoToken);
+                                    } else {
+                                        promise.reject(String.valueOf(response.code()), response.message());
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.e(TAG, "File does not exist: " + path);
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Log.d(TAG, "onPermissionDenied");
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        Log.d(TAG, "onPermissionRationaleShouldBeShown");
+                    }
+                }).check();
     }
 
     @Nullable
