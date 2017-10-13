@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +11,7 @@ import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -49,7 +49,7 @@ import okhttp3.Response;
  * Created by alex on 6/25/2017.
  */
 
-public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
@@ -70,6 +70,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     private ReactContext context;
     private Promise promise;
+    private boolean promiseResolvedSuccessfully;
+    private boolean recordingInitialized;
+    private CountDownLatch latch;
 
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
@@ -77,6 +80,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         ziggeo.setSendImmediately(false);
         context = reactContext;
         reactContext.addActivityEventListener(this);
+        reactContext.addLifecycleEventListener(this);
     }
 
     @Override
@@ -107,6 +111,25 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     @Override
     public void onNewIntent(Intent intent) {
+
+    }
+
+    @Override
+    public void onHostResume() {
+        if (!recordingInitialized && latch != null && promise != null) {
+            promiseResolvedSuccessfully = false;
+            promise.reject(new RuntimeException("Cancelled by user."));
+            latch.countDown();
+        }
+    }
+
+    @Override
+    public void onHostPause() {
+
+    }
+
+    @Override
+    public void onHostDestroy() {
 
     }
 
@@ -169,7 +192,10 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     @ReactMethod
     public void record(final Promise promise) {
-        final CountDownLatch latch = new CountDownLatch(1);
+        recordingInitialized = false;
+        this.promise = promise;
+
+        latch = new CountDownLatch(1);
         recordedVideoToken = null;
 
         ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
@@ -185,7 +211,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "onFailure:" + e.toString());
+                promiseResolvedSuccessfully = false;
                 promise.reject(ERROR_CODE_UNKNOWN, e.toString());
+                latch.countDown();
             }
 
             @Override
@@ -198,15 +226,20 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     Gson gson = new Gson();
                     ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                     recordedVideoToken = model.getVideo().getToken();
+
+                    promiseResolvedSuccessfully = true;
                     latch.countDown();
                 } else {
+                    promiseResolvedSuccessfully = false;
                     promise.reject(String.valueOf(response.code()), response.message());
+                    latch.countDown();
                 }
             }
         });
         ziggeo.setVideoRecordingProcessCallback(new VideoRecordingCallback() {
             @Override
             public void onStarted() {
+                recordingInitialized = true;
                 Log.d(TAG, "onStarted");
                 sendEvent(context, EVENT_RECORDING_STARTED, null);
             }
@@ -220,7 +253,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onError() {
                 Log.e(TAG, "onError");
+                promiseResolvedSuccessfully = false;
                 promise.reject(ERROR_CODE_UNKNOWN, "");
+                latch.countDown();
             }
         });
 
@@ -230,7 +265,10 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         } catch (InterruptedException e) {
             Log.e(TAG, e.toString());
         }
-        promise.resolve(recordedVideoToken);
+
+        if (promiseResolvedSuccessfully) {
+            promise.resolve(recordedVideoToken);
+        }
     }
 
     @ReactMethod
@@ -327,4 +365,5 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
+
 }
