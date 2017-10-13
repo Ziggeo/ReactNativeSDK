@@ -40,17 +40,8 @@ public class ZiggeoPlayerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void play(@NonNull String videoToken) {
         final Activity activity = getCurrentActivity();
-        final int contentId = android.R.id.content;
         if (activity != null) {
-            if (activity instanceof FragmentActivity) {
-                ziggeo.attachPlayer(
-                        ((FragmentActivity) activity).getSupportFragmentManager(),
-                        contentId,
-                        videoToken
-                );
-            } else {
-                Log.e(TAG, "Your activity must extend FragmentActivity");
-            }
+            ziggeo.startPlayer(activity, videoToken);
         }
     }
 
