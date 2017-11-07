@@ -119,6 +119,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         if (!recordingInitialized && latch != null && promise != null) {
             promiseResolvedSuccessfully = false;
             promise.reject(new RuntimeException("Cancelled by user."));
+            promise = null;
             latch.countDown();
         }
     }
