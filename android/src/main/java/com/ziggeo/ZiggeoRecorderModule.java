@@ -240,13 +240,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         ziggeo.setVideoRecordingProcessCallback(new VideoRecordingCallback() {
             @Override
             public void onStarted() {
-                recordingInitialized = true;
                 Log.d(TAG, "onStarted");
                 sendEvent(context, EVENT_RECORDING_STARTED, null);
             }
 
             @Override
             public void onStopped(@NonNull String s) {
+                recordingInitialized = true;
                 Log.d(TAG, "onStopped");
                 sendEvent(context, EVENT_RECORDING_STOPPED, null);
             }
