@@ -49,6 +49,11 @@ For those that like to start off with a demo, you can simply go to [demo repo](h
 ```javascript
 import Ziggeo from 'react-native-ziggeo-library';
 ```
+#### Recoder sample
+https://github.com/Ziggeo/ReactNativeDemo/blob/233de22ce4bd12e34c6c2d5bdb2dbaad80e63012/App.js#L18
+
+#### Player player
+https://github.com/Ziggeo/ReactNativeDemo/blob/233de22ce4bd12e34c6c2d5bdb2dbaad80e63012/App.js#L21
 
 ## Extend functionality
 We will presume that you are already familiar and have set up everything needed for the React Native setup on your system. 
