@@ -1,8 +1,6 @@
 package com.ziggeo;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -39,10 +37,7 @@ public class ZiggeoPlayerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void play(@NonNull String videoToken) {
-        final Activity activity = getCurrentActivity();
-        if (activity != null) {
-            ziggeo.startPlayer(activity, videoToken);
-        }
+        ziggeo.startPlayer(videoToken);
     }
 
 }

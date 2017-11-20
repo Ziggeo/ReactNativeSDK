@@ -70,9 +70,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     private ReactContext context;
     private Promise promise;
-    private boolean promiseResolvedSuccessfully;
     private boolean recordingInitialized;
-    private CountDownLatch latch;
 
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
@@ -116,11 +114,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     @Override
     public void onHostResume() {
-        if (!recordingInitialized && latch != null && promise != null) {
-            promiseResolvedSuccessfully = false;
+        if (!recordingInitialized && promise != null) {
             promise.reject(new RuntimeException("Cancelled by user."));
             promise = null;
-            latch.countDown();
         }
     }
 
@@ -196,7 +192,6 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         recordingInitialized = false;
         this.promise = promise;
 
-        latch = new CountDownLatch(1);
         recordedVideoToken = null;
 
         ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
@@ -212,9 +207,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "onFailure:" + e.toString());
-                promiseResolvedSuccessfully = false;
                 promise.reject(ERROR_CODE_UNKNOWN, e.toString());
-                latch.countDown();
             }
 
             @Override
@@ -227,13 +220,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     Gson gson = new Gson();
                     ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                     recordedVideoToken = model.getVideo().getToken();
-
-                    promiseResolvedSuccessfully = true;
-                    latch.countDown();
+                    promise.resolve(recordedVideoToken);
                 } else {
-                    promiseResolvedSuccessfully = false;
                     promise.reject(String.valueOf(response.code()), response.message());
-                    latch.countDown();
                 }
             }
         });
@@ -254,22 +243,11 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onError() {
                 Log.e(TAG, "onError");
-                promiseResolvedSuccessfully = false;
                 promise.reject(ERROR_CODE_UNKNOWN, "");
-                latch.countDown();
             }
         });
 
         ziggeo.startRecorder();
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.toString());
-        }
-
-        if (promiseResolvedSuccessfully) {
-            promise.resolve(recordedVideoToken);
-        }
     }
 
     @ReactMethod
@@ -282,10 +260,28 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     public void upload(Promise promise) {
         this.promise = promise;
 
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
+        Dexter.withActivity(getCurrentActivity())
+                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Log.d(TAG, "onPermissionGranted");
+                        Intent intent = new Intent();
+                        intent.setType("video/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Log.d(TAG, "onPermissionDenied");
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        Log.d(TAG, "onPermissionRationaleShouldBeShown");
+                    }
+                }).check();
     }
 
     @ReactMethod
