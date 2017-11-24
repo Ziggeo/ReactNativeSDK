@@ -3,11 +3,8 @@
 ## Demo
 For those that like to start off with a demo, you can simply go to [demo repo](https://github.com/Ziggeo/ReactNativeDemo) and follow the steps found in the readme file there.
 
-## Getting started
+### Automatic installation
 `$ npm install react-native-ziggeo-library --save`
-
-### Mostly automatic installation
-`$ react-native link react-native-ziggeo-library`
 
 ### Manual installation
 #### Android
