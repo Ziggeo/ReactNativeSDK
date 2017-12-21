@@ -3,10 +3,10 @@
 ## Demo
 For those that like to start off with a demo, you can simply go to [demo repo](https://github.com/Ziggeo/ReactNativeDemo) and follow the steps found in the readme file there.
 
-### Automatic installation
+### Automatic Installation
 `$ npm install react-native-ziggeo-library --save`
 
-### Manual installation
+### Manual Installation
 #### Android
 1. Append the following lines to `android/settings.gradle`:
   	```
@@ -48,21 +48,20 @@ For those that like to start off with a demo, you can simply go to [demo repo](h
 ```javascript
 import Ziggeo from 'react-native-ziggeo-library';
 ```
-#### Recoder sample
+#### Recoder Sample
 https://github.com/Ziggeo/ReactNativeDemo/blob/233de22ce4bd12e34c6c2d5bdb2dbaad80e63012/App.js#L18
 
-#### Player player
+#### Player Sample
 https://github.com/Ziggeo/ReactNativeDemo/blob/233de22ce4bd12e34c6c2d5bdb2dbaad80e63012/App.js#L21
 
-## Extend functionality
-We will presume that you are already familiar and have set up everything needed for the React Native setup on your system. 
-If not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):
+## Extend Functionality
+Need to brush up on React Native? See [here](https://facebook.github.io/react-native/docs/getting-started.html):
 
-There you can select tab `Building Projects with Native Code` and find information about
+Select tab `Building Projects with Native Code` to find:
 1. Setting up React Native project for `Windows` / `Mac` / `Linux`
 2. Setting up `xCode`
 3. Setting up `Android Studio`
 
-Now with everything set up, for Ziggeo to be added you would need to follow this guides:
+For more information on how to use natives modules via React Native, see here:
 1. [iOs](https://facebook.github.io/react-native/docs/native-modules-ios.html)
 2. [Android](https://facebook.github.io/react-native/docs/native-modules-android.html)
