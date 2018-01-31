@@ -125,7 +125,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     @Override
     public void onHostResume() {
         if (rejectOnBack && promise != null) {
-            reject(ERR_CANCELLED, "Cancelled by user.");
+            reject(ERR_CANCELLED, "Cancelled by the user.");
         }
     }
 
