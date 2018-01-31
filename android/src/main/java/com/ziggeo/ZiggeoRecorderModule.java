@@ -63,7 +63,11 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     public static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
 
-    public static final String ERROR_CODE_UNKNOWN = "-1";
+    public static final String ERROR_CODE_UNKNOWN = "ERR_UNKNOWN";
+    public static final String ERROR_CODE_DURATION = "ERR_DURATION_EXCEEDED";
+
+    private static final String ARG_DURATION = "max_duration";
+    private static final String ARG_ENFORCE_DURATION = "enforce_duration";
 
     private IZiggeo ziggeo;
     private String recordedVideoToken;
@@ -73,6 +77,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     private boolean promiseResolvedSuccessfully;
     private boolean recordingInitialized;
     private CountDownLatch latch;
+    private int maxAllowedDurationInSeconds;
+    private boolean enforceDuration;
 
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
@@ -103,7 +109,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     if (path == null || !new File(path).exists()) {
                         path = FileUtils.getPath(context, uri);
                     }
-                    upload(path, promise);
+                    uploadFromPath(path, promise);
                 }
                 break;
         }
@@ -186,7 +192,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    private void setCamera(int camera) {
+    public void setCamera(int camera) {
         Log.d(TAG, "setCamera:" + camera);
         ziggeo.setPreferredCameraFacing(camera);
     }
@@ -223,7 +229,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                 response.body().close();
                 Log.d(TAG, "onResponse:" + response.toString());
                 Log.d(TAG, "onResponse: BodyString:" + responseString);
-                if (!TextUtils.isEmpty(responseString)) {
+                if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
                     Gson gson = new Gson();
                     ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                     recordedVideoToken = model.getVideo().getToken();
@@ -279,21 +285,15 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void upload(Promise promise) {
-        this.promise = promise;
-
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
+    public void uploadFromFileSelectorWithTimeLimit(final int maxAllowedDurationInSeconds, boolean enforceDuration,
+                                     @NonNull final Promise promise) {
+        this.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
+        this.enforceDuration = enforceDuration;
+        uploadFromFileSelector(promise);
     }
 
     @ReactMethod
-    public void upload(@Nullable final String path, final Promise promise) {
-        if (TextUtils.isEmpty(path)) {
-            upload(promise);
-            return;
-        }
+    public void uploadFromPath(@NonNull final String path, @NonNull final Promise promise) {
         Dexter.withActivity(getCurrentActivity())
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new PermissionListener() {
@@ -301,8 +301,22 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         Log.d(TAG, "onPermissionGranted");
                         final File videoFile = new File(path);
-                        if (videoFile.exists()) {
-                            ziggeo.videos().create(videoFile, null, new ProgressCallback() {
+                        if (!videoFile.exists()) {
+                            Log.e(TAG, "File does not exist: " + path);
+                        } else if (enforceDuration && maxAllowedDurationInSeconds > 0 && FileUtils.getVideoDuration(path, getReactApplicationContext()) > maxAllowedDurationInSeconds) {
+                            final String errorMsg = "Video duration is more than allowed.";
+                            Log.e(TAG, errorMsg);
+                            Log.e(TAG, "Path: " + path);
+                            Log.e(TAG, "Duration: " + FileUtils.getVideoDuration(path, getReactApplicationContext()));
+                            Log.e(TAG, "Max allowed duration: " + maxAllowedDurationInSeconds);
+                            promise.reject(ERROR_CODE_DURATION, errorMsg);
+                        } else {
+                            Map<String, String> args = new HashMap<>();
+                            if (maxAllowedDurationInSeconds > 0) {
+                                args.put(ARG_DURATION, String.valueOf(maxAllowedDurationInSeconds));
+                                args.put(ARG_ENFORCE_DURATION, String.valueOf(enforceDuration));
+                            }
+                            ziggeo.videos().create(videoFile, args, new ProgressCallback() {
                                 @Override
                                 public void onProgressUpdate(long sent, long total) {
                                     WritableMap params = Arguments.createMap();
@@ -324,7 +338,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                     response.body().close();
                                     Log.d(TAG, "onResponse:" + response.toString());
                                     Log.d(TAG, "onResponse: BodyString:" + responseString);
-                                    if (!TextUtils.isEmpty(responseString)) {
+                                    if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
                                         Gson gson = new Gson();
                                         ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                                         recordedVideoToken = model.getVideo().getToken();
@@ -335,8 +349,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                     }
                                 }
                             });
-                        } else {
-                            Log.e(TAG, "File does not exist: " + path);
+
+                            maxAllowedDurationInSeconds = 0;
+                            enforceDuration = false;
                         }
                     }
 
@@ -350,6 +365,16 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                         Log.d(TAG, "onPermissionRationaleShouldBeShown");
                     }
                 }).check();
+    }
+
+    @ReactMethod
+    public void uploadFromFileSelector(Promise promise) {
+        this.promise = promise;
+
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
     }
 
     @Nullable

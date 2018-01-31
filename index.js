@@ -33,9 +33,18 @@ export default {
 	record: async function () {
 		return ZiggeoRecorder.record();
   	},
-	upload: async function (fileName: string) {
-		return ZiggeoRecorder.upload(fileName);
-  	},
+	uploadFromFileSelector: async function () {
+		return ZiggeoRecorder.uploadFromFileSelector();
+	},
+	uploadFromPath: async function (fileName) {
+		return ZiggeoRecorder.uploadFromPath(fileName);
+	},
+	uploadFromFileSelectorWithTimeLimit: async function (maxAllowedDurationInSeconds, enforceDuration) {
+		if(!enforceDuration){
+			enforceDuration = false;
+		}
+		return ZiggeoRecorder.uploadFromFileSelectorWithTimeLimit(maxAllowedDurationInSeconds, enforceDuration);
+	},
 	cancelRequest: function () {
 		ZiggeoRecorder.cancelRequest();
   	},
