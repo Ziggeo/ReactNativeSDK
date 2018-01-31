@@ -64,6 +64,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     public static final String ERR_UNKNOWN = "ERR_UNKNOWN";
     public static final String ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED";
+    public static final String ERR_CANCELLED = "ERR_CANCELLED";
 
     private static final String ARG_DURATION = "max_duration";
     private static final String ARG_ENFORCE_DURATION = "enforce_duration";
@@ -109,7 +110,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     if (path != null) {
                         uploadFromPath(path, promise);
                     } else {
-                        reject(new RuntimeException(ERR_UNKNOWN));
+                        reject(ERR_UNKNOWN, "");
                     }
                 }
                 break;
@@ -124,7 +125,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     @Override
     public void onHostResume() {
         if (rejectOnBack && promise != null) {
-            reject(new RuntimeException("Cancelled by user."));
+            reject(ERR_CANCELLED, "Cancelled by user.");
         }
     }
 
@@ -386,32 +387,10 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         }
     }
 
-    private void reject(@NonNull String err, @NonNull Throwable exception) {
-        if (promise != null) {
-            try {
-                promise.reject(err, exception);
-            } finally {
-                promise = null;
-                rejectOnBack = false;
-            }
-        }
-    }
-
     private void reject(@NonNull String err, @NonNull String message) {
         if (promise != null) {
             try {
                 promise.reject(err, message);
-            } finally {
-                promise = null;
-                rejectOnBack = false;
-            }
-        }
-    }
-
-    private void reject(@NonNull Throwable exception) {
-        if (promise != null) {
-            try {
-                promise.reject(exception);
             } finally {
                 promise = null;
                 rejectOnBack = false;
