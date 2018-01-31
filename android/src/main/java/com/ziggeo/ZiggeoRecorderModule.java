@@ -40,7 +40,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -63,8 +62,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     public static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
 
-    public static final String ERROR_CODE_UNKNOWN = "ERR_UNKNOWN";
-    public static final String ERROR_CODE_DURATION = "ERR_DURATION_EXCEEDED";
+    public static final String ERR_UNKNOWN = "ERR_UNKNOWN";
+    public static final String ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED";
 
     private static final String ARG_DURATION = "max_duration";
     private static final String ARG_ENFORCE_DURATION = "enforce_duration";
@@ -74,7 +73,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     private ReactContext context;
     private Promise promise;
-    private boolean recordingInitialized;
+    private boolean rejectOnBack;
     private int maxAllowedDurationInSeconds;
     private boolean enforceDuration;
 
@@ -107,7 +106,11 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     if (path == null || !new File(path).exists()) {
                         path = FileUtils.getPath(context, uri);
                     }
-                    uploadFromPath(path, promise);
+                    if (path != null) {
+                        uploadFromPath(path, promise);
+                    } else {
+                        reject(new RuntimeException(ERR_UNKNOWN));
+                    }
                 }
                 break;
         }
@@ -120,9 +123,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     @Override
     public void onHostResume() {
-        if (!recordingInitialized && promise != null) {
-            promise.reject(new RuntimeException("Cancelled by user."));
-            promise = null;
+        if (rejectOnBack && promise != null) {
+            reject(new RuntimeException("Cancelled by user."));
         }
     }
 
@@ -195,7 +197,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     @ReactMethod
     public void record(final Promise promise) {
-        recordingInitialized = false;
+        rejectOnBack = true;
         this.promise = promise;
 
         recordedVideoToken = null;
@@ -213,22 +215,22 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "onFailure:" + e.toString());
-                promise.reject(ERROR_CODE_UNKNOWN, e.toString());
+                reject(ERR_UNKNOWN, e.toString());
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 final String responseString = response.body().string();
-                response.body().close();
+                response.close();
                 Log.d(TAG, "onResponse:" + response.toString());
                 Log.d(TAG, "onResponse: BodyString:" + responseString);
                 if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
                     Gson gson = new Gson();
                     ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                     recordedVideoToken = model.getVideo().getToken();
-                    promise.resolve(recordedVideoToken);
+                    resolve(recordedVideoToken);
                 } else {
-                    promise.reject(String.valueOf(response.code()), response.message());
+                    reject(String.valueOf(response.code()), response.message());
                 }
             }
         });
@@ -241,7 +243,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
             @Override
             public void onStopped(@NonNull String s) {
-                recordingInitialized = true;
+                rejectOnBack = false;
                 Log.d(TAG, "onStopped");
                 sendEvent(context, EVENT_RECORDING_STOPPED, null);
             }
@@ -249,7 +251,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onError() {
                 Log.e(TAG, "onError");
-                promise.reject(ERROR_CODE_UNKNOWN, "");
+                reject(ERR_UNKNOWN, "");
             }
         });
 
@@ -263,41 +265,16 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void uploadFromFileSelectorWithTimeLimit(final int maxAllowedDurationInSeconds, boolean enforceDuration,
-                                     @NonNull final Promise promise) {
+    public void uploadFromFileSelectorWithDurationLimit(final int maxAllowedDurationInSeconds, boolean enforceDuration,
+                                                        @NonNull final Promise promise) {
         this.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
         this.enforceDuration = enforceDuration;
         uploadFromFileSelector(promise);
     }
-    public void upload(Promise promise) {
-        this.promise = promise;
-
-        Dexter.withActivity(getCurrentActivity())
-                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        Log.d(TAG, "onPermissionGranted");
-                        Intent intent = new Intent();
-                        intent.setType("video/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        Log.d(TAG, "onPermissionDenied");
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        Log.d(TAG, "onPermissionRationaleShouldBeShown");
-                    }
-                }).check();
-    }
 
     @ReactMethod
     public void uploadFromPath(@NonNull final String path, @NonNull final Promise promise) {
+        rejectOnBack = false;
         Dexter.withActivity(getCurrentActivity())
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new PermissionListener() {
@@ -313,7 +290,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                             Log.e(TAG, "Path: " + path);
                             Log.e(TAG, "Duration: " + FileUtils.getVideoDuration(path, getReactApplicationContext()));
                             Log.e(TAG, "Max allowed duration: " + maxAllowedDurationInSeconds);
-                            promise.reject(ERROR_CODE_DURATION, errorMsg);
+                            reject(ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
                             Map<String, String> args = new HashMap<>();
                             if (maxAllowedDurationInSeconds > 0) {
@@ -333,13 +310,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                 @Override
                                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                     Log.e(TAG, "onFailure:" + e.toString());
-                                    promise.reject(ERROR_CODE_UNKNOWN, e.toString());
+                                    reject(ERR_UNKNOWN, e.toString());
                                 }
 
                                 @Override
                                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                                     final String responseString = response.body().string();
-                                    response.body().close();
+                                    response.close();
                                     Log.d(TAG, "onResponse:" + response.toString());
                                     Log.d(TAG, "onResponse: BodyString:" + responseString);
                                     if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
@@ -347,9 +324,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                         ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                                         recordedVideoToken = model.getVideo().getToken();
 
-                                        promise.resolve(recordedVideoToken);
+                                        resolve(recordedVideoToken);
                                     } else {
-                                        promise.reject(String.valueOf(response.code()), response.message());
+                                        reject(String.valueOf(response.code()), response.message());
                                     }
                                 }
                             });
@@ -379,6 +356,8 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         intent.setType("video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         context.startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO, null);
+
+        rejectOnBack = true;
     }
 
     @Nullable
@@ -394,6 +373,50 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+    }
+
+    private void resolve(@NonNull String token) {
+        if (promise != null) {
+            try {
+                promise.resolve(token);
+            } finally {
+                promise = null;
+                rejectOnBack = false;
+            }
+        }
+    }
+
+    private void reject(@NonNull String err, @NonNull Throwable exception) {
+        if (promise != null) {
+            try {
+                promise.reject(err, exception);
+            } finally {
+                promise = null;
+                rejectOnBack = false;
+            }
+        }
+    }
+
+    private void reject(@NonNull String err, @NonNull String message) {
+        if (promise != null) {
+            try {
+                promise.reject(err, message);
+            } finally {
+                promise = null;
+                rejectOnBack = false;
+            }
+        }
+    }
+
+    private void reject(@NonNull Throwable exception) {
+        if (promise != null) {
+            try {
+                promise.reject(exception);
+            } finally {
+                promise = null;
+                rejectOnBack = false;
+            }
+        }
     }
 
 }
