@@ -35,6 +35,7 @@ import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.models.ResponseModel;
 import com.ziggeo.tasks.RecordVideoTask;
+import com.ziggeo.tasks.Task;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
 import com.ziggeo.tasks.UploadFileTask;
@@ -113,13 +114,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                         path = FileUtils.getPath(context, uri);
                     }
                     if (path != null) {
-                        uploadFromPath(path, null, task);
+                        uploadFromPath(path, task, null);
                     } else {
-                        task.reject(ERR_UNKNOWN);
+                        reject(task, ERR_UNKNOWN);
                     }
                     break;
                 case Activity.RESULT_CANCELED:
-                    task.reject(ERR_CANCELLED, "Cancelled by the user.");
+                    reject(task, ERR_CANCELLED, "Cancelled by the user.");
                     break;
             }
         }
@@ -133,7 +134,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     @Override
     public void onHostResume() {
         if (recordVideoTask != null) {
-            recordVideoTask.reject(ERR_CANCELLED, "Cancelled by the user.");
+            reject(recordVideoTask, ERR_CANCELLED, "Cancelled by the user.");
             recordVideoTask = null;
         }
     }
@@ -222,7 +223,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e(TAG, "onFailure:" + e.toString());
-                recordVideoTask.reject(ERR_UNKNOWN, e.toString());
+                reject(recordVideoTask, ERR_UNKNOWN, e.toString());
             }
 
             @Override
@@ -235,9 +236,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     Gson gson = new Gson();
                     ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                     recordedVideoToken = model.getVideo().getToken();
-                    recordVideoTask.resolve(recordedVideoToken);
+                    resolve(recordVideoTask, recordedVideoToken);
                 } else {
-                    recordVideoTask.reject(String.valueOf(response.code()), response.message());
+                    reject(recordVideoTask, String.valueOf(response.code()), response.message());
                 }
             }
         });
@@ -258,7 +259,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
             @Override
             public void onError() {
                 Log.e(TAG, "onError");
-                recordVideoTask.reject(ERR_UNKNOWN, "");
+                reject(recordVideoTask, ERR_UNKNOWN, "");
             }
         });
 
@@ -272,8 +273,12 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void uploadFromPath(@NonNull final String path, @Nullable final Promise promise, @Nullable UploadFileTask task) {
-        if (task == null) {
+    public void uploadFromPath(@NonNull final String path, @Nullable final Promise promise) {
+        uploadFromPath(path, null, promise);
+    }
+
+    public void uploadFromPath(@NonNull final String path, @Nullable UploadFileTask task, @Nullable final Promise promise) {
+        if (task == null && promise != null) {
             task = new UploadFileTask(promise);
         }
         final UploadFileTask finalTask = task;
@@ -286,7 +291,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                         final File videoFile = new File(path);
                         if (!videoFile.exists()) {
                             Log.e(TAG, "File does not exist: " + path);
-                            finalTask.reject(ERR_FILE_DOES_NOT_EXIST, path);
+                            reject(finalTask, ERR_FILE_DOES_NOT_EXIST, path);
                         } else if (finalTask.isEnforceDuration() && finalTask.getMaxAllowedDurationInSeconds() > 0 &&
                                 FileUtils.getVideoDuration(path, getReactApplicationContext()) > finalTask.getMaxAllowedDurationInSeconds()) {
                             final String errorMsg = "Video duration is more than allowed.";
@@ -294,7 +299,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                             Log.e(TAG, "Path: " + path);
                             Log.e(TAG, "Duration: " + FileUtils.getVideoDuration(path, getReactApplicationContext()));
                             Log.e(TAG, "Max allowed duration: " + finalTask.getMaxAllowedDurationInSeconds());
-                            finalTask.reject(ERR_DURATION_EXCEEDED, errorMsg);
+                            reject(finalTask, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
                             final Map<String, String> args = new HashMap<>();
                             if (finalTask.getMaxAllowedDurationInSeconds() > 0) {
@@ -317,7 +322,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                         @Override
                                         public void onFailure(@NonNull Call call, @NonNull IOException e) {
                                             Log.e(TAG, "onFailure:" + e.toString());
-                                            finalTask.reject(ERR_UNKNOWN, e.toString());
+                                            reject(finalTask, ERR_UNKNOWN, e.toString());
                                         }
 
                                         @Override
@@ -331,9 +336,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                                 ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
                                                 recordedVideoToken = model.getVideo().getToken();
 
-                                                finalTask.resolve(recordedVideoToken);
+                                                resolve(finalTask, recordedVideoToken);
                                             } else {
-                                                finalTask.reject(String.valueOf(response.code()), response.message());
+                                                reject(finalTask, String.valueOf(response.code()), response.message());
                                             }
                                         }
                                     });
@@ -346,7 +351,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
                         Log.d(TAG, "onPermissionDenied");
-                        finalTask.reject(ERR_PERMISSION_DENIED);
+                        reject(finalTask, ERR_PERMISSION_DENIED);
                     }
 
                     @Override
@@ -379,7 +384,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
                         Log.d(TAG, "onPermissionDenied");
-                        task.reject(ERR_PERMISSION_DENIED);
+                        reject(task, ERR_PERMISSION_DENIED);
                     }
 
                     @Override
@@ -408,4 +413,20 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         task.execute();
         tasks.delete(task.getId());
     }
+
+    public void resolve(@NonNull Task task, @NonNull String token) {
+        task.resolve(token);
+        tasks.delete(task.getId());
+    }
+
+    public void reject(@NonNull Task task, @NonNull String err) {
+        task.reject(err);
+        tasks.delete(task.getId());
+    }
+
+    public void reject(@NonNull Task task, @NonNull String err, @Nullable String message) {
+        task.reject(err, message);
+        tasks.delete(task.getId());
+    }
+
 }
