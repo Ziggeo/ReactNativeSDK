@@ -34,7 +34,7 @@ export default {
 		return ZiggeoRecorder.record();
   	},
 	uploadFromFileSelector: async function () {
-		return ZiggeoRecorder.uploadFromFileSelector();
+		return ZiggeoRecorder.uploadFromFileSelector(0, false);
 	},
 	uploadFromPath: async function (fileName) {
 		return ZiggeoRecorder.uploadFromPath(fileName);
@@ -43,7 +43,7 @@ export default {
 		if(!enforceDuration){
 			enforceDuration = false;
 		}
-		return ZiggeoRecorder.uploadFromFileSelectorWithDurationLimit(maxAllowedDurationInSeconds, enforceDuration);
+		return ZiggeoRecorder.uploadFromFileSelector(maxAllowedDurationInSeconds, enforceDuration);
 	},
 	cancelRequest: function () {
 		ZiggeoRecorder.cancelRequest();

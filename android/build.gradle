@@ -37,7 +37,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:27.0.2"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile "com.google.code.gson:gson:2.8.2"
-    compile 'com.github.ZiggeoJitpackService:Android-SDK:0.72.0'
+    compile 'com.github.ZiggeoJitpackService:Android-SDK:0.72.1'
     compile 'com.karumi:dexter:4.2.0'
 }
   
