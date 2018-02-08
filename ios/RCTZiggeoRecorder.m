@@ -9,11 +9,107 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 
-@implementation RCTZiggeoRecorder
-{
-    RCTPromiseResolveBlock _resolveBlock;
-    RCTPromiseRejectBlock _rejectBlock;
+@interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
+@property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
+@property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
+@property (strong, nonatomic) RCTZiggeoRecorder* recorder;
+@property (nonatomic) int maxAllowedDurationInSeconds;
+@property (nonatomic) bool enforceDuration;
+@end;
+
+@implementation UploadingContext
+-(void)resolve:(NSString*)token {
+    if(_resolveBlock) _resolveBlock(token);
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    self.recorder = nil;
 }
+
+-(void)reject:(NSString*)code message:(NSString*)message {
+    if(_rejectBlock) _rejectBlock(code, message, [NSError errorWithDomain:@"recorder" code:0 userInfo:@{code:message}]);
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    self.recorder = nil;
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    [picker dismissViewControllerAnimated:true completion:nil];
+    NSURL* url = info[@"UIImagePickerControllerMediaURL"];
+    
+    NSMutableDictionary* recordingParams = [[NSMutableDictionary alloc] init];
+    if(self.recorder.additionalRecordingParams != nil) [recordingParams addEntriesFromDictionary:self.recorder.additionalRecordingParams];
+    if(self.maxAllowedDurationInSeconds > 0)
+    {
+        if(self.enforceDuration)
+        {
+            AVAsset* audioAsset = [AVURLAsset assetWithURL:url];
+            CMTime assetTime = [audioAsset duration];
+            Float64 duration = CMTimeGetSeconds(assetTime);
+            if(duration > self.maxAllowedDurationInSeconds) {
+                [self reject:@"ERR_DURATION_EXCEEDED" message:@"video duration is more than allowed"];
+                return;
+            }
+        }
+        else
+        {
+            NSDictionary* durationRecordingParams = @{ @"max_duration" : @(self.maxAllowedDurationInSeconds), @"enforce_duration": @"false"};
+            [recordingParams addEntriesFromDictionary:durationRecordingParams];
+        }
+    }
+    
+    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
+    m_ziggeo.videos.delegate = self;
+    [m_ziggeo.videos createVideoWithData:recordingParams file:url.path cover:nil callback:nil Progress:nil];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    NSLog(@"image picker cancelled delegate");
+    [picker dismissViewControllerAnimated:true completion:nil];
+    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
+}
+
+-(void) videoUploadCompleteForPath:(NSString*)sourcePath token:(NSString*)token withResponse:(NSURLResponse*)response error:(NSError*)error json:(NSDictionary*)json
+{
+    if(error == nil)
+    {
+        [self resolve:token];
+    }
+    else
+    {
+        [self reject:@"ERR_UNKNOWN" message:@"unknown recorder error"];
+    }
+}
+
+-(void) videoPreparingToUploadWithPath:(NSString*)sourcePath {}
+-(void) videoPreparingToUploadWithPath:(NSString*)sourcePath token:(NSString*)token {}
+
+-(void) videoUploadStartedWithPath:(NSString*)sourcePath token:(NSString*)token backgroundTask:(NSURLSessionTask*)uploadingTask {}
+-(void) videoUploadProgressForPath:(NSString*)sourcePath token:(NSString*)token totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes
+{
+    if(_recorder != nil) [_recorder sendEventWithName:@"UploadProgress" body:@{@"bytesSent": @(bytesSent), @"totalBytes":@(totalBytes), @"fileName":sourcePath, @"token":token }];
+}
+
+-(void) ziggeoRecorderDidCancel
+{
+    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
+}
+
+-(void)setRecorder:(RCTZiggeoRecorder *)recorder {
+    if(recorder != nil)
+    {
+        if(recorder.contexts == nil) recorder.contexts = [[NSMutableArray alloc] init];
+        [recorder.contexts addObject:self];
+    }
+    else if(_recorder != nil)
+    {
+        [_recorder.contexts removeObject:self];
+    }
+    _recorder = recorder;
+}
+
+@end
+
+@implementation RCTZiggeoRecorder
 
 RCT_EXPORT_MODULE();
 
@@ -77,96 +173,94 @@ RCT_EXPORT_METHOD(cancelRequest)
     
 }
 
--(void) ziggeoRecorderDidCancel
-{
-    if(_rejectBlock) _rejectBlock(@"cancelled", @"recording was cancelled", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"error":@"recording was cancelled"}]);
-    _rejectBlock = nil;
-}
-
 RCT_REMAP_METHOD(record,
                  recordWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-    _resolveBlock = resolve;
-    _rejectBlock = reject;
+    UploadingContext* context = [[UploadingContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
         ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
         recorder.coverSelectorEnabled = _coverSelectorEnabled;
         recorder.cameraFlipButtonVisible = _cameraFlipButtonVisible;
         recorder.cameraDevice = _camera;
-        recorder.recorderDelegate = self;
+        recorder.recorderDelegate = context;
         recorder.extraArgsForCreateVideo = _additionalRecordingParams;
-        m_ziggeo.videos.delegate = self;
+        m_ziggeo.videos.delegate = context;
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
     });
+    //_currentContext = context;
 }
 
-RCT_EXPORT_METHOD(upload:(NSString*)fileName
+
+RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDurationInSeconds
+                  enforceDuration:(int)enforceDuration
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    _resolveBlock = resolve;
-    _rejectBlock = reject;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UploadingContext* context = [[UploadingContext alloc] init];
+        context.resolveBlock = resolve;
+        context.rejectBlock = reject;
+        context.recorder = self;
+        context.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
+        context.enforceDuration = (enforceDuration != 0);
+        
+        UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.delegate = context;
+        imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:imagePicker animated:true completion:nil];
+    });
+}
+
+RCT_REMAP_METHOD(uploadFromFileSelector,
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UploadingContext* context = [[UploadingContext alloc] init];
+        context.resolveBlock = resolve;
+        context.rejectBlock = reject;
+        context.recorder = self;
+        context.maxAllowedDurationInSeconds = 0;
+        context.enforceDuration = false;
+        
+        UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.delegate = context;
+        imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:imagePicker animated:true completion:nil];
+    });
+}
+
+
+RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    UploadingContext* context = [[UploadingContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
     
     if(fileName != nil)
     {
         Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
-        m_ziggeo.videos.delegate = self;
+        m_ziggeo.videos.delegate = context;
         [m_ziggeo.videos createVideoWithData:_additionalRecordingParams file:fileName cover:nil callback:nil Progress:nil];
     }
     else
     {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
-            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-            imagePicker.delegate = self;
-            imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
-            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:imagePicker animated:true completion:nil];
-        });
+        reject(@"ERR_NOFILE", @"empty filename", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"ERR_NOFILE":@"empty filename"}]);
     }
 }
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    [picker dismissViewControllerAnimated:true completion:nil];
-    NSURL* url = info[@"UIImagePickerControllerMediaURL"];
-    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
-    m_ziggeo.videos.delegate = self;
-    [m_ziggeo.videos createVideoWithData:_additionalRecordingParams file:url.path cover:nil callback:nil Progress:nil];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:true completion:nil];
-    if(_rejectBlock) _rejectBlock(@"cancelled", @"uploading was cancelled", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"error":@"uploading was cancelled"}]);
-    _rejectBlock = nil;
-}
-
-
--(void) videoUploadCompleteForPath:(NSString*)sourcePath token:(NSString*)token withResponse:(NSURLResponse*)response error:(NSError*)error json:(NSDictionary*)json
-{
-    if(error == nil)
-    {
-        if(_resolveBlock)
-        {
-            _resolveBlock(token);
-            _resolveBlock = nil;
-        }
-    }
-    else if(_rejectBlock)
-    {
-        _rejectBlock(@"error", @"recorder error", error);
-        _rejectBlock = nil;
-    }
-}
-
--(void) videoPreparingToUploadWithPath:(NSString*)sourcePath {}
--(void) videoPreparingToUploadWithPath:(NSString*)sourcePath token:(NSString*)token {}
-
--(void) videoUploadStartedWithPath:(NSString*)sourcePath token:(NSString*)token backgroundTask:(NSURLSessionTask*)uploadingTask {}
--(void) videoUploadProgressForPath:(NSString*)sourcePath token:(NSString*)token totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes
-{
-    [self sendEventWithName:@"UploadProgress" body:@{@"bytesSent": @(bytesSent), @"totalBytes":@(totalBytes), @"fileName":sourcePath, @"token":token }];
-}
-
 
 @end
+

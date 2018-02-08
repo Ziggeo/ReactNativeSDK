@@ -12,7 +12,8 @@
 #import <Ziggeo/Ziggeo.h>
 #import <UIKit/UIKit.h>
 
-@interface RCTZiggeoRecorder : RCTEventEmitter <RCTBridgeModule, ZiggeoRecorder2Delegate, ZiggeoVideosDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+
+@interface RCTZiggeoRecorder : RCTEventEmitter <RCTBridgeModule>
 
 @property (strong, nonatomic) NSString *appToken;
 @property (nonatomic) BOOL cameraFlipButtonVisible;
@@ -23,8 +24,10 @@
 @property (nonatomic) NSDictionary* additionalRecordingParams;
 @property (nonatomic) BOOL sendImmediately;
 
+@property (strong, nonatomic) NSMutableArray* contexts;
 
 @end
 
 
 #endif /* ZiggeoRecorderRCT_h */
+
