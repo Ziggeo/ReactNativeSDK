@@ -20,6 +20,27 @@
         }
       },
       "/Users/alex/work/up/ziggeo_github/ReactNativeSDK/ReactNativeDemo"
+    ],
+    [
+      {
+        "raw": "react-native-ziggeo-library@git+https://github.com/Ziggeo/ReactNativeSDK.git",
+        "scope": null,
+        "escapedName": "react-native-ziggeo-library",
+        "name": "react-native-ziggeo-library",
+        "rawSpec": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+        "spec": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+        "type": "hosted",
+        "hosted": {
+          "type": "github",
+          "ssh": "git@github.com:Ziggeo/ReactNativeSDK.git",
+          "sshUrl": "git+ssh://git@github.com/Ziggeo/ReactNativeSDK.git",
+          "httpsUrl": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
+          "gitUrl": "git://github.com/Ziggeo/ReactNativeSDK.git",
+          "shortcut": "github:Ziggeo/ReactNativeSDK",
+          "directUrl": "https://raw.githubusercontent.com/Ziggeo/ReactNativeSDK/master/package.json"
+        }
+      },
+      "C:\\workspace\\Android\\Ziggeo\\ReactNativeDemo"
     ]
   ],
   "_from": "git+https://github.com/Ziggeo/ReactNativeSDK.git",
@@ -48,8 +69,8 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "git+https://github.com/Ziggeo/ReactNativeSDK.git#f8ba301474d53921c0cbbb45c628eca04ca09bc8",
-  "_shasum": "4318cd436faa973d9cce628cc2eec7b600cad37c",
+  "_resolved": "git+https://github.com/Ziggeo/ReactNativeSDK.git#c52e0521999e950e9d432a27ef577606ffb71b1d",
+  "_shasum": "b6cc47e472862e132d59df5dcb38b7310e6eea5b",
   "_shrinkwrap": null,
   "_spec": "react-native-ziggeo-library@git+https://github.com/Ziggeo/ReactNativeSDK.git",
   "_where": "/Users/alex/work/up/ziggeo_github/ReactNativeSDK/ReactNativeDemo",
@@ -66,8 +87,8 @@
   "name": "react-native-ziggeo-library",
   "optionalDependencies": {},
   "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
+    "react-native": "0.55.4",
+    "react-native-windows": "v0.55.0-rc.0"
   },
   "readme": "# ReactNativeSDK\n## Setup\nWe will presume that you are already familiar and have set up everything needed for the React Native setup on your system. \nIf not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):\n\nThere you can select tab `Building Projects with Native Code` and find information about\n1. Setting up React Native project for `Windows` / `Mac` / `Linux`\n2. Setting up `xCode`\n3. Setting up `Android Studio`\n\nNow with everything set up, for Ziggeo to be added you would need to follow this guides:\n1. [iOs](https://facebook.github.io/react-native/docs/native-modules-ios.html)\n2. [Android](https://facebook.github.io/react-native/docs/native-modules-android.html)",
   "readmeFilename": "README.md",
