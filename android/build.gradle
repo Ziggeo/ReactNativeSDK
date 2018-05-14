@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.code.gson:gson:2.8.2"
-    implementation 'com.github.ZiggeoJitpackService:Android-SDK:0.73.6'
+    implementation 'com.github.ZiggeoJitpackService:Android-SDK:0.73.8'
     implementation 'com.karumi:dexter:4.2.0'
 }
   

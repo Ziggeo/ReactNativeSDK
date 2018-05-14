@@ -12,8 +12,17 @@ export default {
 	setAutostartRecordingAfter: function (seconds) {
 		ZiggeoRecorder.setAutostartRecordingAfter(seconds);
   	},
+  	/**
+ 	  * @deprecated Use `setExtraArgsForRecorder` instead.
+ 	  */
 	setExtraArgsForCreateVideo: function (map) {
 		ZiggeoRecorder.setExtraArgsForCreateVideo(map);
+  	},
+	setExtraArgsForRecorder: function (map) {
+		ZiggeoRecorder.setExtraArgsForRecorder(map);
+  	},
+	setExtraArgsForPlayer: function (map) {
+		ZiggeoRecorder.setExtraArgsForPlayer(map);
   	},
 	setCoverSelectorEnabled: function (enabled) {
 		ZiggeoRecorder.setCoverSelectorEnabled(enabled);
@@ -26,6 +35,9 @@ export default {
   	},
 	setSendImmediately: function (sendImmediately) {
 		ZiggeoRecorder.setSendImmediately(sendImmediately);
+  	},
+	setQuality: function (quality) {
+		ZiggeoRecorder.setQuality(quality);
   	},
 	setCamera: function (camera) {
 		ZiggeoRecorder.setCamera(camera);
@@ -59,5 +71,8 @@ export default {
 
   	// Constants
   	REAR_CAMERA: ZiggeoRecorder.rearCamera,
-  	FRONT_CAMERA: ZiggeoRecorder.frontCamera
+  	FRONT_CAMERA: ZiggeoRecorder.frontCamera,
+  	HIGH_QUALITY: ZiggeoRecorder.highQuality,
+  	MEDIUM_QUALITY: ZiggeoRecorder.mediumQuality,
+  	LOW_QUALITY: ZiggeoRecorder.lowQuality
  };

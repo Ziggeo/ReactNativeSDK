@@ -36,9 +36,9 @@ import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.models.ResponseModel;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
+import com.ziggeo.tasks.UploadFileTask;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
-import com.ziggeo.tasks.UploadFileTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,8 +56,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
 
+    // constants for mapping native constants in JS
     public static final String REAR_CAMERA = "rearCamera";
     public static final String FRONT_CAMERA = "frontCamera";
+    public static final String HIGH_QUALITY = "highQuality";
+    public static final String MEDIUM_QUALITY = "mediumQuality";
+    public static final String LOW_QUALITY = "lowQuality";
+
     public static final String BYTES_SENT = "bytesSent";
     public static final String BYTES_TOTAL = "totalBytes";
     public static final String FILE_NAME = "fileName";
@@ -133,7 +138,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
     @Override
     public void onHostResume() {
-        if (recordVideoTask != null) {
+        if (recordVideoTask != null && !recordVideoTask.isUploadingStarted()) {
             reject(recordVideoTask, ERR_CANCELLED, "Cancelled by the user.");
             recordVideoTask = null;
         }
@@ -170,6 +175,18 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
+    public void setExtraArgsForRecorder(ReadableMap readableMap) {
+        Log.d(TAG, "setExtraArgsForRecorder:" + readableMap);
+        ziggeo.setExtraArgsForRecorder(ConversionUtil.toMap(readableMap));
+    }
+
+    @ReactMethod
+    public void setExtraArgsForPlayer(ReadableMap readableMap) {
+        Log.d(TAG, "setExtraArgsForPlayer:" + readableMap);
+        ziggeo.setExtraArgsForPlayer(ConversionUtil.toMap(readableMap));
+    }
+
+    @ReactMethod
     public void setCoverSelectorEnabled(boolean enabled) {
         Log.d(TAG, "setCoverSelectorEnabled:" + enabled);
         ziggeo.setCoverSelectorEnabled(enabled);
@@ -180,12 +197,6 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         final long millis = maxDurationSeconds * 1000;
         Log.d(TAG, "setMaxRecordingDuration:" + millis);
         ziggeo.setMaxRecordingDuration(millis);
-    }
-
-    @ReactMethod
-    public void setPreferredCameraFacing(int facing) {
-        Log.d(TAG, "setPreferredCameraFacing:" + facing);
-        ziggeo.setPreferredCameraFacing(facing);
     }
 
     @ReactMethod
@@ -201,9 +212,15 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void setCamera(int camera) {
-        Log.d(TAG, "setCamera:" + camera);
-        ziggeo.setPreferredCameraFacing(camera);
+    public void setCamera(@CameraView.Facing int facing) {
+        Log.d(TAG, "setCamera:" + facing);
+        ziggeo.setPreferredCameraFacing(facing);
+    }
+
+    @ReactMethod
+    public void setQuality(@CameraView.Quality int quality) {
+        Log.d(TAG, "setQuality:" + quality);
+        ziggeo.setPreferredQuality(quality);
     }
 
     @ReactMethod
@@ -246,20 +263,27 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         ziggeo.setVideoRecordingProcessCallback(new VideoRecordingCallback() {
             @Override
             public void onStarted() {
-                Log.d(TAG, "onStarted");
+                Log.d(TAG, "Recording started");
                 sendEvent(context, EVENT_RECORDING_STARTED, null);
             }
 
             @Override
             public void onStopped(@NonNull String s) {
-                Log.d(TAG, "onStopped");
+                Log.d(TAG, "Recording stopped");
                 sendEvent(context, EVENT_RECORDING_STOPPED, null);
             }
 
             @Override
-            public void onError() {
-                Log.e(TAG, "onError");
-                reject(recordVideoTask, ERR_UNKNOWN, "");
+            public void onError(@NonNull Throwable throwable) {
+                super.onError(throwable);
+                Log.e(TAG, "Recording error: " + throwable.toString());
+                reject(recordVideoTask, ERR_UNKNOWN, throwable.toString());
+            }
+
+            @Override
+            public void onUploadingStarted(@NonNull Uri fileUri) {
+                super.onUploadingStarted(fileUri);
+                recordVideoTask.setUploadingStarted(true);
             }
         });
 
@@ -400,6 +424,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
         final Map<String, Object> constants = new HashMap<>();
         constants.put(REAR_CAMERA, CameraView.FACING_BACK);
         constants.put(FRONT_CAMERA, CameraView.FACING_FRONT);
+        constants.put(HIGH_QUALITY, CameraView.QUALITY_HIGH);
+        constants.put(MEDIUM_QUALITY, CameraView.QUALITY_MEDIUM);
+        constants.put(LOW_QUALITY, CameraView.QUALITY_LOW);
         return constants;
     }
 
