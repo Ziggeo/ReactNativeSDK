@@ -116,7 +116,11 @@ RCT_EXPORT_MODULE();
 - (NSDictionary *)constantsToExport
 {
     return @{ @"frontCamera": @(UIImagePickerControllerCameraDeviceFront),
-              @"rearCamera" : @(UIImagePickerControllerCameraDeviceRear)};
+              @"rearCamera" : @(UIImagePickerControllerCameraDeviceRear),
+              @"highQuality" : @(HighestQuality),
+              @"mediumQuality" : @(MediumQuality),
+              @"lowQuality" : @(LowQuality)
+              };
 }
 
 - (NSArray<NSString *> *)supportedEvents
@@ -148,12 +152,22 @@ RCT_EXPORT_METHOD(setCamera:(NSInteger)cameraDevice)
     _camera = cameraDevice;
 }
 
+RCT_EXPORT_METHOD(setQuality:(NSInteger)quality)
+{
+    _quality = quality;
+}
+
 RCT_EXPORT_METHOD(setAutostartRecordingAfter:(NSInteger)seconds)
 {
     _autostartRecordingAfter = seconds;
 }
 
 RCT_EXPORT_METHOD(setExtraArgsForCreateVideo:(NSDictionary*)map)
+{
+    _additionalRecordingParams = map;
+}
+
+RCT_EXPORT_METHOD(setExtraArgsForRecorder:(NSDictionary*)map)
 {
     _additionalRecordingParams = map;
 }
@@ -190,6 +204,7 @@ RCT_REMAP_METHOD(record,
         recorder.cameraDevice = _camera;
         recorder.recorderDelegate = context;
         recorder.extraArgsForCreateVideo = _additionalRecordingParams;
+        recorder.recordingQuality = _quality;
         m_ziggeo.videos.delegate = context;
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
     });

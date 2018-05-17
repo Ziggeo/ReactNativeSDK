@@ -22,7 +22,7 @@ export default {
 		ZiggeoRecorder.setExtraArgsForRecorder(map);
   	},
 	setExtraArgsForPlayer: function (map) {
-		ZiggeoRecorder.setExtraArgsForPlayer(map);
+		ZiggeoPlayer.setExtraArgsForPlayer(map);
   	},
 	setCoverSelectorEnabled: function (enabled) {
 		ZiggeoRecorder.setCoverSelectorEnabled(enabled);
