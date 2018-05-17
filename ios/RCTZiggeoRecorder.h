@@ -19,6 +19,7 @@
 @property (nonatomic) BOOL cameraFlipButtonVisible;
 @property (nonatomic) BOOL coverSelectorEnabled;
 @property (nonatomic) NSInteger camera;
+@property (nonatomic) NSInteger quality;
 @property (nonatomic) NSInteger autostartRecordingAfter;
 @property (nonatomic) NSInteger maxRecordingDuration;
 @property (nonatomic) NSDictionary* additionalRecordingParams;

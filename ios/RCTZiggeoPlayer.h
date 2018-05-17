@@ -16,6 +16,7 @@
 @interface RCTZiggeoPlayer : NSObject <RCTBridgeModule>
 
 @property (strong, nonatomic) NSString *appToken;
+@property (strong, nonatomic) NSDictionary *additionalParams;
 
 @end
 
