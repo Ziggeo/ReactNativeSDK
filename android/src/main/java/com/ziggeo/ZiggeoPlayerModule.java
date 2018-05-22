@@ -6,8 +6,10 @@ import android.util.Log;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.androidsdk.IZiggeo;
 import com.ziggeo.androidsdk.Ziggeo;
+import com.ziggeo.utils.ConversionUtil;
 
 /**
  * Created by alex on 6/25/2017.
@@ -40,4 +42,9 @@ public class ZiggeoPlayerModule extends ReactContextBaseJavaModule {
         ziggeo.startPlayer(videoToken);
     }
 
+    @ReactMethod
+    public void setExtraArgsForPlayer(ReadableMap readableMap) {
+        Log.d(TAG, "setExtraArgsForPlayer:" + readableMap);
+        ziggeo.setExtraArgsForPlayer(ConversionUtil.toMap(readableMap));
+    }
 }

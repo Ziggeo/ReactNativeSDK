@@ -21,9 +21,6 @@ export default {
 	setExtraArgsForRecorder: function (map) {
 		ZiggeoRecorder.setExtraArgsForRecorder(map);
   	},
-	setExtraArgsForPlayer: function (map) {
-		ZiggeoPlayer.setExtraArgsForPlayer(map);
-  	},
 	setCoverSelectorEnabled: function (enabled) {
 		ZiggeoRecorder.setCoverSelectorEnabled(enabled);
   	},
@@ -68,7 +65,10 @@ export default {
   	play: function (videoId: string) {
 		ZiggeoPlayer.play(videoId);
   	},
-
+	setExtraArgsForPlayer: function (map) {
+		ZiggeoPlayer.setExtraArgsForPlayer(map);
+  	},
+  	
   	// Constants
   	REAR_CAMERA: ZiggeoRecorder.rearCamera,
   	FRONT_CAMERA: ZiggeoRecorder.frontCamera,

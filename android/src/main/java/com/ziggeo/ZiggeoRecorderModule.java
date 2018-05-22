@@ -181,12 +181,6 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void setExtraArgsForPlayer(ReadableMap readableMap) {
-        Log.d(TAG, "setExtraArgsForPlayer:" + readableMap);
-        ziggeo.setExtraArgsForPlayer(ConversionUtil.toMap(readableMap));
-    }
-
-    @ReactMethod
     public void setCoverSelectorEnabled(boolean enabled) {
         Log.d(TAG, "setCoverSelectorEnabled:" + enabled);
         ziggeo.setCoverSelectorEnabled(enabled);
