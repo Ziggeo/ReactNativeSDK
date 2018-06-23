@@ -513,13 +513,13 @@ public class FileUtils {
         return intent;
     }
 
-    public static long getVideoDuration(@NonNull String path, @NonNull Context context) {
+    public static float getVideoDuration(@NonNull String path, @NonNull Context context) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         // use one of overloaded setDataSource() functions to set your data source
         retriever.setDataSource(context, Uri.parse(path));
         String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        long timeInMillisec = Long.parseLong(time);
+        long timeInMillis = Long.parseLong(time);
         retriever.release();
-        return timeInMillisec;
+        return timeInMillis / 1000F;
     }
 }

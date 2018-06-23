@@ -16,6 +16,7 @@ export default {
  	  * @deprecated Use `setExtraArgsForRecorder` instead.
  	  */
 	setExtraArgsForCreateVideo: function (map) {
+		console.warn("Calling deprecated function!");
 		ZiggeoRecorder.setExtraArgsForCreateVideo(map);
   	},
 	setExtraArgsForRecorder: function (map) {
@@ -42,17 +43,19 @@ export default {
 	record: async function () {
 		return ZiggeoRecorder.record();
   	},
-	uploadFromFileSelector: async function () {
-		return ZiggeoRecorder.uploadFromFileSelector(0, false);
+	uploadFromFileSelector: async function (map) {
+		return ZiggeoRecorder.uploadFromFileSelector(map);
 	},
-	uploadFromPath: async function (fileName) {
-		return ZiggeoRecorder.uploadFromPath(fileName);
+	uploadFromPath: async function (fileName, createObject: CreateObject) {
+		return ZiggeoRecorder.uploadFromPath(fileName, createObject);
 	},
+	/**
+ 	  * @deprecated Use `uploadFromFileSelector(map)` instead.
+ 	  */
 	uploadFromFileSelectorWithDurationLimit: async function (maxAllowedDurationInSeconds, enforceDuration) {
-		if(!enforceDuration){
-			enforceDuration = false;
-		}
-		return ZiggeoRecorder.uploadFromFileSelector(maxAllowedDurationInSeconds, enforceDuration);
+		console.warn("Calling deprecated function!");
+		var argsMap = {"max_duration":maxAllowedDurationInSeconds,"enforce_duration":enforceDuration}
+		return ZiggeoRecorder.uploadFromFileSelector(argsMap);
 	},
 	cancelRequest: function () {
 		ZiggeoRecorder.cancelRequest();
@@ -75,4 +78,5 @@ export default {
   	HIGH_QUALITY: ZiggeoRecorder.highQuality,
   	MEDIUM_QUALITY: ZiggeoRecorder.mediumQuality,
   	LOW_QUALITY: ZiggeoRecorder.lowQuality
+
  };

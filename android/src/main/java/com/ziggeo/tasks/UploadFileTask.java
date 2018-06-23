@@ -1,8 +1,11 @@
 package com.ziggeo.tasks;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
+
+import java.util.Map;
 
 /**
  * Created by Alex Bedulin on 06.02.2018.
@@ -10,27 +13,19 @@ import com.facebook.react.bridge.Promise;
 
 public class UploadFileTask extends Task {
 
-    private int maxAllowedDurationInSeconds;
-    private boolean enforceDuration;
+    private Map<String, String> extraArgs;
 
     public UploadFileTask(@NonNull Promise promise) {
         super(promise);
     }
 
-    public void setMaxAllowedDurationInSeconds(int maxAllowedDurationInSeconds) {
-        this.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
+    @Nullable
+    public Map<String, String> getExtraArgs() {
+        return extraArgs;
     }
 
-    public int getMaxAllowedDurationInSeconds() {
-        return maxAllowedDurationInSeconds;
-    }
-
-    public void setEnforceDuration(boolean enforceDuration) {
-        this.enforceDuration = enforceDuration;
-    }
-
-    public boolean isEnforceDuration() {
-        return enforceDuration;
+    public void setExtraArgs(@Nullable Map<String, String> args){
+        extraArgs = args;
     }
 
 }

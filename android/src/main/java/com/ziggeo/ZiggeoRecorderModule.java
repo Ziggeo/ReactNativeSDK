@@ -119,7 +119,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                         path = FileUtils.getPath(context, uri);
                     }
                     if (path != null) {
-                        uploadFromPath(path, task, null);
+                        uploadFromPath(path, null, task, null);
                     } else {
                         reject(task, ERR_UNKNOWN);
                     }
@@ -291,43 +291,47 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void uploadFromPath(@NonNull final String path, @Nullable final Promise promise) {
-        uploadFromPath(path, null, promise);
+    public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @Nullable final Promise promise) {
+        uploadFromPath(path, data, null, promise);
     }
 
-    public void uploadFromPath(@NonNull final String path, @Nullable UploadFileTask task, @Nullable final Promise promise) {
+    public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @Nullable UploadFileTask task, @Nullable final Promise promise) {
         if (task == null && promise != null) {
             task = new UploadFileTask(promise);
         }
         final UploadFileTask finalTask = task;
+        if (data != null) {
+            finalTask.setExtraArgs(ConversionUtil.toMap(data));
+        }
         Dexter.withActivity(getCurrentActivity())
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         Log.d(TAG, "onPermissionGranted");
+                        boolean enforceDuration = false;
+                        int maxDuration = 0;
+                        if (finalTask.getExtraArgs() != null) {
+                            maxDuration = Integer.parseInt(finalTask.getExtraArgs().get(ARG_DURATION));
+                            enforceDuration = Boolean.parseBoolean(finalTask.getExtraArgs().get(ARG_ENFORCE_DURATION));
+                        }
                         final File videoFile = new File(path);
                         if (!videoFile.exists()) {
                             Log.e(TAG, "File does not exist: " + path);
                             reject(finalTask, ERR_FILE_DOES_NOT_EXIST, path);
-                        } else if (finalTask.isEnforceDuration() && finalTask.getMaxAllowedDurationInSeconds() > 0 &&
-                                FileUtils.getVideoDuration(path, getReactApplicationContext()) > finalTask.getMaxAllowedDurationInSeconds()) {
+                        } else if (enforceDuration && maxDuration > 0 &&
+                                FileUtils.getVideoDuration(path, getReactApplicationContext()) > maxDuration) {
                             final String errorMsg = "Video duration is more than allowed.";
                             Log.e(TAG, errorMsg);
                             Log.e(TAG, "Path: " + path);
                             Log.e(TAG, "Duration: " + FileUtils.getVideoDuration(path, getReactApplicationContext()));
-                            Log.e(TAG, "Max allowed duration: " + finalTask.getMaxAllowedDurationInSeconds());
+                            Log.e(TAG, "Max allowed duration: " + maxDuration);
                             reject(finalTask, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
-                            final Map<String, String> args = new HashMap<>();
-                            if (finalTask.getMaxAllowedDurationInSeconds() > 0) {
-                                args.put(ARG_DURATION, String.valueOf(finalTask.getMaxAllowedDurationInSeconds()));
-                                args.put(ARG_ENFORCE_DURATION, String.valueOf(finalTask.isEnforceDuration()));
-                            }
                             finalTask.setRunnable(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ziggeo.videos().create(videoFile, args, new ProgressCallback() {
+                                    ziggeo.videos().create(videoFile, finalTask.getExtraArgs(), new ProgressCallback() {
                                         @Override
                                         public void onProgressUpdate(long sent, long total) {
                                             WritableMap params = Arguments.createMap();
@@ -380,10 +384,9 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    public void uploadFromFileSelector(final int maxAllowedDurationInSeconds, boolean enforceDuration, @NonNull final Promise promise) {
+    public void uploadFromFileSelector(@Nullable ReadableMap data, @NonNull final Promise promise) {
         final UploadFileTask task = new UploadFileTask(promise);
-        task.setEnforceDuration(enforceDuration);
-        task.setMaxAllowedDurationInSeconds(maxAllowedDurationInSeconds);
+        task.setExtraArgs(ConversionUtil.toMap(data));
         tasks.append(task.getId(), task);
 
         Dexter.withActivity(getCurrentActivity())
