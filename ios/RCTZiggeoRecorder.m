@@ -234,7 +234,27 @@ RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDuratio
     });
 }
 
+
 RCT_REMAP_METHOD(uploadFromFileSelector,
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    [self uploadFromFileSelector:nil resolver:resolve rejecter:reject];
+}
+
+-(void)applyAdditionalParams:(NSDictionary*)map context:(UploadingContext*)context {
+    if(map != nil)
+    {
+        if([map objectForKey:@"max_duration"] != nil) {
+            context.maxAllowedDurationInSeconds = [[map objectForKey:@"max_duration"] intValue];
+        }
+        if([map objectForKey:@"enforce_duration"] != nil) {
+            context.enforceDuration = [[map objectForKey:@"enforce_duration"] boolValue];
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -246,6 +266,7 @@ RCT_REMAP_METHOD(uploadFromFileSelector,
         context.recorder = self;
         context.maxAllowedDurationInSeconds = 0;
         context.enforceDuration = false;
+        [self applyAdditionalParams:map context:context];
         
         UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -260,10 +281,19 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
+    [self uploadFromPath:fileName argsMap:nil resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
+                  argsMap:(NSDictionary*)map
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
     UploadingContext* context = [[UploadingContext alloc] init];
     context.resolveBlock = resolve;
     context.rejectBlock = reject;
     context.recorder = self;
+    [self applyAdditionalParams:map context:context];
     
     if(fileName != nil)
     {
