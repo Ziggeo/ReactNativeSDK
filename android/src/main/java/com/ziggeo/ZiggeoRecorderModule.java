@@ -30,7 +30,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.androidsdk.IZiggeo;
 import com.ziggeo.androidsdk.Ziggeo;
-import com.ziggeo.androidsdk.net.rest.ProgressCallback;
+import com.ziggeo.androidsdk.net.callbacks.ProgressCallback;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.models.ResponseModel;
@@ -171,7 +171,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     @ReactMethod
     public void setExtraArgsForCreateVideo(ReadableMap readableMap) {
         Log.d(TAG, "setExtraArgsForCreateVideo:" + readableMap);
-        ziggeo.setExtraArgsForCreateVideo(ConversionUtil.toMap(readableMap));
+        this.setExtraArgsForRecorder(readableMap);
     }
 
     @ReactMethod
