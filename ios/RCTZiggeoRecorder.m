@@ -187,6 +187,11 @@ RCT_EXPORT_METHOD(cancelRequest)
     
 }
 
++(BOOL)requiresMainQueueSetup
+{
+    return YES;
+}
+
 RCT_REMAP_METHOD(record,
                  recordWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
@@ -197,14 +202,15 @@ RCT_REMAP_METHOD(record,
     context.recorder = self;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
+        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
-        recorder.coverSelectorEnabled = _coverSelectorEnabled;
-        recorder.cameraFlipButtonVisible = _cameraFlipButtonVisible;
-        recorder.cameraDevice = _camera;
+        recorder.coverSelectorEnabled = self->_coverSelectorEnabled;
+        recorder.cameraFlipButtonVisible = self->_cameraFlipButtonVisible;
+        recorder.cameraDevice = self->_camera;
         recorder.recorderDelegate = context;
-        recorder.extraArgsForCreateVideo = _additionalRecordingParams;
-        recorder.recordingQuality = _quality;
+        recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
+        recorder.recordingQuality = self->_quality;
+        recorder.maxRecordedDurationSeconds = self->_maxRecordingDuration;
         m_ziggeo.videos.delegate = context;
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
     });
