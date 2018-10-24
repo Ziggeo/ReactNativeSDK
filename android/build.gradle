@@ -25,6 +25,14 @@ android {
     lintOptions {
         abortOnError false
     }
+    buildTypes {
+        debug {
+            manifestPlaceholders = [excludeSystemAlertWindowPermission: "false"]
+        }
+        release {
+            manifestPlaceholders = [excludeSystemAlertWindowPermission: "true"]
+        }
+    }
 }
 
 repositories {
