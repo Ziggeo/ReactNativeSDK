@@ -9,7 +9,8 @@ $ npm install react-native-ziggeo-library --save
 $ react-native link
 ```
 
-iOS project will require additional steps mentioned at the Manual Installation section below 
+iOS project will require additional steps mentioned at the Manual Installation section below   
+Android project also requires to follow point 2 and point 3(the first part) mentioned at the Manual Installation section below
 
 ### Manual Installation
 #### Android
@@ -25,9 +26,9 @@ iOS project will require additional steps mentioned at the Manual Installation s
 	maven { url 'https://jitpack.io' }
 	```
   	
-3. Open up `android/app/build.gradle`
-	- Update `compileSdkVersion`, `buildToolsVersion`, `targetSdkVersion` and all libs from `com.android.support` package to latest versions.
-	- Insert the following line inside the `dependencies` block:
+3. Open up `android/app/build.gradle`  
+	- Update `compileSdkVersion`, `buildToolsVersion`, `targetSdkVersion` and all libs from `com.android.support` package to latest versions.  
+	- Insert the following line inside the `dependencies` block:  
 	```
 	compile project(':react-native-ziggeo-library')
 	```
