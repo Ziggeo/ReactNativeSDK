@@ -21,7 +21,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.google.gson.Gson;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -33,12 +32,14 @@ import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.net.callbacks.ProgressCallback;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
-import com.ziggeo.models.ResponseModel;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,7 +53,6 @@ import okhttp3.Response;
  * Created by Alex Bedulin on 6/25/2017.
  */
 public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
-    private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
 
@@ -244,10 +244,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                 Log.d(TAG, "onResponse:" + response.toString());
                 Log.d(TAG, "onResponse: BodyString:" + responseString);
                 if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
-                    Gson gson = new Gson();
-                    ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
-                    recordedVideoToken = model.getVideo().getToken();
-                    resolve(recordVideoTask, recordedVideoToken);
+                    try {
+                        recordedVideoToken = new JSONObject(responseString).getString("video_token");
+                        resolve(recordVideoTask, recordedVideoToken);
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.toString());
+                        reject(recordVideoTask, e.toString());
+                    }
                 } else {
                     reject(recordVideoTask, String.valueOf(response.code()), response.message());
                 }
@@ -354,11 +357,13 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
                                             Log.d(TAG, "onResponse:" + response.toString());
                                             Log.d(TAG, "onResponse: BodyString:" + responseString);
                                             if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
-                                                Gson gson = new Gson();
-                                                ResponseModel model = gson.fromJson(responseString, ResponseModel.class);
-                                                recordedVideoToken = model.getVideo().getToken();
-
-                                                resolve(finalTask, recordedVideoToken);
+                                                try {
+                                                    recordedVideoToken = new JSONObject(responseString).getString("video_token");
+                                                    resolve(finalTask, recordedVideoToken);
+                                                } catch (JSONException e) {
+                                                    Log.e(TAG, e.toString());
+                                                    reject(finalTask, e.toString());
+                                                }
                                             } else {
                                                 reject(finalTask, String.valueOf(response.code()), response.message());
                                             }
