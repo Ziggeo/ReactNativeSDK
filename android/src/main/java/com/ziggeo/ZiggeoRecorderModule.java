@@ -224,10 +224,11 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
 
         ziggeo.setNetworkRequestsCallback(new ProgressCallback() {
             @Override
-            public void onProgressUpdate(long sent, long total) {
+            public void onProgressUpdate(@NonNull String videoToken, @NonNull File file, long sentBytes, long totalBytes) {
+                super.onProgressUpdate(videoToken, file, sentBytes, totalBytes);
                 WritableMap params = Arguments.createMap();
-                params.putString(BYTES_SENT, String.valueOf(sent));
-                params.putString(BYTES_TOTAL, String.valueOf(total));
+                params.putString(BYTES_SENT, String.valueOf(sentBytes));
+                params.putString(BYTES_TOTAL, String.valueOf(totalBytes));
                 sendEvent(context, EVENT_PROGRESS, params);
             }
 
