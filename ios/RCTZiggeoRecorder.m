@@ -211,6 +211,10 @@ RCT_REMAP_METHOD(record,
         recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
         recorder.recordingQuality = self->_quality;
         recorder.maxRecordedDurationSeconds = self->_maxRecordingDuration;
+        if(self.additionalRecordingParams && ![@"false" isEqualToString:self.additionalRecordingParams[@"hideRecorderControls"]])
+        {
+            recorder.controlsVisible = false;
+        }
         m_ziggeo.videos.delegate = context;
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
     });

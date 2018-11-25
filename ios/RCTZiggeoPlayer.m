@@ -24,9 +24,11 @@ RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
 RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-    Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
+    Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
     ZiggeoPlayer* player = nil;
-    if(_additionalParams == nil)
+    bool hideControls = self.additionalParams && ![@"false" isEqualToString:self.additionalParams[@"hidePlayerControls"]];
+    
+    if(self.additionalParams == nil)
     {
         player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken];
         AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
@@ -35,9 +37,21 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
         [playerController.player play];
     }
     else {
-        [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken params:_additionalParams callback:^(ZiggeoPlayer *player) {
+        [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken params:self.additionalParams callback:^(ZiggeoPlayer *player) {
             AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
             playerController.player = player;
+            
+            if(hideControls)
+            {
+                player.didFinishPlaying = ^(NSString *videoToken, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^
+                    {
+                       [playerController dismissViewControllerAnimated:true completion:nil];
+                    });
+                };
+                playerController.showsPlaybackControls = false;
+            }
+            
             [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
             [playerController.player play];
         }];
