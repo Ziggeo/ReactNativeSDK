@@ -22,6 +22,9 @@ export default {
 	setExtraArgsForRecorder: function (map) {
 		ZiggeoRecorder.setExtraArgsForRecorder(map);
   	},
+  	setThemeArgsForRecorder: function (map) {
+  		ZiggeoRecorder.setThemeArgsForRecorder(map);
+  	},
 	setCoverSelectorEnabled: function (enabled) {
 		ZiggeoRecorder.setCoverSelectorEnabled(enabled);
   	},
@@ -71,7 +74,10 @@ export default {
 	setExtraArgsForPlayer: function (map) {
 		ZiggeoPlayer.setExtraArgsForPlayer(map);
   	},
-  	
+  	setThemeArgsForPlayer: function (map) {
+  		ZiggeoPlayer.setThemeArgsForPlayer(map);
+  	},
+
   	// Constants
   	REAR_CAMERA: ZiggeoRecorder.rearCamera,
   	FRONT_CAMERA: ZiggeoRecorder.frontCamera,

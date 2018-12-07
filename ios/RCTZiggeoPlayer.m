@@ -26,9 +26,20 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
   dispatch_async(dispatch_get_main_queue(), ^{
     Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
     ZiggeoPlayer* player = nil;
-    bool hideControls = self.additionalParams && ![@"false" isEqualToString:self.additionalParams[@"hidePlayerControls"]];
-    
-    if(self.additionalParams == nil)
+
+    NSMutableDictionary* mergedParams = nil;
+    if(self->_additionalParams != nil)
+    {
+        mergedParams = [[NSMutableDictionary alloc] initWithDictionary:self->_additionalParams];
+        if(self->_themeParams) [mergedParams addEntriesFromDictionary:self->_themeParams];
+    }
+    else if(self->_themeParams != nil)
+    {
+        mergedParams = [[NSMutableDictionary alloc] initWithDictionary:self->_themeParams];
+    }
+    bool hideControls = mergedParams && ![@"false" isEqualToString:mergedParams[@"hidePlayerControls"]];
+
+    if(mergedParams == nil)
     {
         player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken];
         AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
@@ -37,7 +48,7 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
         [playerController.player play];
     }
     else {
-        [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken params:self.additionalParams callback:^(ZiggeoPlayer *player) {
+        [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken params:mergedParams callback:^(ZiggeoPlayer *player) {
             AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
             playerController.player = player;
             
@@ -62,6 +73,11 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary*)map)
 {
     _additionalParams = map;
+}
+
+RCT_EXPORT_METHOD(setThemeArgsForPlayer:(NSDictionary*)map)
+{
+    _themeParams = map;
 }
 
 @end

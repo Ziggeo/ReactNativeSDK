@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) NSString *appToken;
 @property (strong, nonatomic) NSDictionary *additionalParams;
+@property (strong, nonatomic) NSDictionary *themeParams;
 
 @end
 
