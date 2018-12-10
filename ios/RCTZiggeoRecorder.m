@@ -172,6 +172,11 @@ RCT_EXPORT_METHOD(setExtraArgsForRecorder:(NSDictionary*)map)
     _additionalRecordingParams = map;
 }
 
+RCT_EXPORT_METHOD(setThemeArgsForRecorder:(NSDictionary*)map)
+{
+    _additionalThemeParams = map;
+}
+
 RCT_EXPORT_METHOD(setMaxRecordingDuration:(NSInteger)seconds)
 {
     _maxRecordingDuration = seconds;
@@ -209,9 +214,18 @@ RCT_REMAP_METHOD(record,
         recorder.cameraDevice = self->_camera;
         recorder.recorderDelegate = context;
         recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
+        if(self->_additionalThemeParams)
+        {
+            if(recorder.extraArgsForCreateVideo) {
+                NSMutableDictionary* merged = [[NSMutableDictionary alloc] initWithDictionary:recorder.extraArgsForCreateVideo];
+                [merged addEntriesFromDictionary:self->_additionalThemeParams];
+                recorder.extraArgsForCreateVideo = merged;
+            }
+            else recorder.extraArgsForCreateVideo = self->_additionalThemeParams;
+        }
         recorder.recordingQuality = self->_quality;
         recorder.maxRecordedDurationSeconds = self->_maxRecordingDuration;
-        if(self.additionalRecordingParams && ![@"false" isEqualToString:self.additionalRecordingParams[@"hideRecorderControls"]])
+        if(recorder.extraArgsForCreateVideo && ![@"false" isEqualToString:recorder.extraArgsForCreateVideo[@"hideRecorderControls"]])
         {
             recorder.controlsVisible = false;
         }

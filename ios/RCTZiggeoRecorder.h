@@ -23,6 +23,7 @@
 @property (nonatomic) NSInteger autostartRecordingAfter;
 @property (nonatomic) NSInteger maxRecordingDuration;
 @property (nonatomic) NSDictionary* additionalRecordingParams;
+@property (nonatomic) NSDictionary* additionalThemeParams;
 @property (nonatomic) BOOL sendImmediately;
 
 @property (strong, nonatomic) NSMutableArray* contexts;
