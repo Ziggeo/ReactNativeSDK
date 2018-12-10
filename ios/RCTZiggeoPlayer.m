@@ -37,7 +37,7 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
     {
         mergedParams = [[NSMutableDictionary alloc] initWithDictionary:self->_themeParams];
     }
-    bool hideControls = mergedParams && ![@"false" isEqualToString:mergedParams[@"hidePlayerControls"]];
+    bool hideControls = mergedParams && [@"true" isEqualToString:mergedParams[@"hidePlayerControls"]];
 
     if(mergedParams == nil)
     {

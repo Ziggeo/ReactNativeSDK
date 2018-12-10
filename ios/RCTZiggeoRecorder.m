@@ -225,7 +225,7 @@ RCT_REMAP_METHOD(record,
         }
         recorder.recordingQuality = self->_quality;
         recorder.maxRecordedDurationSeconds = self->_maxRecordingDuration;
-        if(recorder.extraArgsForCreateVideo && ![@"false" isEqualToString:recorder.extraArgsForCreateVideo[@"hideRecorderControls"]])
+        if(recorder.extraArgsForCreateVideo && [@"true" isEqualToString:recorder.extraArgsForCreateVideo[@"hideRecorderControls"]])
         {
             recorder.controlsVisible = false;
         }
