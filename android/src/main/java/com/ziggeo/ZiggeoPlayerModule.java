@@ -1,29 +1,27 @@
 package com.ziggeo;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.ziggeo.androidsdk.IZiggeo;
-import com.ziggeo.androidsdk.Ziggeo;
+import com.ziggeo.androidsdk.ui.theming.PlayerStyle;
+import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
+import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 
 /**
  * Created by alex on 6/25/2017.
  */
 
-public class ZiggeoPlayerModule extends ReactContextBaseJavaModule {
+public class ZiggeoPlayerModule extends BaseModule {
 
     private static final String TAG = ZiggeoPlayerModule.class.getSimpleName();
 
-    private IZiggeo ziggeo;
-
     public ZiggeoPlayerModule(final ReactApplicationContext reactContext) {
         super(reactContext);
-        ziggeo = new Ziggeo(reactContext.getApplicationContext());
     }
 
     @Override
@@ -47,4 +45,19 @@ public class ZiggeoPlayerModule extends ReactContextBaseJavaModule {
         Log.d(TAG, "setExtraArgsForPlayer:" + readableMap);
         ziggeo.setExtraArgsForPlayer(ConversionUtil.toMap(readableMap));
     }
+
+    @ReactMethod
+    public void setThemeArgsForPlayer(@Nullable ReadableMap data) {
+        if (data != null) {
+            PlayerStyle playerStyle = new PlayerStyle.Builder()
+                    .hideControls(data.getBoolean(ThemeKeys.KEY_HIDE_PLAYER_CONTROLS))
+                    .build();
+
+            if (ziggeo.getTheme() == null) {
+                ziggeo.setTheme(new ZiggeoTheme());
+            }
+            ziggeo.getTheme().setPlayerStyle(playerStyle);
+        }
+    }
+
 }

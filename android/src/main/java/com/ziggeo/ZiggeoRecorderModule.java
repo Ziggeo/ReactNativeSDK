@@ -27,14 +27,16 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.ziggeo.androidsdk.IZiggeo;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.net.callbacks.ProgressCallback;
 import com.ziggeo.androidsdk.recording.VideoRecordingCallback;
+import com.ziggeo.androidsdk.ui.theming.RecorderStyle;
+import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
+import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
 
@@ -52,7 +54,7 @@ import okhttp3.Response;
 /**
  * Created by Alex Bedulin on 6/25/2017.
  */
-public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+public class ZiggeoRecorderModule extends BaseModule implements ActivityEventListener, LifecycleEventListener {
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
 
@@ -79,10 +81,7 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     private static final String ARG_DURATION = "max_duration";
     private static final String ARG_ENFORCE_DURATION = "enforce_duration";
 
-    private IZiggeo ziggeo;
     private String recordedVideoToken;
-
-    private ReactContext context;
 
     private RecordVideoTask recordVideoTask;
     private SparseArray<UploadFileTask> tasks;
@@ -215,6 +214,20 @@ public class ZiggeoRecorderModule extends ReactContextBaseJavaModule implements 
     public void setQuality(@CameraView.Quality int quality) {
         Log.d(TAG, "setQuality:" + quality);
         ziggeo.setPreferredQuality(quality);
+    }
+
+    @ReactMethod
+    public void setThemeArgsForRecorder(@Nullable ReadableMap data) {
+        if (data != null) {
+            RecorderStyle recorderStyle = new RecorderStyle.Builder()
+                    .hideControls(data.getBoolean(ThemeKeys.KEY_HIDE_RECORDER_CONTROLS))
+                    .build();
+
+            if (ziggeo.getTheme() == null) {
+                ziggeo.setTheme(new ZiggeoTheme());
+            }
+            ziggeo.getTheme().setRecorderStyle(recorderStyle);
+        }
     }
 
     @ReactMethod
