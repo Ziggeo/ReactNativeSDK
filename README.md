@@ -27,7 +27,7 @@ Android project also requires to follow point 2 and point 3(the first part) ment
 	```
   	
 3. Open up `android/app/build.gradle`  
-	- Update `compileSdkVersion`, `buildToolsVersion`, `targetSdkVersion` and all libs from `com.android.support` package to latest versions.  
+	- Set `compileSdkVersion` and `targetSdkVersion` = `28`, `minSdkVersion` >= `16`, `buildToolsVersion` = `28.0.3`,  all libs from `com.android.support` package to `28.0.0`.  
 	- Insert the following line inside the `dependencies` block:  
 	```
 	compile project(':react-native-ziggeo-library')
