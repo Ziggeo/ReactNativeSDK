@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
 
-import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Created by Alex Bedulin on 06.02.2018.
@@ -13,18 +13,18 @@ import java.util.Map;
 
 public class UploadFileTask extends Task {
 
-    private Map<String, String> extraArgs;
+    private HashMap<String, String> extraArgs;
 
     public UploadFileTask(@NonNull Promise promise) {
         super(promise);
     }
 
     @Nullable
-    public Map<String, String> getExtraArgs() {
+    public HashMap<String, String> getExtraArgs() {
         return extraArgs;
     }
 
-    public void setExtraArgs(@Nullable Map<String, String> args){
+    public void setExtraArgs(@Nullable HashMap<String, String> args){
         extraArgs = args;
     }
 

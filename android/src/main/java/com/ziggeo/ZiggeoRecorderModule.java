@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.facebook.react.bridge.ActivityEventListener;
@@ -27,7 +26,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
-import com.ziggeo.androidsdk.net.callbacks.ProgressCallback;
+import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.ui.theming.RecorderStyle;
 import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
@@ -38,16 +37,10 @@ import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Response;
 import timber.log.Timber;
 
 /**
@@ -83,6 +76,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     private String recordedVideoToken;
 
     private RecordVideoTask recordVideoTask;
+    //TODO remove it when file selector will be remade
     private SparseArray<UploadFileTask> tasks;
 
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
@@ -233,7 +227,6 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     public void record(final Promise promise) {
         recordVideoTask = new RecordVideoTask(promise);
         recordedVideoToken = null;
-
         ziggeo.setRecorderCallback(new RecorderCallback() {
             @Override
             public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
@@ -274,7 +267,6 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                 recordVideoTask.setUploadingStarted(true);
             }
         });
-
         ziggeo.startRecorder();
     }
 
@@ -296,7 +288,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
         }
         final UploadFileTask finalTask = task;
         if (data != null) {
-            finalTask.setExtraArgs(ConversionUtil.toMap(data));
+            finalTask.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
         }
         Dexter.withActivity(getCurrentActivity())
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -307,8 +299,14 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                         boolean enforceDuration = false;
                         int maxDuration = 0;
                         if (finalTask.getExtraArgs() != null) {
-                            maxDuration = Integer.parseInt(finalTask.getExtraArgs().get(ARG_DURATION));
-                            enforceDuration = Boolean.parseBoolean(finalTask.getExtraArgs().get(ARG_ENFORCE_DURATION));
+                            String strDuration = finalTask.getExtraArgs().get(ARG_DURATION);
+                            if (strDuration != null && !strDuration.isEmpty()) {
+                                maxDuration = Integer.parseInt(strDuration);
+                            }
+                            String enforce = finalTask.getExtraArgs().get(ARG_ENFORCE_DURATION);
+                            if (enforce != null && !enforce.isEmpty()) {
+                                enforceDuration = Boolean.parseBoolean(enforce);
+                            }
                         }
                         final File videoFile = new File(path);
                         if (!videoFile.exists()) {
@@ -323,46 +321,42 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                             Timber.e("Max allowed duration: %s", maxDuration);
                             reject(finalTask, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
-                            finalTask.setRunnable(new Runnable() {
+                            ziggeo.setRecorderCallback(new RecorderCallback() {
                                 @Override
-                                public void run() {
-                                    ziggeo.videos().create(videoFile, finalTask.getExtraArgs(), new ProgressCallback() {
-                                        @Override
-                                        public void onProgressUpdate(long sent, long total) {
-                                            WritableMap params = Arguments.createMap();
-                                            params.putString(BYTES_SENT, String.valueOf(sent));
-                                            params.putString(BYTES_TOTAL, String.valueOf(total));
-                                            params.putString(FILE_NAME, path);
-                                            sendEvent(context, EVENT_PROGRESS, params);
-                                        }
+                                public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
+                                    super.uploadProgress(videoToken, file, uploaded, total);
+                                    WritableMap params = Arguments.createMap();
+                                    params.putString(BYTES_SENT, String.valueOf(uploaded));
+                                    params.putString(BYTES_TOTAL, String.valueOf(total));
+                                    sendEvent(context, EVENT_PROGRESS, params);
+                                }
 
-                                        @Override
-                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                            Timber.e("onFailure:%s", e.toString());
-                                            reject(finalTask, ERR_UNKNOWN, e.toString());
-                                        }
+                                @Override
+                                public void uploaded(@NonNull String path, @NonNull String token) {
+                                    super.uploaded(path, token);
+                                    resolve(finalTask, token);
+                                }
 
-                                        @Override
-                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                            final String responseString = response.body().string();
-                                            response.close();
-                                            Timber.d("onResponse:%s", response.toString());
-                                            Timber.d("onResponse: BodyString:%s", responseString);
-                                            if (response.isSuccessful() && !TextUtils.isEmpty(responseString)) {
-                                                try {
-                                                    recordedVideoToken = new JSONObject(responseString).getString("video_token");
-                                                    resolve(finalTask, recordedVideoToken);
-                                                } catch (JSONException e) {
-                                                    Timber.e(e.toString());
-                                                    reject(finalTask, e.toString());
-                                                }
-                                            } else {
-                                                reject(finalTask, String.valueOf(response.code()), response.message());
-                                            }
-                                        }
-                                    });
+                                @Override
+                                public void error(@NonNull Throwable throwable) {
+                                    super.error(throwable);
+                                    reject(finalTask, ERR_UNKNOWN, throwable.toString());
+                                }
+
+                                @Override
+                                public void recordingStarted() {
+                                    super.recordingStarted();
+                                    sendEvent(context, EVENT_RECORDING_STARTED, null);
+                                }
+
+                                @Override
+                                public void recordingStopped(@NonNull String path) {
+                                    super.recordingStopped(path);
+                                    sendEvent(context, EVENT_RECORDING_STOPPED, null);
                                 }
                             });
+                            ziggeo.getUploadingHandler().uploadNow(new RecordingInfo(new File(path),
+                                    null, finalTask.getExtraArgs()));
                             executeTask(finalTask);
                         }
                     }
@@ -383,7 +377,9 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     @ReactMethod
     public void uploadFromFileSelector(@Nullable ReadableMap data, @NonNull final Promise promise) {
         final UploadFileTask task = new UploadFileTask(promise);
-        task.setExtraArgs(ConversionUtil.toMap(data));
+        if (data != null) {
+            task.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
+        }
         tasks.append(task.getId(), task);
 
         Dexter.withActivity(getCurrentActivity())
@@ -431,7 +427,6 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     }
 
     private void executeTask(@NonNull UploadFileTask task) {
-        task.execute();
         tasks.delete(task.getId());
     }
 
