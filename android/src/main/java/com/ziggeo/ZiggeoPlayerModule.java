@@ -12,6 +12,8 @@ import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
 import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 
+import timber.log.Timber;
+
 /**
  * Created by alex on 6/25/2017.
  */
@@ -31,7 +33,7 @@ public class ZiggeoPlayerModule extends BaseModule {
 
     @ReactMethod
     public void setAppToken(@NonNull String appToken) {
-        Log.d(TAG, "setAppToken:" + appToken);
+        Timber.d("setAppToken:%s", appToken);
         ziggeo.setAppToken(appToken);
     }
 
@@ -42,7 +44,7 @@ public class ZiggeoPlayerModule extends BaseModule {
 
     @ReactMethod
     public void setExtraArgsForPlayer(ReadableMap readableMap) {
-        Log.d(TAG, "setExtraArgsForPlayer:" + readableMap);
+        Timber.d("setExtraArgsForPlayer:%s", readableMap);
         ziggeo.setExtraArgsForPlayer(ConversionUtil.toMap(readableMap));
     }
 
