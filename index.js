@@ -1,7 +1,9 @@
-import { NativeModules, NativeEventEmitter } from 'react-native';
+import { NativeModules, NativeEventEmitter, requireNativeComponent } from 'react-native';
 
 const { ZiggeoPlayer } = NativeModules;
 const { ZiggeoRecorder } = NativeModules;
+
+module.exports = requireNativeComponent('camera_view');
 
 export default {
 	// ZiggeoRecorder
