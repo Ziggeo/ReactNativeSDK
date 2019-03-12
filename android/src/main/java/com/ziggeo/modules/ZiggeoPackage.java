@@ -1,9 +1,10 @@
-package com.ziggeo;
+package com.ziggeo.modules;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.ziggeo.ZiggeoRecorderModule;
 import com.ziggeo.ui.CameraViewManager;
 
 import java.util.ArrayList;

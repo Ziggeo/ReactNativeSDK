@@ -30,6 +30,7 @@ import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.ui.theming.RecorderStyle;
 import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
+import com.ziggeo.modules.BaseModule;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
@@ -150,7 +151,6 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     public void setAppToken(@NonNull String appToken) {
         Timber.d("setAppToken:%s", appToken);
         ziggeo.setAppToken(appToken);
-        sendEvent(context, "TestEvent", null);
     }
 
     @ReactMethod

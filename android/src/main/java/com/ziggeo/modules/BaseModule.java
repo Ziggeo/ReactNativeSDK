@@ -1,4 +1,4 @@
-package com.ziggeo;
+package com.ziggeo.modules;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
