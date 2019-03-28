@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 
@@ -33,6 +33,10 @@ android {
             manifestPlaceholders = [excludeSystemAlertWindowPermission: "true"]
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 repositories {
@@ -48,7 +52,7 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation "com.google.code.gson:gson:2.8.5"
-    implementation 'com.github.ZiggeoJitpackService:Android-SDK:aee2258030'
+    implementation 'com.github.ZiggeoJitpackService:Android-SDK:0.79.4'
     implementation 'com.karumi:dexter:4.2.0'
 }
   

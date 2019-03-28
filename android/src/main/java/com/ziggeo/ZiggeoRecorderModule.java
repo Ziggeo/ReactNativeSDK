@@ -27,8 +27,6 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
-import com.ziggeo.androidsdk.ui.theming.RecorderStyle;
-import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.modules.BaseModule;
 import com.ziggeo.tasks.RecordVideoTask;
@@ -73,8 +71,6 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
 
     private static final String ARG_DURATION = "max_duration";
     private static final String ARG_ENFORCE_DURATION = "enforce_duration";
-
-    private String recordedVideoToken;
 
     private RecordVideoTask recordVideoTask;
     //TODO remove it when file selector will be remade
@@ -212,22 +208,17 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     @ReactMethod
     public void setThemeArgsForRecorder(@Nullable ReadableMap data) {
         if (data != null) {
-            RecorderStyle recorderStyle = new RecorderStyle.Builder()
-                    .hideControls(data.getBoolean(ThemeKeys.KEY_HIDE_RECORDER_CONTROLS))
-                    .build();
-
-            if (ziggeo.getTheme() == null) {
-                ziggeo.setTheme(new ZiggeoTheme());
+            if (data.hasKey(ThemeKeys.KEY_HIDE_RECORDER_CONTROLS)) {
+                boolean hideControls = data.getBoolean(ThemeKeys.KEY_HIDE_RECORDER_CONTROLS);
+                ziggeo.getRecorderConfig().getStyle().setHideControls(hideControls);
             }
-            ziggeo.getTheme().setRecorderStyle(recorderStyle);
         }
     }
 
     @ReactMethod
     public void record(final Promise promise) {
         recordVideoTask = new RecordVideoTask(promise);
-        recordedVideoToken = null;
-        ziggeo.setRecorderCallback(new RecorderCallback() {
+        ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
             @Override
             public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
                 super.uploadProgress(videoToken, file, uploaded, total);
@@ -267,7 +258,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                 recordVideoTask.setUploadingStarted(true);
             }
         });
-        ziggeo.startRecorder();
+        ziggeo.startCameraRecorder();
     }
 
     @ReactMethod
@@ -321,7 +312,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                             Timber.e("Max allowed duration: %s", maxDuration);
                             reject(finalTask, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
-                            ziggeo.setRecorderCallback(new RecorderCallback() {
+                            ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
                                 @Override
                                 public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
                                     super.uploadProgress(videoToken, file, uploaded, total);

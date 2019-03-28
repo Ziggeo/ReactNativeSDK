@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.ziggeo.androidsdk.ui.theming.PlayerStyle;
-import com.ziggeo.androidsdk.ui.theming.ZiggeoTheme;
 import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 
@@ -50,14 +48,10 @@ public class ZiggeoPlayerModule extends BaseModule {
     @ReactMethod
     public void setThemeArgsForPlayer(@Nullable ReadableMap data) {
         if (data != null) {
-            PlayerStyle playerStyle = new PlayerStyle.Builder()
-                    .hideControls(data.getBoolean(ThemeKeys.KEY_HIDE_PLAYER_CONTROLS))
-                    .build();
-
-            if (ziggeo.getTheme() == null) {
-                ziggeo.setTheme(new ZiggeoTheme());
+            if (data.hasKey(ThemeKeys.KEY_HIDE_PLAYER_CONTROLS)) {
+                boolean hideControls = data.getBoolean(ThemeKeys.KEY_HIDE_PLAYER_CONTROLS);
+                ziggeo.getPlayerConfig().getStyle().setHideControls(hideControls);
             }
-            ziggeo.getTheme().setPlayerStyle(playerStyle);
         }
     }
 

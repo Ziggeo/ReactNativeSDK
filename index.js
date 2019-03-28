@@ -3,8 +3,6 @@ import { NativeModules, NativeEventEmitter, requireNativeComponent } from 'react
 const { ZiggeoPlayer } = NativeModules;
 const { ZiggeoRecorder } = NativeModules;
 
-module.exports = requireNativeComponent('camera_view');
-
 export default {
 	// ZiggeoRecorder
 	setAppToken: function (appToken: string) {
