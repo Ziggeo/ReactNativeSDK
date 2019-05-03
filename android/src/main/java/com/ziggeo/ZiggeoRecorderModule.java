@@ -1,16 +1,11 @@
 package com.ziggeo;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.SparseArray;
 
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -38,6 +33,7 @@ import com.ziggeo.utils.FileUtils;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -45,7 +41,7 @@ import timber.log.Timber;
 /**
  * Created by Alex Bedulin on 6/25/2017.
  */
-public class ZiggeoRecorderModule extends BaseModule implements ActivityEventListener, LifecycleEventListener {
+public class ZiggeoRecorderModule extends BaseModule {
 
     private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
 
@@ -72,75 +68,16 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     private static final String ARG_DURATION = "max_duration";
     private static final String ARG_ENFORCE_DURATION = "enforce_duration";
 
-    private RecordVideoTask recordVideoTask;
-    //TODO remove it when file selector will be remade
-    private SparseArray<UploadFileTask> tasks;
-
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         ziggeo = new Ziggeo(reactContext.getApplicationContext());
         ziggeo.setSendImmediately(false);
         context = reactContext;
-        reactContext.addActivityEventListener(this);
-        reactContext.addLifecycleEventListener(this);
-        tasks = new SparseArray<>();
     }
 
     @Override
     public String getName() {
         return "ZiggeoRecorder";
-    }
-
-    @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-        Timber.d("onActivityResult. resultCode:%s data:%s", resultCode, data);
-        UploadFileTask task = tasks.get(requestCode);
-        if (task != null) {
-            switch (resultCode) {
-                case Activity.RESULT_OK:
-                    Uri uri = data.getData();
-                    String path = null;
-
-                    if (uri != null) {
-                        path = uri.getPath();
-                    }
-                    if (path == null || !new File(path).exists()) {
-                        path = FileUtils.getPath(context, uri);
-                    }
-                    if (path != null) {
-                        uploadFromPath(path, null, task, null);
-                    } else {
-                        reject(task, ERR_UNKNOWN);
-                    }
-                    break;
-                case Activity.RESULT_CANCELED:
-                    reject(task, ERR_CANCELLED, "Cancelled by the user.");
-                    break;
-            }
-        }
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-
-    }
-
-    @Override
-    public void onHostResume() {
-        if (recordVideoTask != null && !recordVideoTask.isUploadingStarted()) {
-            reject(recordVideoTask, ERR_CANCELLED, "Cancelled by the user.");
-            recordVideoTask = null;
-        }
-    }
-
-    @Override
-    public void onHostPause() {
-
-    }
-
-    @Override
-    public void onHostDestroy() {
-
     }
 
     @ReactMethod
@@ -217,7 +154,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
 
     @ReactMethod
     public void record(final Promise promise) {
-        recordVideoTask = new RecordVideoTask(promise);
+        RecordVideoTask task = new RecordVideoTask(promise);
         ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
             @Override
             public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
@@ -231,13 +168,13 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
             @Override
             public void uploaded(@NonNull String path, @NonNull String token) {
                 super.uploaded(path, token);
-                resolve(recordVideoTask, token);
+                resolve(task, token);
             }
 
             @Override
             public void error(@NonNull Throwable throwable) {
                 super.error(throwable);
-                reject(recordVideoTask, ERR_UNKNOWN, throwable.toString());
+                reject(task, ERR_UNKNOWN, throwable.toString());
             }
 
             @Override
@@ -255,7 +192,13 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
             @Override
             public void uploadingStarted(@NonNull String path) {
                 super.uploadingStarted(path);
-                recordVideoTask.setUploadingStarted(true);
+                task.setUploadingStarted(true);
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                cancel(task);
             }
         });
         ziggeo.startCameraRecorder();
@@ -268,18 +211,10 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
     }
 
     @ReactMethod
-    public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @Nullable final Promise promise) {
-        uploadFromPath(path, data, null, promise);
-    }
-
-    public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @Nullable UploadFileTask task,
-                               @Nullable final Promise promise) {
-        if (task == null && promise != null) {
-            task = new UploadFileTask(promise);
-        }
-        final UploadFileTask finalTask = task;
+    public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @NonNull final Promise promise) {
+        UploadFileTask task = new UploadFileTask(promise);
         if (data != null) {
-            finalTask.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
+            task.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
         }
         Dexter.withActivity(getCurrentActivity())
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -289,12 +224,12 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                         Timber.d("onPermissionGranted");
                         boolean enforceDuration = false;
                         int maxDuration = 0;
-                        if (finalTask.getExtraArgs() != null) {
-                            String strDuration = finalTask.getExtraArgs().get(ARG_DURATION);
+                        if (task.getExtraArgs() != null) {
+                            String strDuration = task.getExtraArgs().get(ARG_DURATION);
                             if (strDuration != null && !strDuration.isEmpty()) {
                                 maxDuration = Integer.parseInt(strDuration);
                             }
-                            String enforce = finalTask.getExtraArgs().get(ARG_ENFORCE_DURATION);
+                            String enforce = task.getExtraArgs().get(ARG_ENFORCE_DURATION);
                             if (enforce != null && !enforce.isEmpty()) {
                                 enforceDuration = Boolean.parseBoolean(enforce);
                             }
@@ -302,7 +237,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                         final File videoFile = new File(path);
                         if (!videoFile.exists()) {
                             Timber.e("File does not exist: %s", path);
-                            reject(finalTask, ERR_FILE_DOES_NOT_EXIST, path);
+                            reject(task, ERR_FILE_DOES_NOT_EXIST, path);
                         } else if (enforceDuration && maxDuration > 0 &&
                                 FileUtils.getVideoDuration(path, getReactApplicationContext()) > maxDuration) {
                             final String errorMsg = "Video duration is more than allowed.";
@@ -310,7 +245,7 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                             Timber.e("Path: %s", path);
                             Timber.e("Duration: %s", FileUtils.getVideoDuration(path, getReactApplicationContext()));
                             Timber.e("Max allowed duration: %s", maxDuration);
-                            reject(finalTask, ERR_DURATION_EXCEEDED, errorMsg);
+                            reject(task, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
                             ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
                                 @Override
@@ -325,13 +260,13 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                                 @Override
                                 public void uploaded(@NonNull String path, @NonNull String token) {
                                     super.uploaded(path, token);
-                                    resolve(finalTask, token);
+                                    resolve(task, token);
                                 }
 
                                 @Override
                                 public void error(@NonNull Throwable throwable) {
                                     super.error(throwable);
-                                    reject(finalTask, ERR_UNKNOWN, throwable.toString());
+                                    reject(task, ERR_UNKNOWN, throwable.toString());
                                 }
 
                                 @Override
@@ -345,17 +280,22 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                                     super.recordingStopped(path);
                                     sendEvent(context, EVENT_RECORDING_STOPPED, null);
                                 }
+
+                                @Override
+                                public void canceledByUser() {
+                                    super.canceledByUser();
+                                    cancel(task);
+                                }
                             });
                             ziggeo.getUploadingHandler().uploadNow(new RecordingInfo(new File(path),
-                                    null, finalTask.getExtraArgs()));
-                            executeTask(finalTask);
+                                    null, task.getExtraArgs()));
                         }
                     }
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
                         Timber.d("onPermissionDenied");
-                        reject(finalTask, ERR_PERMISSION_DENIED);
+                        reject(task, ERR_PERMISSION_DENIED);
                     }
 
                     @Override
@@ -371,32 +311,41 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
         if (data != null) {
             task.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
         }
-        tasks.append(task.getId(), task);
+        ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
+            @Override
+            public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
+                super.uploadProgress(videoToken, file, uploaded, total);
+                WritableMap params = Arguments.createMap();
+                params.putString(BYTES_SENT, String.valueOf(uploaded));
+                params.putString(BYTES_TOTAL, String.valueOf(total));
+                sendEvent(context, EVENT_PROGRESS, params);
+            }
 
-        Dexter.withActivity(getCurrentActivity())
-                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        Intent intent = new Intent();
-                        intent.setType("video/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        context.startActivityForResult(
-                                Intent.createChooser(intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION), "Select Video"),
-                                task.getId(), null);
-                    }
+            @Override
+            public void uploaded(@NonNull String path, @NonNull String token) {
+                super.uploaded(path, token);
+                resolve(task, token);
+            }
 
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        Timber.d("onPermissionDenied");
-                        reject(task, ERR_PERMISSION_DENIED);
-                    }
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+            }
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        Timber.d("onPermissionRationaleShouldBeShown");
-                    }
-                }).check();
+            @Override
+            public void accessForbidden(@NonNull List<String> permissions) {
+                super.accessForbidden(permissions);
+                reject(task, ERR_PERMISSION_DENIED);
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                cancel(task);
+            }
+        });
+        ziggeo.uploadFromFileSelector(task.getExtraArgs());
     }
 
     @Nullable
@@ -417,23 +366,20 @@ public class ZiggeoRecorderModule extends BaseModule implements ActivityEventLis
                 .emit(eventName, params);
     }
 
-    private void executeTask(@NonNull UploadFileTask task) {
-        tasks.delete(task.getId());
-    }
-
     public void resolve(@NonNull Task task, @NonNull String token) {
         task.resolve(token);
-        tasks.delete(task.getId());
     }
 
     public void reject(@NonNull Task task, @NonNull String err) {
         task.reject(err);
-        tasks.delete(task.getId());
     }
 
     public void reject(@NonNull Task task, @NonNull String err, @Nullable String message) {
         task.reject(err, message);
-        tasks.delete(task.getId());
+    }
+
+    public void cancel(@NonNull Task task) {
+        reject(task, ERR_CANCELLED, "Cancelled by the user.");
     }
 
 }
