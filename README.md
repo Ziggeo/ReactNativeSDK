@@ -45,10 +45,10 @@ Android project also requires to follow point 2 and point 3(the first part) ment
 
 5. Open up `android/app/src/main/java/[...]/MainActivity.java`
   	- Change `extends ReactActivity` to `extends ReactFragmentActivity`
-  	- Add `import com.ziggeo.ZiggeoPackage;` to the imports at the top of the file below `package`
+  	- Add `import com.ziggeo.modules.ZiggeoPackage;` to the imports at the top of the file below `package`
 
 6. Open up `android/app/src/main/java/[...]/MainApplication.java`
-  	- Add `import com.ziggeo.ZiggeoPackage;` to the imports at the top of the file below `package`
+  	- Add `import com.ziggeo.modules.ZiggeoPackage;` to the imports at the top of the file below `package`
   	- Add `new ZiggeoPackage()` to the list returned by the `getPackages()` method
 
 #### iOS
