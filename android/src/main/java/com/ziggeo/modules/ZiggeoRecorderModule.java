@@ -1,7 +1,6 @@
-package com.ziggeo;
+package com.ziggeo.modules;
 
 import android.Manifest;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -23,7 +22,6 @@ import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
-import com.ziggeo.modules.BaseModule;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
