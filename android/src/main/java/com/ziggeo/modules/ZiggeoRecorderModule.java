@@ -21,6 +21,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
+import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
@@ -28,6 +29,8 @@ import com.ziggeo.tasks.UploadFileTask;
 import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashMap;
@@ -73,6 +76,7 @@ public class ZiggeoRecorderModule extends BaseModule {
         context = reactContext;
     }
 
+    @NotNull
     @Override
     public String getName() {
         return "ZiggeoRecorder";
@@ -82,6 +86,14 @@ public class ZiggeoRecorderModule extends BaseModule {
     public void setAppToken(@NonNull String appToken) {
         Timber.d("setAppToken:%s", appToken);
         ziggeo.setAppToken(appToken);
+    }
+
+    @ReactMethod
+    public void setLiveStreamingEnabled(boolean enabled) {
+        Timber.d("setLiveStreamingEnabled:%s", enabled);
+        ziggeo.setRecorderConfig(new RecorderConfig.Builder(ziggeo.getRecorderConfig())
+                .liveStreaming(enabled)
+                .build());
     }
 
     @ReactMethod

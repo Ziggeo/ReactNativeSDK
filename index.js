@@ -9,6 +9,9 @@ export default {
 		ZiggeoPlayer.setAppToken(appToken);
 		ZiggeoRecorder.setAppToken(appToken);
   	},
+	setLiveStreamingEnabled: function (enabled) {
+		ZiggeoRecorder.setLiveStreamingEnabled(enabled);
+  	},
 	setAutostartRecordingAfter: function (seconds) {
 		ZiggeoRecorder.setAutostartRecordingAfter(seconds);
   	},
