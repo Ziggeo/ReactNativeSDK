@@ -1,27 +1,33 @@
 {
-  "name": "react-native-ziggeo-library",
-  "title": "React Native Test Lib",
-  "version": "1.3.11_rc0",
+  "author": {
+    "name": "Ziggeo"
+  },
+  "bugs": {
+    "url": "https://github.com/Ziggeo/ReactNativeSDK/issues"
+  },
   "description": "We will presume that you are already familiar and have set up everything needed for the React Native setup on your system.  If not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "react": "16.8.6",
+    "react-native": "0.60.4"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Ziggeo/ReactNativeSDK.git"
-  },
+  "homepage": "https://github.com/Ziggeo/ReactNativeSDK#readme",
   "keywords": [
     "react-native"
   ],
-  "author": "Ziggeo",
   "license": "",
+  "main": "index.js",
+  "name": "react-native-ziggeo-library",
   "peerDependencies": {
     "react": "16.8.6",
     "react-native": "0.60.4"
   },
-  "devDependencies": {
-    "react": "16.8.6",
-    "react-native": "0.60.4"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ziggeo/ReactNativeSDK.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "title": "React Native Ziggeo SDK",
+  "version": "1.3.12-rc0"
 }
