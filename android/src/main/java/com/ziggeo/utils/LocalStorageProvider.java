@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  * Created by alex on 10/2/2017.
  */
-@android.support.annotation.RequiresApi(api = android.os.Build.VERSION_CODES.KITKAT)
+@androidx.annotation.RequiresApi(api = android.os.Build.VERSION_CODES.KITKAT)
 public class LocalStorageProvider extends DocumentsProvider {
 
     public static final String AUTHORITY = "com.ianhanniballake.localstorage.documents";
