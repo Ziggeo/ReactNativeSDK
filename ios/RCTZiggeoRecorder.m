@@ -187,6 +187,11 @@ RCT_EXPORT_METHOD(setSendImmediately:(BOOL)sendImmediately)
     _sendImmediately = sendImmediately;
 }
 
+RCT_EXPORT_METHOD(setLiveStreamingEnabled:(BOOL)enabled)
+{
+    _liveStreamingEnabled = enabled;
+}
+
 RCT_EXPORT_METHOD(cancelRequest)
 {
     
@@ -214,6 +219,7 @@ RCT_REMAP_METHOD(record,
         recorder.cameraDevice = self->_camera;
         recorder.recorderDelegate = context;
         recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
+        recorder.useLiveStreaming = self->_liveStreamingEnabled;
         if(self->_additionalThemeParams)
         {
             if(recorder.extraArgsForCreateVideo) {

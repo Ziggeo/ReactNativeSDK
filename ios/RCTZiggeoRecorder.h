@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSString *appToken;
 @property (nonatomic) BOOL cameraFlipButtonVisible;
 @property (nonatomic) BOOL coverSelectorEnabled;
+@property (nonatomic) BOOL liveStreamingEnabled;
 @property (nonatomic) NSInteger camera;
 @property (nonatomic) NSInteger quality;
 @property (nonatomic) NSInteger autostartRecordingAfter;
