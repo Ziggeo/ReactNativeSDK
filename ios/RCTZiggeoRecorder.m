@@ -187,6 +187,37 @@ RCT_EXPORT_METHOD(setSendImmediately:(BOOL)sendImmediately)
     _sendImmediately = sendImmediately;
 }
 
+RCT_EXPORT_METHOD(setLiveStreamingEnabled:(BOOL)enabled)
+{
+    _liveStreamingEnabled = enabled;
+}
+
+RCT_EXPORT_METHOD(setVideoWidth:(NSInteger)videoWidth)
+{
+    _videoWidth = videoWidth;
+}
+
+RCT_EXPORT_METHOD(setVideoHeight:(NSInteger)videoHeight)
+{
+    _videoHeight = videoHeight;
+}
+
+RCT_EXPORT_METHOD(setVideoBitrate:(NSInteger)videoBitrate)
+{
+    _videoBitrate = videoBitrate;
+}
+
+RCT_EXPORT_METHOD(setAudioSampleRate:(NSInteger)audioSampleRate)
+{
+    _audioSampleRate = audioSampleRate;
+}
+
+RCT_EXPORT_METHOD(setAudioBitrate:(NSInteger)audioBitrate)
+{
+    _audioBitrate = audioBitrate;
+}
+
+
 RCT_EXPORT_METHOD(cancelRequest)
 {
     
@@ -214,6 +245,13 @@ RCT_REMAP_METHOD(record,
         recorder.cameraDevice = self->_camera;
         recorder.recorderDelegate = context;
         recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
+        recorder.useLiveStreaming = self->_liveStreamingEnabled;
+        recorder.recordingQuality = self->_quality;
+        if(self->_videoWidth != 0) recorder.videoWidth = (int)self.videoWidth;
+        if(self->_videoHeight != 0) recorder.videoHeight = (int)self.videoHeight;
+        if(self->_videoBitrate != 0) recorder.videoBitrate = (int)self.videoBitrate;
+        if(self->_audioSampleRate != 0) recorder.audioSampleRate = (int)self.audioSampleRate;
+        if(self->_audioBitrate != 0) recorder.audioBitrate = (int)self.audioBitrate;
         if(self->_additionalThemeParams)
         {
             if(recorder.extraArgsForCreateVideo) {
@@ -223,7 +261,6 @@ RCT_REMAP_METHOD(record,
             }
             else recorder.extraArgsForCreateVideo = self->_additionalThemeParams;
         }
-        recorder.recordingQuality = self->_quality;
         recorder.maxRecordedDurationSeconds = self->_maxRecordingDuration;
         if(recorder.extraArgsForCreateVideo && ([@"true" isEqualToString:recorder.extraArgsForCreateVideo[@"hideRecorderControls"]] || [[recorder.extraArgsForCreateVideo valueForKey:@"hideRecorderControls"] boolValue] ))
         {

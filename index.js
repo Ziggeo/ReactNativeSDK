@@ -34,6 +34,21 @@ export default {
 	setMaxRecordingDuration: function (seconds) {
 		ZiggeoRecorder.setMaxRecordingDuration(seconds);
   	},
+	setVideoWidth: function (videoWidth) {
+		ZiggeoRecorder.setVideoWidth(videoWidth);
+  	},
+	setVideoHeight: function (videoHeight) {
+		ZiggeoRecorder.setVideoHeight(videoHeight);
+  	},
+	setVideoBitrate: function (videoBitrate) {
+		ZiggeoRecorder.setVideoBitrate(videoBitrate);
+  	},
+	setAudioSampleRate: function (audioSampleRate) {
+		ZiggeoRecorder.setAudioSampleRate(audioSampleRate);
+  	},
+	setAudioBitrate: function (audioBitrate) {
+		ZiggeoRecorder.setAudioBitrate(audioBitrate);
+  	},
 	setCameraSwitchEnabled: function (enabled) {
 		ZiggeoRecorder.setCameraSwitchEnabled(enabled);
   	},

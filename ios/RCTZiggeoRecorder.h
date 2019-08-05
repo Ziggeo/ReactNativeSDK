@@ -18,10 +18,16 @@
 @property (strong, nonatomic) NSString *appToken;
 @property (nonatomic) BOOL cameraFlipButtonVisible;
 @property (nonatomic) BOOL coverSelectorEnabled;
+@property (nonatomic) BOOL liveStreamingEnabled;
 @property (nonatomic) NSInteger camera;
 @property (nonatomic) NSInteger quality;
 @property (nonatomic) NSInteger autostartRecordingAfter;
 @property (nonatomic) NSInteger maxRecordingDuration;
+@property (nonatomic) NSInteger videoWidth;
+@property (nonatomic) NSInteger videoHeight;
+@property (nonatomic) NSInteger videoBitrate;
+@property (nonatomic) NSInteger audioSampleRate;
+@property (nonatomic) NSInteger audioBitrate;
 @property (nonatomic) NSDictionary* additionalRecordingParams;
 @property (nonatomic) NSDictionary* additionalThemeParams;
 @property (nonatomic) BOOL sendImmediately;
