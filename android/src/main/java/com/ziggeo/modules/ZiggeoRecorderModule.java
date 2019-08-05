@@ -1,6 +1,7 @@
 package com.ziggeo.modules;
 
 import android.Manifest;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -23,6 +24,7 @@ import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
+import com.ziggeo.androidsdk.widgets.cameraview.Size;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
@@ -69,6 +71,9 @@ public class ZiggeoRecorderModule extends BaseModule {
     private static final String ARG_DURATION = "max_duration";
     private static final String ARG_ENFORCE_DURATION = "enforce_duration";
 
+    private int width;
+    private int height;
+
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         ziggeo = new Ziggeo(reactContext.getApplicationContext());
@@ -86,6 +91,41 @@ public class ZiggeoRecorderModule extends BaseModule {
     public void setAppToken(@NonNull String appToken) {
         Timber.d("setAppToken:%s", appToken);
         ziggeo.setAppToken(appToken);
+    }
+
+    @ReactMethod
+    public void setVideoWidth(int width) {
+        this.width = width;
+        if (width != 0 && height != 0) {
+            ziggeo.getRecorderConfig().setResolution(new Size(width, height));
+        } else {
+            ziggeo.getRecorderConfig().setResolution(new Size(0, 0));
+        }
+    }
+
+    @ReactMethod
+    public void setVideoBitrate(int bitrate) {
+        ziggeo.getRecorderConfig().setVideoBitrate(bitrate);
+    }
+
+    @ReactMethod
+    public void setAudioSampleRate(int sampleRate) {
+        ziggeo.getRecorderConfig().setAudioSampleRate(sampleRate);
+    }
+
+    @ReactMethod
+    public void setAudioBitrate(int bitrate) {
+        ziggeo.getRecorderConfig().setAudioBitrate(bitrate);
+    }
+
+    @ReactMethod
+    public void setVideoHeight(int height) {
+        this.height = height;
+        if (width != 0 && height != 0) {
+            ziggeo.getRecorderConfig().setResolution(new Size(width, height));
+        } else {
+            ziggeo.getRecorderConfig().setResolution(new Size(0, 0));
+        }
     }
 
     @ReactMethod
