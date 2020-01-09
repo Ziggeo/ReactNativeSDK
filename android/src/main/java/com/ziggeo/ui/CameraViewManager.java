@@ -1,6 +1,6 @@
 package com.ziggeo.ui;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;

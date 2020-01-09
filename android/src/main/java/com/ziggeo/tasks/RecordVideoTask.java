@@ -1,6 +1,6 @@
 package com.ziggeo.tasks;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.facebook.react.bridge.Promise;
 
