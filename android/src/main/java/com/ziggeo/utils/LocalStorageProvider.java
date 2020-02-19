@@ -16,6 +16,8 @@ import android.webkit.MimeTypeMap;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 
+import androidx.annotation.RequiresApi;
+
 import com.ziggeo.R;
 
 import java.io.File;
@@ -26,7 +28,7 @@ import java.io.IOException;
 /**
  * Created by alex on 10/2/2017.
  */
-@android.support.annotation.RequiresApi(api = android.os.Build.VERSION_CODES.KITKAT)
+@RequiresApi(api = android.os.Build.VERSION_CODES.KITKAT)
 public class LocalStorageProvider extends DocumentsProvider {
 
     public static final String AUTHORITY = "com.ianhanniballake.localstorage.documents";

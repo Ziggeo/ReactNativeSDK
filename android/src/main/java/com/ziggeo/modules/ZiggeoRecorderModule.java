@@ -2,8 +2,8 @@ package com.ziggeo.modules;
 
 import android.Manifest;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -32,14 +32,12 @@ import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import timber.log.Timber;
+import com.ziggeo.androidsdk.log.ZLog;
 
 /**
  * Created by Alex Bedulin on 6/25/2017.
@@ -77,11 +75,10 @@ public class ZiggeoRecorderModule extends BaseModule {
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         ziggeo = new Ziggeo(reactContext.getApplicationContext());
-        ziggeo.setSendImmediately(false);
         context = reactContext;
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String getName() {
         return "ZiggeoRecorder";
@@ -89,7 +86,7 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     @ReactMethod
     public void setAppToken(@NonNull String appToken) {
-        Timber.d("setAppToken:%s", appToken);
+        ZLog.d("setAppToken:%s", appToken);
         ziggeo.setAppToken(appToken);
     }
 
@@ -130,7 +127,7 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     @ReactMethod
     public void setLiveStreamingEnabled(boolean enabled) {
-        Timber.d("setLiveStreamingEnabled:%s", enabled);
+        ZLog.d("setLiveStreamingEnabled:%s", enabled);
         ziggeo.setRecorderConfig(new RecorderConfig.Builder(ziggeo.getRecorderConfig())
                 .liveStreaming(enabled)
                 .build());
@@ -138,58 +135,58 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     @ReactMethod
     public void setAutostartRecordingAfter(int seconds) {
-        final long millis = seconds * 1000;
-        Timber.d("setAutostartRecordingAfter:%s", millis);
-        ziggeo.setAutostartRecordingAfter(millis);
+        ZLog.d("setAutostartRecordingAfter:%s", seconds);
+        ziggeo.getRecorderConfig().setAutostart(true);
+        ziggeo.getRecorderConfig().setStartDelay(seconds);
     }
 
     @ReactMethod
     public void setExtraArgsForCreateVideo(ReadableMap readableMap) {
-        Timber.d("setExtraArgsForCreateVideo:%s", readableMap);
+        ZLog.d("setExtraArgsForCreateVideo:%s", readableMap);
         this.setExtraArgsForRecorder(readableMap);
     }
 
     @ReactMethod
     public void setExtraArgsForRecorder(ReadableMap readableMap) {
-        Timber.d("setExtraArgsForRecorder:%s", readableMap);
-        ziggeo.setExtraArgsForRecorder(ConversionUtil.toMap(readableMap));
+        ZLog.d("setExtraArgsForRecorder:%s", readableMap);
+        ziggeo.getRecorderConfig().setExtraArgs(ConversionUtil.toMap(readableMap));
     }
 
     @ReactMethod
     public void setCoverSelectorEnabled(boolean enabled) {
-        Timber.d("setCoverSelectorEnabled:%s", enabled);
-        ziggeo.setCoverSelectorEnabled(enabled);
+        ZLog.d("setCoverSelectorEnabled:%s", enabled);
+        ziggeo.getRecorderConfig().setEnableCoverShot(enabled);
     }
 
     @ReactMethod
     public void setMaxRecordingDuration(int maxDurationSeconds) {
         final long millis = maxDurationSeconds * 1000;
-        Timber.d("setMaxRecordingDuration:%s", millis);
-        ziggeo.setMaxRecordingDuration(millis);
+        ZLog.d("setMaxRecordingDuration:%s", millis);
+        ziggeo.getRecorderConfig().setMaxDuration(millis);
     }
 
     @ReactMethod
     public void setCameraSwitchEnabled(boolean enabled) {
-        Timber.d("setCameraSwitchEnabled:%s", enabled);
-        ziggeo.setCameraSwitchDisabled(!enabled);
+        ZLog.d("setCameraSwitchEnabled:%s", enabled);
+        ziggeo.getRecorderConfig().setDisableCameraSwitch(!enabled);
     }
 
     @ReactMethod
     public void setSendImmediately(boolean sendImmediately) {
-        Timber.d("setSendImmediately:%s", sendImmediately);
-        ziggeo.setSendImmediately(sendImmediately);
+        ZLog.d("setSendImmediately:%s", sendImmediately);
+        ziggeo.getRecorderConfig().setSendImmediately(sendImmediately);
     }
 
     @ReactMethod
     public void setCamera(@CameraView.Facing int facing) {
-        Timber.d("setCamera:%s", facing);
-        ziggeo.setPreferredCameraFacing(facing);
+        ZLog.d("setCamera:%s", facing);
+        ziggeo.getRecorderConfig().setFacing(facing);
     }
 
     @ReactMethod
     public void setQuality(@CameraView.Quality int quality) {
-        Timber.d("setQuality:%s", quality);
-        ziggeo.setPreferredQuality(quality);
+        ZLog.d("setQuality:%s", quality);
+        ziggeo.getRecorderConfig().setVideoQuality(quality);
     }
 
     @ReactMethod
@@ -256,8 +253,7 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     @ReactMethod
     public void cancelRequest() {
-        Timber.d("cancelRequest");
-        ziggeo.cancelRequest();
+        ZLog.d("cancelRequest");
     }
 
     @ReactMethod
@@ -271,7 +267,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse response) {
-                        Timber.d("onPermissionGranted");
+                        ZLog.d("onPermissionGranted");
                         boolean enforceDuration = false;
                         int maxDuration = 0;
                         if (task.getExtraArgs() != null) {
@@ -286,15 +282,15 @@ public class ZiggeoRecorderModule extends BaseModule {
                         }
                         final File videoFile = new File(path);
                         if (!videoFile.exists()) {
-                            Timber.e("File does not exist: %s", path);
+                            ZLog.e("File does not exist: %s", path);
                             reject(task, ERR_FILE_DOES_NOT_EXIST, path);
                         } else if (enforceDuration && maxDuration > 0 &&
                                 FileUtils.getVideoDuration(path, getReactApplicationContext()) > maxDuration) {
                             final String errorMsg = "Video duration is more than allowed.";
-                            Timber.e(errorMsg);
-                            Timber.e("Path: %s", path);
-                            Timber.e("Duration: %s", FileUtils.getVideoDuration(path, getReactApplicationContext()));
-                            Timber.e("Max allowed duration: %s", maxDuration);
+                            ZLog.e(errorMsg);
+                            ZLog.e("Path: %s", path);
+                            ZLog.e("Duration: %s", FileUtils.getVideoDuration(path, getReactApplicationContext()));
+                            ZLog.e("Max allowed duration: %s", maxDuration);
                             reject(task, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
                             ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
@@ -344,13 +340,13 @@ public class ZiggeoRecorderModule extends BaseModule {
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
-                        Timber.d("onPermissionDenied");
+                        ZLog.d("onPermissionDenied");
                         reject(task, ERR_PERMISSION_DENIED);
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        Timber.d("onPermissionRationaleShouldBeShown");
+                        ZLog.d("onPermissionRationaleShouldBeShown");
                     }
                 }).check();
     }

@@ -1,7 +1,8 @@
 package com.ziggeo.modules;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
@@ -9,7 +10,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.ui.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 
-import timber.log.Timber;
+import com.ziggeo.androidsdk.log.ZLog;
 
 /**
  * Created by alex on 6/25/2017.
@@ -30,7 +31,7 @@ public class ZiggeoPlayerModule extends BaseModule {
 
     @ReactMethod
     public void setAppToken(@NonNull String appToken) {
-        Timber.d("setAppToken:%s", appToken);
+        ZLog.d("setAppToken:%s", appToken);
         ziggeo.setAppToken(appToken);
     }
 
@@ -41,8 +42,8 @@ public class ZiggeoPlayerModule extends BaseModule {
 
     @ReactMethod
     public void setExtraArgsForPlayer(ReadableMap readableMap) {
-        Timber.d("setExtraArgsForPlayer:%s", readableMap);
-        ziggeo.setExtraArgsForPlayer(ConversionUtil.toMap(readableMap));
+        ZLog.d("setExtraArgsForPlayer:%s", readableMap);
+        ziggeo.getPlayerConfig().setExtraArgs(ConversionUtil.toMap(readableMap));
     }
 
     @ReactMethod

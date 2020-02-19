@@ -69,7 +69,7 @@ public final class ConversionUtil {
      * @param readableMap The ReadableMap to be conveted.
      * @return A HashMap containing the data that was in the ReadableMap.
      */
-    public static Map<String, String> toMap(@Nullable ReadableMap readableMap) {
+    public static HashMap<String, String> toMap(@Nullable ReadableMap readableMap) {
         if (readableMap == null) {
             return null;
         }
@@ -79,7 +79,7 @@ public final class ConversionUtil {
             return null;
         }
 
-        Map<String, String> result = new HashMap<>();
+        HashMap<String, String> result = new HashMap<>();
         while (iterator.hasNextKey()) {
             String key = iterator.nextKey();
             result.put(key, toObject(readableMap, key));
