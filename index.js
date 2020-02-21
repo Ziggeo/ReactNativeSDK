@@ -4,11 +4,21 @@ const { ZiggeoPlayer } = NativeModules;
 const { ZiggeoRecorder } = NativeModules;
 
 export default {
-	// ZiggeoRecorder
+	// Common
 	setAppToken: function (appToken: string) {
 		ZiggeoPlayer.setAppToken(appToken);
 		ZiggeoRecorder.setAppToken(appToken);
   	},
+	setClientAuthToken: function (token: string) {
+		ZiggeoPlayer.setClientAuthToken(token);
+		ZiggeoRecorder.setClientAuthToken(token);
+  	},
+	setServerAuthToken: function (token: string) {
+		ZiggeoPlayer.setServerAuthToken(token);
+		ZiggeoRecorder.setServerAuthToken(token);
+  	},
+
+	// ZiggeoRecorder
 	setLiveStreamingEnabled: function (enabled) {
 		ZiggeoRecorder.setLiveStreamingEnabled(enabled);
   	},

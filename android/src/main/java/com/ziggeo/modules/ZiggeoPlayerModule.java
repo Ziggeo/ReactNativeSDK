@@ -29,6 +29,18 @@ public class ZiggeoPlayerModule extends BaseModule {
         return "ZiggeoPlayer";
     }
 
+    @Override
+    @ReactMethod
+    public void setClientAuthToken(@NonNull String token) {
+        super.setClientAuthToken(token);
+    }
+
+    @Override
+    @ReactMethod
+    public void setServerAuthToken(@NonNull String token) {
+        super.setServerAuthToken(token);
+    }
+
     @ReactMethod
     public void setAppToken(@NonNull String appToken) {
         ZLog.d("setAppToken:%s", appToken);
