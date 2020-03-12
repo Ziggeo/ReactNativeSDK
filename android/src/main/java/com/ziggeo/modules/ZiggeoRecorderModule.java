@@ -22,6 +22,8 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
+import com.ziggeo.androidsdk.qr.QrScannerCallback;
+import com.ziggeo.androidsdk.qr.QrScannerConfig;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.androidsdk.widgets.cameraview.Size;
@@ -56,9 +58,12 @@ public class ZiggeoRecorderModule extends BaseModule {
     private static final String BYTES_SENT = "bytesSent";
     private static final String BYTES_TOTAL = "totalBytes";
     private static final String FILE_NAME = "fileName";
+    private static final String QR = "qr";
+
     private static final String EVENT_PROGRESS = "UploadProgress";
     private static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     private static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
+    private static final String EVENT_QR_DECODED = "QrDecoded";
 
     private static final String ERR_UNKNOWN = "ERR_UNKNOWN";
     private static final String ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED";
@@ -257,10 +262,34 @@ public class ZiggeoRecorderModule extends BaseModule {
     }
 
     @ReactMethod
+    public void startQrScanner(@Nullable ReadableMap data) {
+        ZLog.d("startQrScanner");
+        final String keyClose = "closeAfterSuccessfulScan";
+        HashMap<String, String> config = ConversionUtil.toMap(data);
+
+        boolean close = true;
+        if (config != null && config.containsKey(keyClose)) {
+            close = Boolean.parseBoolean(config.get(keyClose));
+        }
+        ziggeo.setQrScannerConfig(new QrScannerConfig(close, new QrScannerCallback() {
+            @Override
+            public void onQrDecoded(@NonNull String value) {
+                super.onQrDecoded(value);
+                WritableMap params = Arguments.createMap();
+                params.putString(QR, value);
+                sendEvent(context, EVENT_QR_DECODED, params);
+            }
+        }));
+
+        ziggeo.startQrScanner();
+    }
+
+    @ReactMethod
     public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @NonNull final Promise promise) {
         UploadFileTask task = new UploadFileTask(promise);
-        if (data != null) {
-            task.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
+        HashMap<String, String> args = ConversionUtil.toMap(data);
+        if (args != null) {
+            task.setExtraArgs(args);
         }
         Dexter.withActivity(getCurrentActivity())
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -354,8 +383,9 @@ public class ZiggeoRecorderModule extends BaseModule {
     @ReactMethod
     public void uploadFromFileSelector(@Nullable ReadableMap data, @NonNull final Promise promise) {
         final UploadFileTask task = new UploadFileTask(promise);
-        if (data != null) {
-            task.setExtraArgs(new HashMap<>(ConversionUtil.toMap(data)));
+        HashMap<String, String> args = ConversionUtil.toMap(data);
+        if (args != null) {
+            task.setExtraArgs(args);
         }
         ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
             @Override
