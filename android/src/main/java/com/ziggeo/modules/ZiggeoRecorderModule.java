@@ -24,6 +24,7 @@ import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.qr.QrScannerCallback;
 import com.ziggeo.androidsdk.qr.QrScannerConfig;
+import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.androidsdk.widgets.cameraview.Size;
@@ -38,8 +39,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.ziggeo.androidsdk.log.ZLog;
 
 /**
  * Created by Alex Bedulin on 6/25/2017.
@@ -87,6 +86,18 @@ public class ZiggeoRecorderModule extends BaseModule {
     @Override
     public String getName() {
         return "ZiggeoRecorder";
+    }
+
+    @Override
+    @ReactMethod
+    public void setClientAuthToken(@NonNull String token) {
+        super.setClientAuthToken(token);
+    }
+
+    @Override
+    @ReactMethod
+    public void setServerAuthToken(@NonNull String token) {
+        super.setServerAuthToken(token);
     }
 
     @ReactMethod
