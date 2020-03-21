@@ -10,12 +10,11 @@ import com.ziggeo.androidsdk.Ziggeo;
 
 public abstract class BaseModule extends ReactContextBaseJavaModule {
 
-    protected ReactContext context;
     protected Ziggeo ziggeo;
 
     public BaseModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        ziggeo = (Ziggeo) Ziggeo.getInstance(reactContext.getApplicationContext());
+        ziggeo = Ziggeo.getInstance(reactContext.getApplicationContext());
     }
 
     @ReactMethod

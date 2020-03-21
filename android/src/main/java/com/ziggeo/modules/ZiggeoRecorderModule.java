@@ -1,10 +1,12 @@
 package com.ziggeo.modules;
 
 import android.Manifest;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -58,10 +60,14 @@ public class ZiggeoRecorderModule extends BaseModule {
     private static final String BYTES_TOTAL = "totalBytes";
     private static final String FILE_NAME = "fileName";
     private static final String QR = "qr";
+    private static final String TOKEN = "token";
 
     private static final String EVENT_PROGRESS = "UploadProgress";
     private static final String EVENT_RECORDING_STARTED = "RecordingStarted";
     private static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
+    private static final String EVENT_PROCESSING = "Processing";
+    private static final String EVENT_VERIFIED = "Verified";
+    private static final String EVENT_PROCESSED = "Processed";
     private static final String EVENT_QR_DECODED = "QrDecoded";
 
     private static final String ERR_UNKNOWN = "ERR_UNKNOWN";
@@ -78,8 +84,6 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
-        ziggeo = new Ziggeo(reactContext.getApplicationContext());
-        context = reactContext;
     }
 
     @NonNull
@@ -207,7 +211,9 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     @ReactMethod
     public void setThemeArgsForRecorder(@Nullable ReadableMap data) {
+        ZLog.d("setThemeArgsForRecorder");
         if (data != null) {
+            ZLog.d(data.toString());
             if (data.hasKey(ThemeKeys.KEY_HIDE_RECORDER_CONTROLS)) {
                 boolean hideControls = data.getBoolean(ThemeKeys.KEY_HIDE_RECORDER_CONTROLS);
                 ziggeo.getRecorderConfig().getStyle().setHideControls(hideControls);
@@ -218,52 +224,7 @@ public class ZiggeoRecorderModule extends BaseModule {
     @ReactMethod
     public void record(final Promise promise) {
         RecordVideoTask task = new RecordVideoTask(promise);
-        ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
-            @Override
-            public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
-                super.uploadProgress(videoToken, file, uploaded, total);
-                WritableMap params = Arguments.createMap();
-                params.putString(BYTES_SENT, String.valueOf(uploaded));
-                params.putString(BYTES_TOTAL, String.valueOf(total));
-                sendEvent(context, EVENT_PROGRESS, params);
-            }
-
-            @Override
-            public void uploaded(@NonNull String path, @NonNull String token) {
-                super.uploaded(path, token);
-                resolve(task, token);
-            }
-
-            @Override
-            public void error(@NonNull Throwable throwable) {
-                super.error(throwable);
-                reject(task, ERR_UNKNOWN, throwable.toString());
-            }
-
-            @Override
-            public void recordingStarted() {
-                super.recordingStarted();
-                sendEvent(context, EVENT_RECORDING_STARTED, null);
-            }
-
-            @Override
-            public void recordingStopped(@NonNull String path) {
-                super.recordingStopped(path);
-                sendEvent(context, EVENT_RECORDING_STOPPED, null);
-            }
-
-            @Override
-            public void uploadingStarted(@NonNull String path) {
-                super.uploadingStarted(path);
-                task.setUploadingStarted(true);
-            }
-
-            @Override
-            public void canceledByUser() {
-                super.canceledByUser();
-                cancel(task);
-            }
-        });
+        ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
         ziggeo.startCameraRecorder();
     }
 
@@ -288,7 +249,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.onQrDecoded(value);
                 WritableMap params = Arguments.createMap();
                 params.putString(QR, value);
-                sendEvent(context, EVENT_QR_DECODED, params);
+                sendEvent(EVENT_QR_DECODED, params);
             }
         }));
 
@@ -333,46 +294,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                             ZLog.e("Max allowed duration: %s", maxDuration);
                             reject(task, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
-                            ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
-                                @Override
-                                public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
-                                    super.uploadProgress(videoToken, file, uploaded, total);
-                                    WritableMap params = Arguments.createMap();
-                                    params.putString(BYTES_SENT, String.valueOf(uploaded));
-                                    params.putString(BYTES_TOTAL, String.valueOf(total));
-                                    sendEvent(context, EVENT_PROGRESS, params);
-                                }
-
-                                @Override
-                                public void uploaded(@NonNull String path, @NonNull String token) {
-                                    super.uploaded(path, token);
-                                    resolve(task, token);
-                                }
-
-                                @Override
-                                public void error(@NonNull Throwable throwable) {
-                                    super.error(throwable);
-                                    reject(task, ERR_UNKNOWN, throwable.toString());
-                                }
-
-                                @Override
-                                public void recordingStarted() {
-                                    super.recordingStarted();
-                                    sendEvent(context, EVENT_RECORDING_STARTED, null);
-                                }
-
-                                @Override
-                                public void recordingStopped(@NonNull String path) {
-                                    super.recordingStopped(path);
-                                    sendEvent(context, EVENT_RECORDING_STOPPED, null);
-                                }
-
-                                @Override
-                                public void canceledByUser() {
-                                    super.canceledByUser();
-                                    cancel(task);
-                                }
-                            });
+                            ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
                             ziggeo.getUploadingHandler().uploadNow(new RecordingInfo(new File(path),
                                     null, task.getExtraArgs()));
                         }
@@ -398,40 +320,7 @@ public class ZiggeoRecorderModule extends BaseModule {
         if (args != null) {
             task.setExtraArgs(args);
         }
-        ziggeo.getRecorderConfig().setCallback(new RecorderCallback() {
-            @Override
-            public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
-                super.uploadProgress(videoToken, file, uploaded, total);
-                WritableMap params = Arguments.createMap();
-                params.putString(BYTES_SENT, String.valueOf(uploaded));
-                params.putString(BYTES_TOTAL, String.valueOf(total));
-                sendEvent(context, EVENT_PROGRESS, params);
-            }
-
-            @Override
-            public void uploaded(@NonNull String path, @NonNull String token) {
-                super.uploaded(path, token);
-                resolve(task, token);
-            }
-
-            @Override
-            public void error(@NonNull Throwable throwable) {
-                super.error(throwable);
-                reject(task, ERR_UNKNOWN, throwable.toString());
-            }
-
-            @Override
-            public void accessForbidden(@NonNull List<String> permissions) {
-                super.accessForbidden(permissions);
-                reject(task, ERR_PERMISSION_DENIED);
-            }
-
-            @Override
-            public void canceledByUser() {
-                super.canceledByUser();
-                cancel(task);
-            }
-        });
+        ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
         ziggeo.uploadFromFileSelector(task.getExtraArgs());
     }
 
@@ -447,8 +336,8 @@ public class ZiggeoRecorderModule extends BaseModule {
         return constants;
     }
 
-    private void sendEvent(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
-        reactContext
+    private void sendEvent(String eventName, @Nullable WritableMap params) {
+        getReactApplicationContext()
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
@@ -466,7 +355,93 @@ public class ZiggeoRecorderModule extends BaseModule {
     }
 
     public void cancel(@NonNull Task task) {
-        reject(task, ERR_CANCELLED, "Cancelled by the user.");
+        final String message = "Cancelled by the user.";
+        ZLog.d(message);
+        reject(task, ERR_CANCELLED, message);
+    }
+
+    private RecorderCallback prepareCallback(@NonNull Task task) {
+        return new RecorderCallback() {
+
+            @Override
+            public void accessForbidden(@NonNull List<String> permissions) {
+                super.accessForbidden(permissions);
+                reject(task, ERR_PERMISSION_DENIED);
+            }
+
+
+            @Override
+            public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
+                super.uploadProgress(videoToken, file, uploaded, total);
+                WritableMap params = Arguments.createMap();
+                params.putString(FILE_NAME, file.getName());
+                params.putString(BYTES_SENT, String.valueOf(uploaded));
+                params.putString(BYTES_TOTAL, String.valueOf(total));
+                sendEvent(EVENT_PROGRESS, params);
+            }
+
+            @Override
+            public void uploaded(@NonNull String path, @NonNull String token) {
+                super.uploaded(path, token);
+                resolve(task, token);
+            }
+
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+            }
+
+            @Override
+            public void recordingStarted() {
+                super.recordingStarted();
+                sendEvent(EVENT_RECORDING_STARTED, null);
+            }
+
+            @Override
+            public void recordingStopped(@NonNull String path) {
+                super.recordingStopped(path);
+                sendEvent(EVENT_RECORDING_STOPPED, null);
+            }
+
+            @Override
+            public void uploadingStarted(@NonNull String path) {
+                super.uploadingStarted(path);
+                if (task instanceof RecordVideoTask) {
+                    ((RecordVideoTask) task).setUploadingStarted(true);
+                }
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                cancel(task);
+            }
+
+            @Override
+            public void processing(@NonNull String token) {
+                super.processing(token);
+                WritableMap params = Arguments.createMap();
+                params.putString(TOKEN, token);
+                sendEvent(EVENT_PROCESSING, params);
+            }
+
+            @Override
+            public void processed(@NonNull String token) {
+                super.processed(token);
+                WritableMap params = Arguments.createMap();
+                params.putString(TOKEN, token);
+                sendEvent(EVENT_PROCESSED, params);
+            }
+
+            @Override
+            public void verified(@NonNull String token) {
+                super.verified(token);
+                WritableMap params = Arguments.createMap();
+                params.putString(TOKEN, token);
+                sendEvent(EVENT_VERIFIED, params);
+            }
+        };
     }
 
 }
