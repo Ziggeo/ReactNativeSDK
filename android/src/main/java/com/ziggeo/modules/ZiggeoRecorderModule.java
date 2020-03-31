@@ -1,16 +1,13 @@
 package com.ziggeo.modules;
 
 import android.Manifest;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
@@ -21,12 +18,11 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
+import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.androidsdk.qr.QrScannerCallback;
 import com.ziggeo.androidsdk.qr.QrScannerConfig;
-import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.androidsdk.widgets.cameraview.Size;
@@ -322,6 +318,15 @@ public class ZiggeoRecorderModule extends BaseModule {
         }
         ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
         ziggeo.uploadFromFileSelector(task.getExtraArgs());
+    }
+
+    @ReactMethod
+    public void setRecorderCacheConfig(@Nullable ReadableMap data) {
+        if (data != null) {
+            ziggeo.getRecorderConfig().setCacheConfig(
+                    ConversionUtil.dataToCacheConfig(data, getReactApplicationContext())
+            );
+        }
     }
 
     @Nullable

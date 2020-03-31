@@ -19,6 +19,9 @@ export default {
   	},
 
 	// ZiggeoRecorder
+	setRecorderCacheConfig: function (map) {
+		ZiggeoRecorder.setRecorderCacheConfig(map);
+  	},
 	setLiveStreamingEnabled: function (enabled) {
 		ZiggeoRecorder.setLiveStreamingEnabled(enabled);
   	},

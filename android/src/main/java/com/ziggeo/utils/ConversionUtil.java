@@ -6,14 +6,18 @@ package com.ziggeo.utils;
  * Created by Andy Prock on 9/24/15.
  */
 
+import android.content.Context;
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
+import com.ziggeo.androidsdk.CacheConfig;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -26,7 +30,7 @@ public final class ConversionUtil {
      * and returns a POJO representing that object.
      *
      * @param readableMap The Map to containing the value to be converted
-     * @param key The key for the value to be converted
+     * @param key         The key for the value to be converted
      * @return The converted POJO
      */
     public static String toObject(@Nullable ReadableMap readableMap, String key) {
@@ -133,5 +137,20 @@ public final class ConversionUtil {
         }
 
         return result;
+    }
+
+
+    public static CacheConfig dataToCacheConfig(@NonNull ReadableMap data, @NonNull Context context) {
+        final String cacheSize = "cache_size";
+        final String cacheRoot = "cache_root";
+
+        CacheConfig.Builder builder = new CacheConfig.Builder(context);
+        if (data.hasKey(cacheRoot)) {
+            builder.cacheDirectory(new File(data.getString(cacheRoot)));
+        }
+        if (data.hasKey(cacheSize)) {
+            builder.maxCacheSize(data.getInt(cacheSize));
+        }
+        return builder.build();
     }
 }
