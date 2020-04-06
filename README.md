@@ -47,7 +47,14 @@ Android project also requires to follow point 2 and point 3(the first part) ment
   	- Add `import com.ziggeo.ZiggeoPackage;` to the imports at the top of the file below `package`
   	- Add `new ZiggeoPackage()` to the list returned by the `getPackages()` method
 
-#### iOS
+#### iOS installation using pods
+add these lines to your Podfile and run 'pod install'
+```
+  pod 'ZiggeoRN', :git => 'https://github.com/Ziggeo/ReactNativeSDK.git'
+  pod 'iOS-Client-SDK', :git => 'https://github.com/Ziggeo/iOS-Client-SDK.git'
+```
+
+#### iOS manual installation
 1. `$ npm install react-native-ziggeo-library --save`
 2. `$ react-native link`
 3. download `Ziggeo.framework` from `Ziggeo-Client-SDK` repository: https://github.com/Ziggeo/iOS-Client-SDK/tree/master/Ziggeo/Output/
