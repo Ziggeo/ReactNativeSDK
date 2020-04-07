@@ -329,6 +329,15 @@ public class ZiggeoRecorderModule extends BaseModule {
         }
     }
 
+    @ReactMethod
+    public void setUploadingConfig(@Nullable ReadableMap data) {
+        if (data != null) {
+            ziggeo.setUploadingConfig(
+                    ConversionUtil.dataToUploadingConfig(data, getReactApplicationContext())
+            );
+        }
+    }
+
     @Nullable
     @Override
     public Map<String, Object> getConstants() {

@@ -7,12 +7,14 @@ package com.ziggeo.utils;
  */
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
 import com.ziggeo.androidsdk.CacheConfig;
+import com.ziggeo.androidsdk.net.uploading.UploadingConfig;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -139,7 +141,6 @@ public final class ConversionUtil {
         return result;
     }
 
-
     public static CacheConfig dataToCacheConfig(@NonNull ReadableMap data, @NonNull Context context) {
         final String cacheSize = "cache_size";
         final String cacheRoot = "cache_root";
@@ -150,6 +151,24 @@ public final class ConversionUtil {
         }
         if (data.hasKey(cacheSize)) {
             builder.maxCacheSize(data.getInt(cacheSize));
+        }
+        return builder.build();
+    }
+
+    public static UploadingConfig dataToUploadingConfig(@NonNull ReadableMap data, @NonNull Context context) {
+        final String useWifiOnly = "use_wifi_only";
+        final String syncInterval = "sync_interval";
+        final String turnOffUploader = "turn_off_uploader";
+
+        UploadingConfig.Builder builder = new UploadingConfig.Builder();
+        if (data.hasKey(useWifiOnly)) {
+            builder.useWifiOnly(data.getBoolean(useWifiOnly));
+        }
+        if (data.hasKey(syncInterval)) {
+            builder.syncInterval(data.getInt(syncInterval));
+        }
+        if (data.hasKey(turnOffUploader)) {
+            builder.turnOffUploader(data.getBoolean(turnOffUploader));
         }
         return builder.build();
     }

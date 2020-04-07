@@ -22,6 +22,9 @@ export default {
 	setRecorderCacheConfig: function (map) {
 		ZiggeoRecorder.setRecorderCacheConfig(map);
   	},
+	setUploadingConfig: function (map) {
+		ZiggeoRecorder.setUploadingConfig(map);
+  	},
 	setLiveStreamingEnabled: function (enabled) {
 		ZiggeoRecorder.setLiveStreamingEnabled(enabled);
   	},
