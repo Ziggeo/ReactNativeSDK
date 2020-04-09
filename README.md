@@ -70,6 +70,22 @@ $ rm -rf build
 $ xcodebuild clean
 ```
 
+#### iOS React Native app additional required steps
+Edit AppDelegate.m to change application audio session settings:
+
+at the beginning of the file:
+```
+@import AVFoundation;
+```
+
+at the beginning of `application didFinishLaunchingWithOptions` method:
+```
+[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord
+                                 withOptions:AVAudioSessionCategoryOptionDuckOthers 
+				 | AVAudioSessionCategoryOptionDefaultToSpeaker
+                                 error:nil];
+```
+
 ## Usage
 ```javascript
 import Ziggeo from 'react-native-ziggeo-library';
