@@ -6,8 +6,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.ziggeo.modules.ZiggeoPlayerModule;
-import com.ziggeo.modules.ZiggeoRecorderModule;
+import com.ziggeo.modules.Videos;
+import com.ziggeo.modules.ZiggeoPlayer;
+import com.ziggeo.modules.ZiggeoRecorder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,13 +20,12 @@ import java.util.List;
 
 public class ZiggeoPackage implements ReactPackage {
 
-    private static final String TAG = ZiggeoPackage.class.getSimpleName();
-
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZiggeoRecorderModule(reactContext));
-        modules.add(new ZiggeoPlayerModule(reactContext));
+        modules.add(new ZiggeoRecorder(reactContext));
+        modules.add(new ZiggeoPlayer(reactContext));
+        modules.add(new Videos(reactContext));
 
         return modules;
     }

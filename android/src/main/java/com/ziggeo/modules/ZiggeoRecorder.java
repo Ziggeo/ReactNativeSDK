@@ -41,9 +41,7 @@ import java.util.Map;
 /**
  * Created by Alex Bedulin on 6/25/2017.
  */
-public class ZiggeoRecorderModule extends BaseModule {
-
-    private static final String TAG = ZiggeoRecorderModule.class.getSimpleName();
+public class ZiggeoRecorder extends BaseModule {
 
     // constants for mapping native constants in JS
     private static final String REAR_CAMERA = "rearCamera";
@@ -68,7 +66,6 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     private static final String ERR_UNKNOWN = "ERR_UNKNOWN";
     private static final String ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED";
-    private static final String ERR_CANCELLED = "ERR_CANCELLED";
     private static final String ERR_FILE_DOES_NOT_EXIST = "ERR_FILE_DOES_NOT_EXIST";
     private static final String ERR_PERMISSION_DENIED = "ERR_PERMISSION_DENIED";
 
@@ -78,14 +75,14 @@ public class ZiggeoRecorderModule extends BaseModule {
     private int width;
     private int height;
 
-    public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
+    public ZiggeoRecorder(final ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @NonNull
     @Override
     public String getName() {
-        return "ZiggeoRecorder";
+        return ZiggeoRecorder.class.getSimpleName();
     }
 
     @Override
@@ -348,30 +345,6 @@ public class ZiggeoRecorderModule extends BaseModule {
         constants.put(MEDIUM_QUALITY, CameraView.QUALITY_MEDIUM);
         constants.put(LOW_QUALITY, CameraView.QUALITY_LOW);
         return constants;
-    }
-
-    private void sendEvent(String eventName, @Nullable WritableMap params) {
-        getReactApplicationContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
-
-    public void resolve(@NonNull Task task, @NonNull String token) {
-        task.resolve(token);
-    }
-
-    public void reject(@NonNull Task task, @NonNull String err) {
-        task.reject(err);
-    }
-
-    public void reject(@NonNull Task task, @NonNull String err, @Nullable String message) {
-        task.reject(err, message);
-    }
-
-    public void cancel(@NonNull Task task) {
-        final String message = "Cancelled by the user.";
-        ZLog.d(message);
-        reject(task, ERR_CANCELLED, message);
     }
 
     private RecorderCallback prepareCallback(@NonNull Task task) {

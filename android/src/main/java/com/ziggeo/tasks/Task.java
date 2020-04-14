@@ -19,10 +19,11 @@ public abstract class Task {
     protected Promise promise;
     protected Thread thread;
 
-    public Task(@NonNull Promise promise){
+    public Task(@NonNull Promise promise) {
         this.id = GLOBAL_ID.getAndIncrement();
         this.promise = promise;
     }
+
     public void setRunnable(Runnable runnable) {
         this.thread = new Thread(runnable);
     }
@@ -35,10 +36,10 @@ public abstract class Task {
         thread.start();
     }
 
-    public void resolve(@NonNull String token) {
+    public void resolve(@NonNull Object object) {
         if (promise != null) {
             try {
-                promise.resolve(token);
+                promise.resolve(object);
             } finally {
                 promise = null;
             }

@@ -1,9 +1,10 @@
 import { NativeModules, NativeEventEmitter, requireNativeComponent } from 'react-native';
-
+import VideosApi from "./videos"
 const { ZiggeoPlayer } = NativeModules;
 const { ZiggeoRecorder } = NativeModules;
 
 export default {
+	VideosApi,
 	// Common
 	setAppToken: function (appToken: string) {
 		ZiggeoPlayer.setAppToken(appToken);

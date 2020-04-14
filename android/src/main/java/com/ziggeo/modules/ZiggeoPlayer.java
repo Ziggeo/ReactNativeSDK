@@ -16,17 +16,15 @@ import com.ziggeo.androidsdk.log.ZLog;
  * Created by alex on 6/25/2017.
  */
 
-public class ZiggeoPlayerModule extends BaseModule {
+public class ZiggeoPlayer extends BaseModule {
 
-    private static final String TAG = ZiggeoPlayerModule.class.getSimpleName();
-
-    public ZiggeoPlayerModule(final ReactApplicationContext reactContext) {
+    public ZiggeoPlayer(final ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @Override
     public String getName() {
-        return "ZiggeoPlayer";
+        return ZiggeoPlayer.class.getSimpleName();
     }
 
     @Override

@@ -1,14 +1,9 @@
 package com.ziggeo.utils;
-/**
- * ConversionUtil.java
- * react-native-eval
- * <p>
- * Created by Andy Prock on 9/24/15.
- */
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -20,8 +15,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * Helper utilities to convert from react-native types to POJOs
@@ -75,6 +68,7 @@ public final class ConversionUtil {
      * @param readableMap The ReadableMap to be conveted.
      * @return A HashMap containing the data that was in the ReadableMap.
      */
+    @Nullable
     public static HashMap<String, String> toMap(@Nullable ReadableMap readableMap) {
         if (readableMap == null) {
             return null;
