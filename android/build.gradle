@@ -67,6 +67,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "com.google.code.gson:gson:2.8.6"
     // TODO
-    implementation 'com.github.ZiggeoJitpackService:Android-SDK:fc3220a4cf33d4af23ac745e259a821bde535d4a'
+    implementation 'com.github.ZiggeoJitpackService:Android-SDK:rc9_1.0.0'
     implementation 'com.karumi:dexter:6.0.1'
 }
