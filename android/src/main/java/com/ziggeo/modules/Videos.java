@@ -50,6 +50,24 @@ public class Videos extends BaseModule {
         compositeDisposable.add(d);
     }
 
+    @ReactMethod
+    public void getImageUrl(@NonNull String tokenOrKey, @NonNull Promise promise) {
+        promise.resolve(ziggeo.videos().getImageUrl(tokenOrKey));
+    }
+
+    @ReactMethod
+    public void downloadImage(@NonNull String tokenOrKey, @NonNull Promise promise) {
+        final Task task = new ApiTask(promise);
+        Disposable d = ziggeo.apiRx()
+                .videosRaw()
+                .downloadImage(tokenOrKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> resolve(task, result),
+                        throwable -> reject(task, throwable.toString()));
+        compositeDisposable.add(d);
+    }
+
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
