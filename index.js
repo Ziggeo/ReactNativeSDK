@@ -32,6 +32,9 @@ export default {
 	setAutostartRecordingAfter: function (seconds) {
 		ZiggeoRecorder.setAutostartRecordingAfter(seconds);
   	},
+	setStartDelay: function (seconds) {
+		ZiggeoRecorder.setStartDelay(seconds);
+  	},
   	/**
  	  * @deprecated Use `setExtraArgsForRecorder` instead.
  	  */

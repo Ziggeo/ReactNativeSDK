@@ -153,6 +153,12 @@ public class ZiggeoRecorder extends BaseModule {
     }
 
     @ReactMethod
+    public void setStartDelay(int seconds) {
+        ZLog.d("setStartDelay:%s", seconds);
+        ziggeo.getRecorderConfig().setStartDelay(seconds);
+    }
+
+    @ReactMethod
     public void setExtraArgsForCreateVideo(ReadableMap readableMap) {
         ZLog.d("setExtraArgsForCreateVideo:%s", readableMap);
         this.setExtraArgsForRecorder(readableMap);
