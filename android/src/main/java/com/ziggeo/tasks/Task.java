@@ -36,7 +36,7 @@ public abstract class Task {
         thread.start();
     }
 
-    public void resolve(@NonNull Object object) {
+    public void resolve(@Nullable Object object) {
         if (promise != null) {
             try {
                 promise.resolve(object);

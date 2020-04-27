@@ -68,6 +68,32 @@ public class Videos extends BaseModule {
         compositeDisposable.add(d);
     }
 
+    @ReactMethod
+    public void destroy(@NonNull String tokenOrKey, @NonNull Promise promise) {
+        final Task task = new ApiTask(promise);
+        Disposable d = ziggeo.apiRx()
+                .videosRaw()
+                .destroy(tokenOrKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> resolve(task, null),
+                        throwable -> reject(task, throwable.toString()));
+        compositeDisposable.add(d);
+    }
+
+    @ReactMethod
+    public void update(@NonNull String token, @NonNull String modelJson, @NonNull Promise promise) {
+        final Task task = new ApiTask(promise);
+        Disposable d = ziggeo.apiRx()
+                .videosRaw()
+                .update(token, modelJson)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(upd -> resolve(task, upd),
+                        throwable -> reject(task, throwable.toString()));
+        compositeDisposable.add(d);
+    }
+
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();

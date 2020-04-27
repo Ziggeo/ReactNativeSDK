@@ -8,6 +8,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.gson.Gson;
 import com.ziggeo.androidsdk.Ziggeo;
 import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.tasks.Task;
@@ -16,10 +17,12 @@ public abstract class BaseModule extends ReactContextBaseJavaModule {
     private static final String ERR_CANCELLED = "ERR_CANCELLED";
 
     protected Ziggeo ziggeo;
+    protected Gson gson;
 
     public BaseModule(ReactApplicationContext reactContext) {
         super(reactContext);
         ziggeo = Ziggeo.getInstance(reactContext.getApplicationContext());
+        gson = new Gson();
     }
 
     @ReactMethod
@@ -38,7 +41,7 @@ public abstract class BaseModule extends ReactContextBaseJavaModule {
                 .emit(eventName, params);
     }
 
-    public void resolve(@NonNull Task task, @NonNull Object object) {
+    public void resolve(@NonNull Task task, @Nullable Object object) {
         task.resolve(object);
     }
 
