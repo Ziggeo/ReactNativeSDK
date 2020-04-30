@@ -227,6 +227,13 @@ public class ZiggeoRecorder extends BaseModule {
     }
 
     @ReactMethod
+    public void startScreenRecorder(final Promise promise) {
+        RecordVideoTask task = new RecordVideoTask(promise);
+        ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
+        ziggeo.startScreenRecorder(null);
+    }
+
+    @ReactMethod
     public void cancelRequest() {
         ZLog.d("cancelRequest");
     }
@@ -358,6 +365,7 @@ public class ZiggeoRecorder extends BaseModule {
             @Override
             public void accessForbidden(@NonNull List<String> permissions) {
                 super.accessForbidden(permissions);
+                ZLog.d("accessForbidden");
                 reject(task, ERR_PERMISSION_DENIED);
             }
 
@@ -365,6 +373,7 @@ public class ZiggeoRecorder extends BaseModule {
             @Override
             public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
                 super.uploadProgress(videoToken, file, uploaded, total);
+                ZLog.d("uploadProgress");
                 WritableMap params = Arguments.createMap();
                 params.putString(FILE_NAME, file.getName());
                 params.putString(BYTES_SENT, String.valueOf(uploaded));
@@ -375,30 +384,35 @@ public class ZiggeoRecorder extends BaseModule {
             @Override
             public void uploaded(@NonNull String path, @NonNull String token) {
                 super.uploaded(path, token);
+                ZLog.d("uploaded");
                 resolve(task, token);
             }
 
             @Override
             public void error(@NonNull Throwable throwable) {
                 super.error(throwable);
+                ZLog.d("error:%s", throwable);
                 reject(task, ERR_UNKNOWN, throwable.toString());
             }
 
             @Override
             public void recordingStarted() {
                 super.recordingStarted();
+                ZLog.d("recordingStarted");
                 sendEvent(EVENT_RECORDING_STARTED, null);
             }
 
             @Override
             public void recordingStopped(@NonNull String path) {
                 super.recordingStopped(path);
+                ZLog.d("recordingStopped:%s", path);
                 sendEvent(EVENT_RECORDING_STOPPED, null);
             }
 
             @Override
             public void uploadingStarted(@NonNull String path) {
                 super.uploadingStarted(path);
+                ZLog.d("uploadingStarted");
                 if (task instanceof RecordVideoTask) {
                     ((RecordVideoTask) task).setUploadingStarted(true);
                 }
@@ -407,12 +421,14 @@ public class ZiggeoRecorder extends BaseModule {
             @Override
             public void canceledByUser() {
                 super.canceledByUser();
+                ZLog.d("canceledByUser");
                 cancel(task);
             }
 
             @Override
             public void processing(@NonNull String token) {
                 super.processing(token);
+                ZLog.d("processing");
                 WritableMap params = Arguments.createMap();
                 params.putString(TOKEN, token);
                 sendEvent(EVENT_PROCESSING, params);
@@ -421,6 +437,7 @@ public class ZiggeoRecorder extends BaseModule {
             @Override
             public void processed(@NonNull String token) {
                 super.processed(token);
+                ZLog.d("processed");
                 WritableMap params = Arguments.createMap();
                 params.putString(TOKEN, token);
                 sendEvent(EVENT_PROCESSED, params);
@@ -429,6 +446,7 @@ public class ZiggeoRecorder extends BaseModule {
             @Override
             public void verified(@NonNull String token) {
                 super.verified(token);
+                ZLog.d("verified");
                 WritableMap params = Arguments.createMap();
                 params.putString(TOKEN, token);
                 sendEvent(EVENT_VERIFIED, params);

@@ -84,6 +84,9 @@ export default {
 	record: async function () {
 		return ZiggeoRecorder.record();
   	},
+    startScreenRecorder: async function () {
+        return ZiggeoRecorder.startScreenRecorder();
+    },
 	uploadFromFileSelector: async function (map) {
 		return ZiggeoRecorder.uploadFromFileSelector(map);
 	},
