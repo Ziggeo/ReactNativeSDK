@@ -8,6 +8,7 @@
 #import "RCTZiggeoRecorder.h"
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
+#import "RotatingImagePickerController.h"
 
 @interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
@@ -287,7 +288,7 @@ RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDuratio
         context.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
         context.enforceDuration = (enforceDuration != 0);
         
-        UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+        UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
@@ -329,7 +330,7 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
         context.enforceDuration = false;
         [self applyAdditionalParams:map context:context];
         
-        UIImagePickerController* imagePicker = [[UIImagePickerController alloc] init];
+        UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
