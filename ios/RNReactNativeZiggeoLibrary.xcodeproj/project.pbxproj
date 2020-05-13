@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */; };
 		FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */; };
 		FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */; };
 /* End PBXBuildFile section */
@@ -25,6 +26,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNReactNativeZiggeoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZiggeoLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingImagePickerController.h; sourceTree = "<group>"; };
+		D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingImagePickerController.m; sourceTree = "<group>"; };
 		FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoPlayer.h; sourceTree = "<group>"; };
 		FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeoPlayer.m; sourceTree = "<group>"; };
 		FA441F361F2A562B00E51295 /* RCTZiggeoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoRecorder.h; sourceTree = "<group>"; };
@@ -53,6 +56,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */,
+				D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */,
 				FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */,
 				FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */,
 				FA441F361F2A562B00E51295 /* RCTZiggeoRecorder.h */,
@@ -126,6 +131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
+				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
