@@ -1,20 +1,22 @@
 package com.ziggeo.ui;
 
-import androidx.annotation.NonNull;
-
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
-import com.facebook.react.uimanager.annotations.ReactProp;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 
 public class CameraViewManager extends SimpleViewManager<CameraView> {
 
-    private static final String TAG = CameraViewManager.class.getSimpleName();
-    public static final String NAME = "camera_view";
+    public static final String NAME = CameraView.class.getSimpleName();
+    ReactApplicationContext callerContext;
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    public CameraViewManager(ReactApplicationContext reactContext) {
+        callerContext = reactContext;
     }
 
     @Override
