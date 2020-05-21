@@ -21,6 +21,12 @@ RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
   _appToken = token;
 }
 
+RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
+{
+  RCTLogInfo(@"server auth token set: %@", token);
+  _serverAuthToken = token;
+}
+
 RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
