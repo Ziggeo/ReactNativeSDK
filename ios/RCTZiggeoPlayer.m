@@ -31,6 +31,7 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
+    [ziggeo connect].serverAuthToken = self.serverAuthToken;
     ZiggeoPlayer* player = nil;
 
     NSMutableDictionary* mergedParams = nil;

@@ -59,6 +59,7 @@
     }
     
     Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
+    m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
     m_ziggeo.videos.delegate = self;
     [m_ziggeo.videos createVideoWithData:recordingParams file:url.path cover:nil callback:nil Progress:nil];
 }
@@ -243,9 +244,11 @@ RCT_REMAP_METHOD(record,
     context.resolveBlock = resolve;
     context.rejectBlock = reject;
     context.recorder = self;
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+
         ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
         recorder.coverSelectorEnabled = self->_coverSelectorEnabled;
         recorder.cameraFlipButtonVisible = self->_cameraFlipButtonVisible;
@@ -293,7 +296,7 @@ RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDuratio
         context.recorder = self;
         context.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
         context.enforceDuration = (enforceDuration != 0);
-        
+
         UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
@@ -366,6 +369,7 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
     if(fileName != nil)
     {
         Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.videos.delegate = context;
         [m_ziggeo.videos createVideoWithData:_additionalRecordingParams file:fileName cover:nil callback:nil Progress:nil];
     }
