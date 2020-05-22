@@ -9,6 +9,7 @@ import com.facebook.react.uimanager.ViewManager;
 import com.ziggeo.modules.Videos;
 import com.ziggeo.modules.ZiggeoPlayer;
 import com.ziggeo.modules.ZiggeoRecorder;
+import com.ziggeo.ui.CameraRnManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,10 @@ public class ZiggeoPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        List<ViewManager> modules = new ArrayList<>();
+        modules.add(new CameraRnManager(reactContext));
+
+        return modules;
     }
 
 }
