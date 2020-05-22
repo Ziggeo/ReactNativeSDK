@@ -141,14 +141,14 @@ public class ZiggeoRecorder extends BaseModule {
     public void setLiveStreamingEnabled(boolean enabled) {
         ZLog.d("setLiveStreamingEnabled:%s", enabled);
         ziggeo.setRecorderConfig(new RecorderConfig.Builder(ziggeo.getRecorderConfig())
-                .liveStreaming(enabled)
+                .isLiveStreaming(enabled)
                 .build());
     }
 
     @ReactMethod
     public void setAutostartRecordingAfter(int seconds) {
         ZLog.d("setAutostartRecordingAfter:%s", seconds);
-        ziggeo.getRecorderConfig().setAutostart(true);
+        ziggeo.getRecorderConfig().setShouldAutoStartRecording(true);
         ziggeo.getRecorderConfig().setStartDelay(seconds);
     }
 
@@ -173,7 +173,7 @@ public class ZiggeoRecorder extends BaseModule {
     @ReactMethod
     public void setCoverSelectorEnabled(boolean enabled) {
         ZLog.d("setCoverSelectorEnabled:%s", enabled);
-        ziggeo.getRecorderConfig().setEnableCoverShot(enabled);
+        ziggeo.getRecorderConfig().setShouldEnableCoverShot(enabled);
     }
 
     @ReactMethod
@@ -186,13 +186,13 @@ public class ZiggeoRecorder extends BaseModule {
     @ReactMethod
     public void setCameraSwitchEnabled(boolean enabled) {
         ZLog.d("setCameraSwitchEnabled:%s", enabled);
-        ziggeo.getRecorderConfig().setDisableCameraSwitch(!enabled);
+        ziggeo.getRecorderConfig().setShouldDisableCameraSwitch(!enabled);
     }
 
     @ReactMethod
     public void setSendImmediately(boolean sendImmediately) {
         ZLog.d("setSendImmediately:%s", sendImmediately);
-        ziggeo.getRecorderConfig().setSendImmediately(sendImmediately);
+        ziggeo.getRecorderConfig().setShouldSendImmediately(sendImmediately);
     }
 
     @ReactMethod
