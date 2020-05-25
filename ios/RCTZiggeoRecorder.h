@@ -16,6 +16,7 @@
 @interface RCTZiggeoRecorder : RCTEventEmitter <RCTBridgeModule>
 
 @property (strong, nonatomic) NSString *appToken;
+@property (strong, nonatomic) NSString *serverAuthToken;
 @property (nonatomic) BOOL cameraFlipButtonVisible;
 @property (nonatomic) BOOL coverSelectorEnabled;
 @property (nonatomic) BOOL liveStreamingEnabled;
