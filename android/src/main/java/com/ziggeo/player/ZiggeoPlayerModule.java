@@ -1,4 +1,4 @@
-package com.ziggeo.modules;
+package com.ziggeo.player;
 
 
 import androidx.annotation.NonNull;
@@ -7,24 +7,24 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.ziggeo.ui.ThemeKeys;
-import com.ziggeo.utils.ConversionUtil;
-
+import com.ziggeo.BaseModule;
 import com.ziggeo.androidsdk.log.ZLog;
+import com.ziggeo.utils.ConversionUtil;
+import com.ziggeo.utils.ThemeKeys;
 
 /**
  * Created by alex on 6/25/2017.
  */
 
-public class ZiggeoPlayer extends BaseModule {
+public class ZiggeoPlayerModule extends BaseModule {
 
-    public ZiggeoPlayer(final ReactApplicationContext reactContext) {
+    public ZiggeoPlayerModule(final ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @Override
     public String getName() {
-        return ZiggeoPlayer.class.getSimpleName();
+        return "ZiggeoPlayer";
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.ziggeo.ui;
+package com.ziggeo.utils;
 
 public final class ThemeKeys {
     private ThemeKeys() {

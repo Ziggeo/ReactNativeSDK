@@ -1,4 +1,4 @@
-package com.ziggeo.ui;
+package com.ziggeo.cameraview;
 
 import android.content.Context;
 

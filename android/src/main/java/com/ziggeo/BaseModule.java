@@ -1,4 +1,4 @@
-package com.ziggeo.modules;
+package com.ziggeo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

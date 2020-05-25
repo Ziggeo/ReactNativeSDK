@@ -1,4 +1,4 @@
-package com.ziggeo.modules;
+package com.ziggeo.recorder;
 
 import android.Manifest;
 
@@ -25,10 +25,11 @@ import com.ziggeo.androidsdk.qr.QrScannerConfig;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.androidsdk.widgets.cameraview.Size;
+import com.ziggeo.BaseModule;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
-import com.ziggeo.ui.ThemeKeys;
+import com.ziggeo.utils.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
 
@@ -40,7 +41,7 @@ import java.util.Map;
 /**
  * Created by Alex Bedulin on 6/25/2017.
  */
-public class ZiggeoRecorder extends BaseModule {
+public class ZiggeoRecorderModule extends BaseModule {
 
     // constants for mapping native constants in JS
     private static final String REAR_CAMERA = "rearCamera";
@@ -74,14 +75,14 @@ public class ZiggeoRecorder extends BaseModule {
     private int width;
     private int height;
 
-    public ZiggeoRecorder(final ReactApplicationContext reactContext) {
+    public ZiggeoRecorderModule(final ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @NonNull
     @Override
     public String getName() {
-        return ZiggeoRecorder.class.getSimpleName();
+        return "ZiggeoRecorder";
     }
 
     @Override

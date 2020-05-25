@@ -1,21 +1,20 @@
-package com.ziggeo.ui;
+package com.ziggeo.cameraview;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 
-public class CameraRnManager extends SimpleViewManager<RnCameraView> {
+public class RnCameraViewManager extends SimpleViewManager<RnCameraView> {
 
-    public static final String NAME = CameraView.class.getSimpleName();
     private ReactApplicationContext callerContext;
 
     @Override
     public String getName() {
-        return NAME;
+        return "CameraView";
     }
 
-    public CameraRnManager(ReactApplicationContext reactContext) {
+    public RnCameraViewManager(ReactApplicationContext reactContext) {
         callerContext = reactContext;
     }
 
@@ -25,5 +24,4 @@ public class CameraRnManager extends SimpleViewManager<RnCameraView> {
         callerContext.addLifecycleEventListener(cameraView);
         return cameraView;
     }
-
 }

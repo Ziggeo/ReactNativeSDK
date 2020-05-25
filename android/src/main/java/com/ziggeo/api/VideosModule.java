@@ -1,4 +1,4 @@
-package com.ziggeo.modules;
+package com.ziggeo.api;
 
 
 import androidx.annotation.NonNull;
@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.androidsdk.log.ZLog;
+import com.ziggeo.BaseModule;
 import com.ziggeo.tasks.ApiTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.utils.ConversionUtil;
@@ -22,11 +23,11 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by alex on 6/25/2017.
  */
-public class Videos extends BaseModule {
+public class VideosModule extends BaseModule {
 
     private CompositeDisposable compositeDisposable;
 
-    public Videos(final ReactApplicationContext reactContext) {
+    public VideosModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         RxJavaPlugins.setErrorHandler(ZLog::e);
         compositeDisposable = new CompositeDisposable();
@@ -34,7 +35,7 @@ public class Videos extends BaseModule {
 
     @Override
     public String getName() {
-        return Videos.class.getSimpleName();
+        return "Videos";
     }
 
     @ReactMethod

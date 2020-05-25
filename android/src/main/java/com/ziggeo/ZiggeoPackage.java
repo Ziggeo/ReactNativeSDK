@@ -6,13 +6,13 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.ziggeo.modules.Videos;
-import com.ziggeo.modules.ZiggeoPlayer;
-import com.ziggeo.modules.ZiggeoRecorder;
-import com.ziggeo.ui.CameraRnManager;
+import com.ziggeo.api.VideosModule;
+import com.ziggeo.cameraview.CameraModule;
+import com.ziggeo.cameraview.RnCameraViewManager;
+import com.ziggeo.player.ZiggeoPlayerModule;
+import com.ziggeo.recorder.ZiggeoRecorderModule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,22 +21,30 @@ import java.util.List;
 
 public class ZiggeoPackage implements ReactPackage {
 
+    private RnCameraViewManager rnCameraViewManager;
+
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
+        initCameraManager(reactContext);
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new ZiggeoRecorder(reactContext));
-        modules.add(new ZiggeoPlayer(reactContext));
-        modules.add(new Videos(reactContext));
-
+        modules.add(new ZiggeoRecorderModule(reactContext));
+        modules.add(new ZiggeoPlayerModule(reactContext));
+        modules.add(new VideosModule(reactContext));
+        modules.add(new CameraModule(reactContext, rnCameraViewManager));
         return modules;
     }
 
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
         List<ViewManager> modules = new ArrayList<>();
-        modules.add(new CameraRnManager(reactContext));
-
+        modules.add(rnCameraViewManager);
         return modules;
+    }
+
+    private void initCameraManager(@NonNull ReactApplicationContext context) {
+        if (rnCameraViewManager == null) {
+            rnCameraViewManager = new RnCameraViewManager(context);
+        }
     }
 
 }
