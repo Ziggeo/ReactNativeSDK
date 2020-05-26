@@ -379,5 +379,11 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
     }
 }
 
+RCT_EXPORT_METHOD(setRecorderCacheConfig:(NSDictionary *)config)
+{
+    RCTLogInfo(@"recorder cache config set: %@", config);
+    _recorderCacheConfig = config;
+}
+
 @end
 
