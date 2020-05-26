@@ -8,6 +8,14 @@ const CameraView = requireNativeComponent('ZiggeoCameraView');
 const {Camera} = NativeModules;
 export default class ZiggeoCamera extends React.Component {
 
+    startStreaming(appToken, videoToken, streamToken) {
+        Camera.startStreaming(appToken, videoToken, streamToken);
+    }
+
+    stopStreaming() {
+        Camera.stopStreaming();
+    }
+
     startRecording(path, durationMillis) {
         Camera.startRecording(path, durationMillis);
     }
