@@ -26,6 +26,7 @@ export default class ZiggeoCamera extends React.Component {
 
     render() {
         return <CameraView
+            {...this.props}
             style={{width: '100%', height: '100%'}}
         />;
     }
