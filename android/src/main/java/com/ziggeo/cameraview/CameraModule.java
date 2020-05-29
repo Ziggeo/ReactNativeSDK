@@ -13,11 +13,11 @@ import com.ziggeo.BaseModule;
 
 public class CameraModule extends BaseModule {
 
-    private RnCameraView cameraView;
+    private RnCameraViewManager rnCameraViewManager;
 
     public CameraModule(final ReactApplicationContext reactContext, RnCameraViewManager rnCameraViewManager) {
         super(reactContext);
-        cameraView = rnCameraViewManager.getCameraView();
+        this.rnCameraViewManager = rnCameraViewManager;
     }
 
     @Override
@@ -27,24 +27,24 @@ public class CameraModule extends BaseModule {
 
     @ReactMethod
     public void startRecording(@NonNull String path, int maxDurationMillis) {
-        cameraView.startRecording(path, maxDurationMillis);
+        rnCameraViewManager.getCameraView().startRecording(path, maxDurationMillis);
     }
 
     @ReactMethod
     public void stopRecording() {
-        cameraView.stopRecording();
+        rnCameraViewManager.getCameraView().stopRecording();
     }
 
     @ReactMethod
     public void startStreaming(@NonNull String appToken,
                                @NonNull String videoToken,
                                @NonNull String streamToken) {
-        cameraView.startStream(appToken, videoToken, streamToken);
+        rnCameraViewManager.getCameraView().startStream(appToken, videoToken, streamToken);
     }
 
     @ReactMethod
     public void stopStreaming() {
-        cameraView.stopStream();
+        rnCameraViewManager.getCameraView().stopStream();
     }
 
 }
