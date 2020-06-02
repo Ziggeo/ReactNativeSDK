@@ -29,6 +29,8 @@ import com.ziggeo.BaseModule;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
+import com.ziggeo.utils.Events;
+import com.ziggeo.utils.Keys;
 import com.ziggeo.utils.ThemeKeys;
 import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.FileUtils;
@@ -49,20 +51,6 @@ public class ZiggeoRecorderModule extends BaseModule {
     private static final String HIGH_QUALITY = "highQuality";
     private static final String MEDIUM_QUALITY = "mediumQuality";
     private static final String LOW_QUALITY = "lowQuality";
-
-    private static final String BYTES_SENT = "bytesSent";
-    private static final String BYTES_TOTAL = "totalBytes";
-    private static final String FILE_NAME = "fileName";
-    private static final String QR = "qr";
-    private static final String TOKEN = "token";
-
-    private static final String EVENT_PROGRESS = "UploadProgress";
-    private static final String EVENT_RECORDING_STARTED = "RecordingStarted";
-    private static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
-    private static final String EVENT_PROCESSING = "Processing";
-    private static final String EVENT_VERIFIED = "Verified";
-    private static final String EVENT_PROCESSED = "Processed";
-    private static final String EVENT_QR_DECODED = "QrDecoded";
 
     private static final String ERR_UNKNOWN = "ERR_UNKNOWN";
     private static final String ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED";
@@ -254,8 +242,8 @@ public class ZiggeoRecorderModule extends BaseModule {
             public void onQrDecoded(@NonNull String value) {
                 super.onQrDecoded(value);
                 WritableMap params = Arguments.createMap();
-                params.putString(QR, value);
-                sendEvent(EVENT_QR_DECODED, params);
+                params.putString(Keys.QR, value);
+                sendEvent(Events.EVENT_QR_DECODED, params);
             }
         }));
 
@@ -376,10 +364,10 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.uploadProgress(videoToken, file, uploaded, total);
                 ZLog.d("uploadProgress");
                 WritableMap params = Arguments.createMap();
-                params.putString(FILE_NAME, file.getName());
-                params.putString(BYTES_SENT, String.valueOf(uploaded));
-                params.putString(BYTES_TOTAL, String.valueOf(total));
-                sendEvent(EVENT_PROGRESS, params);
+                params.putString(Keys.FILE_NAME, file.getName());
+                params.putString(Keys.BYTES_SENT, String.valueOf(uploaded));
+                params.putString(Keys.BYTES_TOTAL, String.valueOf(total));
+                sendEvent(Events.EVENT_PROGRESS, params);
             }
 
             @Override
@@ -400,14 +388,14 @@ public class ZiggeoRecorderModule extends BaseModule {
             public void recordingStarted() {
                 super.recordingStarted();
                 ZLog.d("recordingStarted");
-                sendEvent(EVENT_RECORDING_STARTED, null);
+                sendEvent(Events.EVENT_RECORDING_STARTED, null);
             }
 
             @Override
             public void recordingStopped(@NonNull String path) {
                 super.recordingStopped(path);
                 ZLog.d("recordingStopped:%s", path);
-                sendEvent(EVENT_RECORDING_STOPPED, null);
+                sendEvent(Events.EVENT_RECORDING_STOPPED, null);
             }
 
             @Override
@@ -431,8 +419,8 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.processing(token);
                 ZLog.d("processing");
                 WritableMap params = Arguments.createMap();
-                params.putString(TOKEN, token);
-                sendEvent(EVENT_PROCESSING, params);
+                params.putString(Keys.TOKEN, token);
+                sendEvent(Events.EVENT_PROCESSING, params);
             }
 
             @Override
@@ -440,8 +428,8 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.processed(token);
                 ZLog.d("processed");
                 WritableMap params = Arguments.createMap();
-                params.putString(TOKEN, token);
-                sendEvent(EVENT_PROCESSED, params);
+                params.putString(Keys.TOKEN, token);
+                sendEvent(Events.EVENT_PROCESSED, params);
             }
 
             @Override
@@ -449,8 +437,8 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.verified(token);
                 ZLog.d("verified");
                 WritableMap params = Arguments.createMap();
-                params.putString(TOKEN, token);
-                sendEvent(EVENT_VERIFIED, params);
+                params.putString(Keys.TOKEN, token);
+                sendEvent(Events.EVENT_VERIFIED, params);
             }
         };
     }

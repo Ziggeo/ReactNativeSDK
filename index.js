@@ -2,6 +2,8 @@ import { NativeModules, NativeEventEmitter, requireNativeComponent } from 'react
 import VideosApi from "./videos"
 const { ZiggeoPlayer } = NativeModules;
 const { ZiggeoRecorder } = NativeModules;
+const { Camera } = NativeModules;
+import {CameraView} from "./CameraView";
 
 export default {
 	VideosApi,
@@ -108,7 +110,10 @@ export default {
 		ZiggeoRecorder.startQrScanner(data);
   	},
 	recorderEmitter: function() {
-		return recorderEmitter = new NativeEventEmitter(ZiggeoRecorder);
+		return new NativeEventEmitter(ZiggeoRecorder);
+	},
+	cameraEmitter: function() {
+		return new NativeEventEmitter(CameraView);
 	},
 
   	// ZiggeoPlayer

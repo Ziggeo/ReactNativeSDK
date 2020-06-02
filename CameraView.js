@@ -3,8 +3,9 @@ import {
     NativeModules,
     requireNativeComponent,
 } from 'react-native';
+import Ziggeo from './index';
 
-const CameraView = requireNativeComponent('ZiggeoCameraView');
+export const CameraView = requireNativeComponent('ZiggeoCameraView');
 const {Camera} = NativeModules;
 export default class ZiggeoCamera extends React.Component {
 
