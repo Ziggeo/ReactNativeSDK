@@ -47,7 +47,7 @@ public abstract class Task {
     }
 
     public void reject(@NonNull String err) {
-        reject(err, "");
+        reject("", err);
     }
 
     public void reject(@NonNull String err, @Nullable String message) {
