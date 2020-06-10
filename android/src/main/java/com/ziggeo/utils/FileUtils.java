@@ -513,7 +513,7 @@ public class FileUtils {
         return intent;
     }
 
-    public static float getVideoDuration(@NonNull String path, @NonNull Context context) {
+    public static float getVideoDurationInSeconds(@NonNull String path, @NonNull Context context) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         // use one of overloaded setDataSource() functions to set your data source
         retriever.setDataSource(context, Uri.parse(path));

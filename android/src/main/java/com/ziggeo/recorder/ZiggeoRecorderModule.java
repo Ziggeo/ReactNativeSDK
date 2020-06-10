@@ -17,7 +17,10 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.ziggeo.BaseModule;
+import com.ziggeo.androidsdk.callbacks.IUploadingCallback;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
+import com.ziggeo.androidsdk.callbacks.UploadingCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.androidsdk.qr.QrScannerCallback;
@@ -25,15 +28,14 @@ import com.ziggeo.androidsdk.qr.QrScannerConfig;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.androidsdk.widgets.cameraview.Size;
-import com.ziggeo.BaseModule;
 import com.ziggeo.tasks.RecordVideoTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.tasks.UploadFileTask;
+import com.ziggeo.utils.ConversionUtil;
 import com.ziggeo.utils.Events;
+import com.ziggeo.utils.FileUtils;
 import com.ziggeo.utils.Keys;
 import com.ziggeo.utils.ThemeKeys;
-import com.ziggeo.utils.ConversionUtil;
-import com.ziggeo.utils.FileUtils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -211,14 +213,16 @@ public class ZiggeoRecorderModule extends BaseModule {
     @ReactMethod
     public void record(final Promise promise) {
         RecordVideoTask task = new RecordVideoTask(promise);
-        ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
+        ziggeo.getRecorderConfig().setCallback(prepareRecorderCallback(task));
+        ziggeo.getUploadingConfig().setCallback(prepareUploadingCallback(task));
         ziggeo.startCameraRecorder();
     }
 
     @ReactMethod
     public void startScreenRecorder(final Promise promise) {
         RecordVideoTask task = new RecordVideoTask(promise);
-        ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
+        ziggeo.getRecorderConfig().setCallback(prepareRecorderCallback(task));
+        ziggeo.getUploadingConfig().setCallback(prepareUploadingCallback(task));
         ziggeo.startScreenRecorder(null);
     }
 
@@ -264,11 +268,11 @@ public class ZiggeoRecorderModule extends BaseModule {
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         ZLog.d("onPermissionGranted");
                         boolean enforceDuration = false;
-                        int maxDuration = 0;
+                        int maxDurationInSeconds = 0;
                         if (task.getExtraArgs() != null) {
                             String strDuration = task.getExtraArgs().get(ARG_DURATION);
                             if (strDuration != null && !strDuration.isEmpty()) {
-                                maxDuration = Integer.parseInt(strDuration);
+                                maxDurationInSeconds = Integer.parseInt(strDuration);
                             }
                             String enforce = task.getExtraArgs().get(ARG_ENFORCE_DURATION);
                             if (enforce != null && !enforce.isEmpty()) {
@@ -279,16 +283,16 @@ public class ZiggeoRecorderModule extends BaseModule {
                         if (!videoFile.exists()) {
                             ZLog.e("File does not exist: %s", path);
                             reject(task, ERR_FILE_DOES_NOT_EXIST, path);
-                        } else if (enforceDuration && maxDuration > 0 &&
-                                FileUtils.getVideoDuration(path, getReactApplicationContext()) > maxDuration) {
+                        } else if (enforceDuration && maxDurationInSeconds > 0 &&
+                                FileUtils.getVideoDurationInSeconds(path, getReactApplicationContext()) > maxDurationInSeconds) {
                             final String errorMsg = "Video duration is more than allowed.";
                             ZLog.e(errorMsg);
                             ZLog.e("Path: %s", path);
-                            ZLog.e("Duration: %s", FileUtils.getVideoDuration(path, getReactApplicationContext()));
-                            ZLog.e("Max allowed duration: %s", maxDuration);
+                            ZLog.e("Duration: %s", FileUtils.getVideoDurationInSeconds(path, getReactApplicationContext()));
+                            ZLog.e("Max allowed duration: %s", maxDurationInSeconds);
                             reject(task, ERR_DURATION_EXCEEDED, errorMsg);
                         } else {
-                            ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
+                            ziggeo.getUploadingConfig().setCallback(prepareUploadingCallback(task));
                             ziggeo.getUploadingHandler().uploadNow(new RecordingInfo(new File(path),
                                     null, task.getExtraArgs()));
                         }
@@ -314,8 +318,16 @@ public class ZiggeoRecorderModule extends BaseModule {
         if (args != null) {
             task.setExtraArgs(args);
         }
-        ziggeo.getRecorderConfig().setCallback(prepareCallback(task));
+        int maxDurationInSeconds = 0;
+        if (task.getExtraArgs() != null) {
+            String strDuration = task.getExtraArgs().get(ARG_DURATION);
+            if (strDuration != null && !strDuration.isEmpty()) {
+                maxDurationInSeconds = Integer.parseInt(strDuration);
+            }
+        }
+        ziggeo.getFileSelectorConfig().setMaxDuration(maxDurationInSeconds * 1000L);
         ziggeo.uploadFromFileSelector(task.getExtraArgs());
+        ziggeo.getUploadingConfig().setCallback(prepareUploadingCallback(task));
     }
 
     @ReactMethod
@@ -348,17 +360,8 @@ public class ZiggeoRecorderModule extends BaseModule {
         return constants;
     }
 
-    private RecorderCallback prepareCallback(@NonNull Task task) {
-        return new RecorderCallback() {
-
-            @Override
-            public void accessForbidden(@NonNull List<String> permissions) {
-                super.accessForbidden(permissions);
-                ZLog.d("accessForbidden");
-                reject(task, ERR_PERMISSION_DENIED);
-            }
-
-
+    private IUploadingCallback prepareUploadingCallback(@NonNull Task task) {
+        return new UploadingCallback() {
             @Override
             public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
                 super.uploadProgress(videoToken, file, uploaded, total);
@@ -378,40 +381,12 @@ public class ZiggeoRecorderModule extends BaseModule {
             }
 
             @Override
-            public void error(@NonNull Throwable throwable) {
-                super.error(throwable);
-                ZLog.d("error:%s", throwable);
-                reject(task, ERR_UNKNOWN, throwable.toString());
-            }
-
-            @Override
-            public void recordingStarted() {
-                super.recordingStarted();
-                ZLog.d("recordingStarted");
-                sendEvent(Events.EVENT_RECORDING_STARTED, null);
-            }
-
-            @Override
-            public void recordingStopped(@NonNull String path) {
-                super.recordingStopped(path);
-                ZLog.d("recordingStopped:%s", path);
-                sendEvent(Events.EVENT_RECORDING_STOPPED, null);
-            }
-
-            @Override
             public void uploadingStarted(@NonNull String path) {
                 super.uploadingStarted(path);
                 ZLog.d("uploadingStarted");
                 if (task instanceof RecordVideoTask) {
                     ((RecordVideoTask) task).setUploadingStarted(true);
                 }
-            }
-
-            @Override
-            public void canceledByUser() {
-                super.canceledByUser();
-                ZLog.d("canceledByUser");
-                cancel(task);
             }
 
             @Override
@@ -439,6 +414,53 @@ public class ZiggeoRecorderModule extends BaseModule {
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.TOKEN, token);
                 sendEvent(Events.EVENT_VERIFIED, params);
+            }
+
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                ZLog.d("error:%s", throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+            }
+        };
+    }
+
+    private RecorderCallback prepareRecorderCallback(@NonNull Task task) {
+        return new RecorderCallback() {
+
+            @Override
+            public void accessForbidden(@NonNull List<String> permissions) {
+                super.accessForbidden(permissions);
+                ZLog.d("accessForbidden");
+                reject(task, ERR_PERMISSION_DENIED);
+            }
+
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                ZLog.d("error:%s", throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+            }
+
+            @Override
+            public void recordingStarted() {
+                super.recordingStarted();
+                ZLog.d("recordingStarted");
+                sendEvent(Events.EVENT_RECORDING_STARTED, null);
+            }
+
+            @Override
+            public void recordingStopped(@NonNull String path) {
+                super.recordingStopped(path);
+                ZLog.d("recordingStopped:%s", path);
+                sendEvent(Events.EVENT_RECORDING_STOPPED, null);
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                ZLog.d("canceledByUser");
+                cancel(task);
             }
         };
     }
