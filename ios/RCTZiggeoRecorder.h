@@ -32,6 +32,7 @@
 @property (nonatomic) NSDictionary* additionalRecordingParams;
 @property (nonatomic) NSDictionary* additionalThemeParams;
 @property (nonatomic) BOOL sendImmediately;
+@property (strong, nonatomic) NSDictionary *cacheConfig;
 
 @property (strong, nonatomic) NSMutableArray* contexts;
 
