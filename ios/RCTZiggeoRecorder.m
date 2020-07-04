@@ -9,6 +9,7 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
+#import "ZiggeoRecorderInterfaceConfig.h"
 
 @interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
@@ -17,6 +18,27 @@
 @property (nonatomic) int maxAllowedDurationInSeconds;
 @property (nonatomic) bool enforceDuration;
 @end;
+
+ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config) {
+    ZiggeoRecorderInterfaceConfig *conf = [ZiggeoRecorderInterfaceConfig new];
+
+    id recordButtonConfig = config[@"recordButton"];
+    if (recordButtonConfig && [recordButtonConfig isKindOfClass:[NSDictionary class]]) {
+        conf.recordButton = [[ButtonConfig alloc] initWithDictionary:recordButtonConfig];
+    }
+    
+    id closeButtonConfig = config[@"closeButton"];
+    if (closeButtonConfig && [closeButtonConfig isKindOfClass:[NSDictionary class]]) {
+        conf.closeButton = [[ButtonConfig alloc] initWithDictionary:closeButtonConfig];
+    }
+    
+    id cameraFlipButtonConfig = config[@"cameraFlipButton"];
+    if (cameraFlipButtonConfig && [cameraFlipButtonConfig isKindOfClass:[NSDictionary class]]) {
+        conf.cameraFlipButton = [[ButtonConfig alloc] initWithDictionary:cameraFlipButtonConfig];
+    }
+    
+    return conf;
+}
 
 @implementation UploadingContext
 -(void)resolve:(NSString*)token {
@@ -259,6 +281,7 @@ RCT_REMAP_METHOD(record,
         recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
         recorder.useLiveStreaming = self->_liveStreamingEnabled;
         recorder.recordingQuality = self->_quality;
+        recorder.interfaceConfig = parseRecorderInterfaceConfig(self.interfaceConfig);
         if(self->_videoWidth != 0) recorder.videoWidth = (int)self.videoWidth;
         if(self->_videoHeight != 0) recorder.videoHeight = (int)self.videoHeight;
         if(self->_videoBitrate != 0) recorder.videoBitrate = (int)self.videoBitrate;
@@ -386,6 +409,12 @@ RCT_EXPORT_METHOD(setRecorderCacheConfig:(NSDictionary *)config)
 {
     RCTLogInfo(@"recorder cache config set: %@", config);
     self.cacheConfig = config;
+}
+
+RCT_EXPORT_METHOD(setRecorderInterfaceConfig:(NSDictionary *)config)
+{
+    RCTLogInfo(@"recorder interface config set: %@", config);
+    self.interfaceConfig = config;
 }
 
 @end
