@@ -9,6 +9,9 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
+#import <Ziggeo/ZiggeoRecorderInterfaceConfig.h>
+#import <Ziggeo/ButtonConfig.h>
+#import "ButtonConfig+parse.h"
 
 @interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
@@ -17,6 +20,63 @@
 @property (nonatomic) int maxAllowedDurationInSeconds;
 @property (nonatomic) bool enforceDuration;
 @end;
+
+ButtonConfig *parseButtonConfig(NSDictionary *dictionary) {
+    ButtonConfig *config = [ButtonConfig new];
+    id value;
+
+    value = dictionary[@"imagePath"];
+    if (value && [value isKindOfClass:[NSString class]]) {
+        config.imagePath = (NSString *)value;
+    }
+
+    value = dictionary[@"selectedImagePath"];
+    if (value && [value isKindOfClass:[NSString class]]) {
+        config.selectedImagePath = (NSString *)value;
+    }
+
+    value = dictionary[@"scale"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        config.scale = [((NSNumber *)value) doubleValue];
+    }
+
+    value = dictionary[@"width"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        CGFloat *val = calloc(1, sizeof(CGFloat));
+        *val = [((NSNumber *)value) doubleValue];
+        config.width = val;
+    }
+
+    value = dictionary[@"height"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        CGFloat *val = calloc(1, sizeof(CGFloat));
+        *val = [((NSNumber *)value) doubleValue];
+        config.height = val;
+    }
+
+    return config;
+}
+
+ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config) {
+    ZiggeoRecorderInterfaceConfig *conf = [ZiggeoRecorderInterfaceConfig new];
+
+    id recordButtonConfig = config[@"recordButton"];
+    if (recordButtonConfig && [recordButtonConfig isKindOfClass:[NSDictionary class]]) {
+        conf.recordButton = parseButtonConfig(recordButtonConfig);
+    }
+    
+    id closeButtonConfig = config[@"closeButton"];
+    if (closeButtonConfig && [closeButtonConfig isKindOfClass:[NSDictionary class]]) {
+        conf.closeButton = parseButtonConfig(closeButtonConfig);
+    }
+    
+    id cameraFlipButtonConfig = config[@"cameraFlipButton"];
+    if (cameraFlipButtonConfig && [cameraFlipButtonConfig isKindOfClass:[NSDictionary class]]) {
+        conf.cameraFlipButton = parseButtonConfig(cameraFlipButtonConfig);
+    }
+    
+    return conf;
+}
 
 @implementation UploadingContext
 -(void)resolve:(NSString*)token {
@@ -259,6 +319,7 @@ RCT_REMAP_METHOD(record,
         recorder.extraArgsForCreateVideo = self->_additionalRecordingParams;
         recorder.useLiveStreaming = self->_liveStreamingEnabled;
         recorder.recordingQuality = self->_quality;
+        recorder.interfaceConfig = parseRecorderInterfaceConfig(self.interfaceConfig);
         if(self->_videoWidth != 0) recorder.videoWidth = (int)self.videoWidth;
         if(self->_videoHeight != 0) recorder.videoHeight = (int)self.videoHeight;
         if(self->_videoBitrate != 0) recorder.videoBitrate = (int)self.videoBitrate;
@@ -386,6 +447,12 @@ RCT_EXPORT_METHOD(setRecorderCacheConfig:(NSDictionary *)config)
 {
     RCTLogInfo(@"recorder cache config set: %@", config);
     self.cacheConfig = config;
+}
+
+RCT_EXPORT_METHOD(setRecorderInterfaceConfig:(NSDictionary *)config)
+{
+    RCTLogInfo(@"recorder interface config set: %@", config);
+    self.interfaceConfig = config;
 }
 
 @end
