@@ -9,7 +9,9 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
-#import "ZiggeoRecorderInterfaceConfig.h"
+#import <Ziggeo/ZiggeoRecorderInterfaceConfig.h>
+#import <Ziggeo/ButtonConfig.h>
+#import "ButtonConfig+parse.h"
 
 @interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
@@ -19,22 +21,58 @@
 @property (nonatomic) bool enforceDuration;
 @end;
 
+ButtonConfig *parseButtonConfig(NSDictionary *dictionary) {
+    ButtonConfig *config = [ButtonConfig new];
+    id value;
+
+    value = dictionary[@"imagePath"];
+    if (value && [value isKindOfClass:[NSString class]]) {
+        config.imagePath = (NSString *)value;
+    }
+
+    value = dictionary[@"selectedImagePath"];
+    if (value && [value isKindOfClass:[NSString class]]) {
+        config.selectedImagePath = (NSString *)value;
+    }
+
+    value = dictionary[@"scale"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        config.scale = [((NSNumber *)value) doubleValue];
+    }
+
+    value = dictionary[@"width"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        CGFloat *val = calloc(1, sizeof(CGFloat));
+        *val = [((NSNumber *)value) doubleValue];
+        config.width = val;
+    }
+
+    value = dictionary[@"height"];
+    if (value && [value isKindOfClass:[NSNumber class]]) {
+        CGFloat *val = calloc(1, sizeof(CGFloat));
+        *val = [((NSNumber *)value) doubleValue];
+        config.height = val;
+    }
+
+    return config;
+}
+
 ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config) {
     ZiggeoRecorderInterfaceConfig *conf = [ZiggeoRecorderInterfaceConfig new];
 
     id recordButtonConfig = config[@"recordButton"];
     if (recordButtonConfig && [recordButtonConfig isKindOfClass:[NSDictionary class]]) {
-        conf.recordButton = [[ButtonConfig alloc] initWithDictionary:recordButtonConfig];
+        conf.recordButton = parseButtonConfig(recordButtonConfig);
     }
     
     id closeButtonConfig = config[@"closeButton"];
     if (closeButtonConfig && [closeButtonConfig isKindOfClass:[NSDictionary class]]) {
-        conf.closeButton = [[ButtonConfig alloc] initWithDictionary:closeButtonConfig];
+        conf.closeButton = parseButtonConfig(closeButtonConfig);
     }
     
     id cameraFlipButtonConfig = config[@"cameraFlipButton"];
     if (cameraFlipButtonConfig && [cameraFlipButtonConfig isKindOfClass:[NSDictionary class]]) {
-        conf.cameraFlipButton = [[ButtonConfig alloc] initWithDictionary:cameraFlipButtonConfig];
+        conf.cameraFlipButton = parseButtonConfig(cameraFlipButtonConfig);
     }
     
     return conf;
