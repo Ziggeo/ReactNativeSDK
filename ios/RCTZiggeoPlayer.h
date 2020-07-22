@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) NSString *appToken;
 @property (strong, nonatomic) NSString *serverAuthToken;
+@property (strong, nonatomic) NSString *clientAuthToken;
 @property (strong, nonatomic) NSDictionary *additionalParams;
 @property (strong, nonatomic) NSDictionary *themeParams;
 

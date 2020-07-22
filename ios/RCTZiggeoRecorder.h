@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) NSString *appToken;
 @property (strong, nonatomic) NSString *serverAuthToken;
+@property (strong, nonatomic) NSString *clientAuthToken;
 @property (nonatomic) BOOL cameraFlipButtonVisible;
 @property (nonatomic) BOOL coverSelectorEnabled;
 @property (nonatomic) BOOL liveStreamingEnabled;
