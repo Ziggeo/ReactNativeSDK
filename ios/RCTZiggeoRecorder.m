@@ -120,6 +120,7 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     
     Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
     m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
+    m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
     [m_ziggeo.config setRecorderCacheConfig:self.recorder.cacheConfig];
     m_ziggeo.videos.delegate = self;
     [m_ziggeo.videos createVideoWithData:recordingParams file:url.path cover:nil callback:nil Progress:nil];
@@ -197,10 +198,10 @@ RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
     _appToken = token;
 }
 
-RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
+RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 {
     RCTLogInfo(@"server auth token set: %@", token);
-    _serverAuthToken = token;
+    _clientAuthToken = token;
 }
 
 RCT_EXPORT_METHOD(setCameraSwitchEnabled:(BOOL)visible)
@@ -309,6 +310,7 @@ RCT_REMAP_METHOD(record,
     dispatch_async(dispatch_get_main_queue(), ^{
         Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
         ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
@@ -433,6 +435,7 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
     {
         Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
         m_ziggeo.videos.delegate = context;
         [m_ziggeo.videos createVideoWithData:_additionalRecordingParams file:fileName cover:nil callback:nil Progress:nil];

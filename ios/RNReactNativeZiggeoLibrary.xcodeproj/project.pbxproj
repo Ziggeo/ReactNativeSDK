@@ -7,10 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
+		84CDB80624AE90B9008EC6AE /* Ziggeo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */; };
 		D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */; };
 		FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */; };
 		FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		84CDB80424AE8D7A008EC6AE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FAE668951BB4345200A45B41;
+			remoteInfo = Ziggeo;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
@@ -26,6 +38,9 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNReactNativeZiggeoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZiggeoLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		58603263C86843794188BB9C /* ButtonConfig+parse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ButtonConfig+parse.m"; sourceTree = "<group>"; };
+		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
+		84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Ziggeo.xcodeproj; path = "../../ZigiOS-SDK/Ziggeo.xcodeproj"; sourceTree = "<group>"; };
 		D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingImagePickerController.h; sourceTree = "<group>"; };
 		D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingImagePickerController.m; sourceTree = "<group>"; };
 		FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoPlayer.h; sourceTree = "<group>"; };
@@ -39,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84CDB80624AE90B9008EC6AE /* Ziggeo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +72,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */,
 				D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */,
 				D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */,
 				FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */,
@@ -64,7 +81,17 @@
 				FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				FA441F791F2A595300E51295 /* Frameworks */,
+				58603263C86843794188BB9C /* ButtonConfig+parse.m */,
+				58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */,
 			);
+			sourceTree = "<group>";
+		};
+		84CDB80024AE8D7A008EC6AE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		FA441F791F2A595300E51295 /* Frameworks */ = {
@@ -113,17 +140,34 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
 			productRefGroup = 58B511D21A9E6C8500147676;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 84CDB80024AE8D7A008EC6AE /* Products */;
+					ProjectRef = 84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* RNReactNativeZiggeoLibrary */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Ziggeo.framework;
+			remoteRef = 84CDB80424AE8D7A008EC6AE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
@@ -133,6 +177,7 @@
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
 				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
+				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

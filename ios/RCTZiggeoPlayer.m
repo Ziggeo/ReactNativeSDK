@@ -27,11 +27,18 @@ RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
   _serverAuthToken = token;
 }
 
+RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
+{
+  RCTLogInfo(@"client auth token set: %@", token);
+  _clientAuthToken = token;
+}
+
 RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 {
   dispatch_async(dispatch_get_main_queue(), ^{
     Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
     [ziggeo connect].serverAuthToken = self.serverAuthToken;
+    [ziggeo connect].clientAuthToken = self.clientAuthToken;
     ZiggeoPlayer* player = nil;
 
     NSMutableDictionary* mergedParams = nil;
