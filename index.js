@@ -23,6 +23,9 @@ export default {
 	setRecorderCacheConfig: function (map) {
 		ZiggeoRecorder.setRecorderCacheConfig(map);
   	},
+	setRecorderInterfaceConfig: function (map) {
+		ZiggeoRecorder.setRecorderInterfaceConfig(map);
+  	},
 	setUploadingConfig: function (map) {
 		ZiggeoRecorder.setUploadingConfig(map);
   	},
