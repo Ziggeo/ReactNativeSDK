@@ -158,6 +158,12 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
 }
 
+-(void) ziggeoRecorderDidStop {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"RecordingStopped" body:@{}];
+    }
+}
+
 -(void)setRecorder:(RCTZiggeoRecorder *)recorder {
     if(recorder != nil)
     {
@@ -179,17 +185,21 @@ RCT_EXPORT_MODULE();
 
 - (NSDictionary *)constantsToExport
 {
-    return @{ @"frontCamera": @(UIImagePickerControllerCameraDeviceFront),
+    return @{
+              @"frontCamera": @(UIImagePickerControllerCameraDeviceFront),
               @"rearCamera" : @(UIImagePickerControllerCameraDeviceRear),
               @"highQuality" : @(HighestQuality),
               @"mediumQuality" : @(MediumQuality),
               @"lowQuality" : @(LowQuality)
-              };
+    };
 }
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return @[@"UploadProgress"];
+    return @[
+        @"UploadProgress",
+        @"RecordingStopped",
+    ];
 }
 
 RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
