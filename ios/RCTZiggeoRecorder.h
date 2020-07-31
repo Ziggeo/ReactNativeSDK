@@ -24,6 +24,7 @@
 @property (nonatomic) NSInteger camera;
 @property (nonatomic) NSInteger quality;
 @property (nonatomic) NSInteger autostartRecordingAfter;
+@property (nonatomic) NSInteger startDelay;
 @property (nonatomic) NSInteger maxRecordingDuration;
 @property (nonatomic) NSInteger videoWidth;
 @property (nonatomic) NSInteger videoHeight;
