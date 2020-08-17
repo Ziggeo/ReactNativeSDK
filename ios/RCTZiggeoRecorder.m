@@ -338,6 +338,8 @@ RCT_REMAP_METHOD(record,
         recorder.useLiveStreaming = self->_liveStreamingEnabled;
         recorder.recordingQuality = self->_quality;
         recorder.interfaceConfig = parseRecorderInterfaceConfig(self.interfaceConfig);
+        recorder.autostartRecordingAfterSeconds = self.autostartRecordingAfter;
+        recorder.startDelay = self.startDelay;
         if(self->_videoWidth != 0) recorder.videoWidth = (int)self.videoWidth;
         if(self->_videoHeight != 0) recorder.videoHeight = (int)self.videoHeight;
         if(self->_videoBitrate != 0) recorder.videoBitrate = (int)self.videoBitrate;
