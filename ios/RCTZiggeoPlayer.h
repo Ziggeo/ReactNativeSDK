@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *clientAuthToken;
 @property (strong, nonatomic) NSDictionary *additionalParams;
 @property (strong, nonatomic) NSDictionary *themeParams;
+@property (strong, nonatomic) NSDictionary *cacheConfig;
 
 @end
 

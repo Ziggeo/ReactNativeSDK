@@ -132,6 +132,9 @@ export default {
     setThemeArgsForPlayer: function (map) {
         ZiggeoPlayer.setThemeArgsForPlayer(map);
     },
+    setPlayerCacheConfig: function (map) {
+        ZiggeoPlayer.setPlayerCacheConfig(map);
+    },
 
     // Constants
     REAR_CAMERA: ZiggeoRecorder.rearCamera,
