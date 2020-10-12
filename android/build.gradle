@@ -66,6 +66,6 @@ dependencies {
     def androidX = '1.2.0'
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "com.google.code.gson:gson:2.8.6"
-    implementation 'com.github.ZiggeoJitpackService:Android-SDK:2.0.14'
+    implementation 'com.github.ZiggeoJitpackService:Android-SDK:2.1.0'
     implementation 'com.karumi:dexter:6.2.1'
 }

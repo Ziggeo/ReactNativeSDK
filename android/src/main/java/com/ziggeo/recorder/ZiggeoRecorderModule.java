@@ -363,11 +363,11 @@ public class ZiggeoRecorderModule extends BaseModule {
     private IUploadingCallback prepareUploadingCallback(@NonNull Task task) {
         return new UploadingCallback() {
             @Override
-            public void uploadProgress(@NonNull String videoToken, @NonNull File file, long uploaded, long total) {
-                super.uploadProgress(videoToken, file, uploaded, total);
+            public void uploadProgress(@NonNull String videoToken, @NonNull String path, long uploaded, long total) {
+                super.uploadProgress(videoToken, path, uploaded, total);
                 ZLog.d("uploadProgress");
                 WritableMap params = Arguments.createMap();
-                params.putString(Keys.FILE_NAME, file.getName());
+                params.putString(Keys.FILE_NAME, new File(path).getName());
                 params.putString(Keys.BYTES_SENT, String.valueOf(uploaded));
                 params.putString(Keys.BYTES_TOTAL, String.valueOf(total));
                 sendEvent(Events.EVENT_PROGRESS, params);
