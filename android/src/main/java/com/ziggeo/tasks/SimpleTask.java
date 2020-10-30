@@ -8,9 +8,9 @@ import com.facebook.react.bridge.Promise;
  * Created by Alex Bedulin on 08.02.2018.
  */
 
-public class ApiTask extends Task {
+public class SimpleTask extends Task {
 
-    public ApiTask(@NonNull Promise promise) {
+    public SimpleTask(@NonNull Promise promise) {
         super(promise);
     }
 }

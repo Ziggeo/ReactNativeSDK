@@ -9,6 +9,7 @@ import com.facebook.react.uimanager.ViewManager;
 import com.ziggeo.api.VideosModule;
 import com.ziggeo.cameraview.CameraModule;
 import com.ziggeo.cameraview.RnCameraViewManager;
+import com.ziggeo.contactus.ContactUs;
 import com.ziggeo.player.ZiggeoPlayerModule;
 import com.ziggeo.recorder.ZiggeoRecorderModule;
 
@@ -30,6 +31,7 @@ public class ZiggeoPackage implements ReactPackage {
         modules.add(new ZiggeoRecorderModule(reactContext));
         modules.add(new ZiggeoPlayerModule(reactContext));
         modules.add(new VideosModule(reactContext));
+        modules.add(new ContactUs(reactContext));
         modules.add(new CameraModule(reactContext, rnCameraViewManager));
         return modules;
     }

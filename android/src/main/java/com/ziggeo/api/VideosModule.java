@@ -10,7 +10,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.BaseModule;
-import com.ziggeo.tasks.ApiTask;
+import com.ziggeo.tasks.SimpleTask;
 import com.ziggeo.tasks.Task;
 import com.ziggeo.utils.ConversionUtil;
 
@@ -40,7 +40,7 @@ public class VideosModule extends BaseModule {
 
     @ReactMethod
     public void index(@Nullable ReadableMap args, @NonNull Promise promise) {
-        final Task task = new ApiTask(promise);
+        final Task task = new SimpleTask(promise);
         Disposable d = ziggeo.apiRx()
                 .videosRaw()
                 .index(ConversionUtil.toMap(args))
@@ -58,7 +58,7 @@ public class VideosModule extends BaseModule {
 
     @ReactMethod
     public void downloadImage(@NonNull String tokenOrKey, @NonNull Promise promise) {
-        final Task task = new ApiTask(promise);
+        final Task task = new SimpleTask(promise);
         Disposable d = ziggeo.apiRx()
                 .videosRaw()
                 .downloadImage(tokenOrKey)
@@ -71,7 +71,7 @@ public class VideosModule extends BaseModule {
 
     @ReactMethod
     public void destroy(@NonNull String tokenOrKey, @NonNull Promise promise) {
-        final Task task = new ApiTask(promise);
+        final Task task = new SimpleTask(promise);
         Disposable d = ziggeo.apiRx()
                 .videosRaw()
                 .destroy(tokenOrKey)
@@ -84,7 +84,7 @@ public class VideosModule extends BaseModule {
 
     @ReactMethod
     public void update(@NonNull String token, @NonNull String modelJson, @NonNull Promise promise) {
-        final Task task = new ApiTask(promise);
+        final Task task = new SimpleTask(promise);
         Disposable d = ziggeo.apiRx()
                 .videosRaw()
                 .update(token, modelJson)

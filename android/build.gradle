@@ -63,9 +63,9 @@ repositories {
 
 dependencies {
     implementation "com.facebook.react:react-native:${safeExtGet('reactnativeVersion', '+')}"
-    def androidX = '1.1.0'
+    def androidX = '1.2.0'
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "com.google.code.gson:gson:2.8.6"
-    implementation 'com.github.ZiggeoJitpackService:Android-SDK:2.0.3'
-    implementation 'com.karumi:dexter:6.0.1'
+    implementation 'com.github.ZiggeoJitpackService:Android-SDK:2.1.0'
+    implementation 'com.karumi:dexter:6.2.1'
 }
