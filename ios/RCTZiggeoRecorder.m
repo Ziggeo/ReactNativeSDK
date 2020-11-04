@@ -179,7 +179,11 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
 
 @end
 
-@implementation RCTZiggeoRecorder
+@implementation RCTZiggeoRecorder {
+    NSInteger _startDelay;
+}
+
+@synthesize startDelay = _startDelay;
 
 RCT_EXPORT_MODULE();
 
@@ -462,6 +466,11 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
     {
         reject(@"ERR_NOFILE", @"empty filename", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"ERR_NOFILE":@"empty filename"}]);
     }
+}
+
+RCT_EXPORT_METHOD(setStartDelay:(NSInteger)delay)
+{
+    _startDelay = delay;
 }
 
 RCT_EXPORT_METHOD(setRecorderCacheConfig:(NSDictionary *)config)
