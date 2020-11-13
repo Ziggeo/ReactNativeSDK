@@ -243,8 +243,8 @@ public class ZiggeoRecorderModule extends BaseModule {
         }
         ziggeo.setQrScannerConfig(new QrScannerConfig(close, new QrScannerCallback() {
             @Override
-            public void onQrDecoded(@NonNull String value) {
-                super.onQrDecoded(value);
+            public void onDecoded(@NonNull String value) {
+                super.onDecoded(value);
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.QR, value);
                 sendEvent(Events.EVENT_QR_DECODED, params);

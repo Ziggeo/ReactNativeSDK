@@ -7,10 +7,9 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.ziggeo.BaseModule;
-import com.ziggeo.androidsdk.log.LogModel;
-import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.tasks.SimpleTask;
 
 import java.util.ArrayList;
@@ -31,9 +30,14 @@ public class ContactUs extends BaseModule {
     }
 
     @ReactMethod
-    public void sendReport(@Nullable ReadableMap args, @NonNull Promise promise) {
+    public void sendReport(@Nullable ReadableArray logsArray, @NonNull Promise promise) {
         SimpleTask task = new SimpleTask(promise);
-        List<LogModel> logs = new ArrayList<>();
+        List<String> logs = new ArrayList<>();
+        if (logsArray != null) {
+            for (Object object : logsArray.toArrayList()) {
+                logs.add(object.toString());
+            }
+        }
         ziggeo.sendReport(logs);
         task.resolve(null);
     }

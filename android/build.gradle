@@ -1,5 +1,5 @@
 buildscript {
-    ext.safeExtGet = {prop, fallback ->
+    ext.safeExtGet = { prop, fallback ->
         rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
     }
     repositories {
@@ -66,6 +66,8 @@ dependencies {
     def androidX = '1.2.0'
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "com.google.code.gson:gson:2.8.6"
-    implementation 'com.github.ZiggeoJitpackService:Android-SDK:2.1.0'
+    implementation("com.github.ZiggeoJitpackService:Android-SDK:2.1.7:reactnative@aar") {
+        transitive = true
+    }
     implementation 'com.karumi:dexter:6.2.1'
 }
