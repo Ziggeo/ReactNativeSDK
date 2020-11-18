@@ -25,6 +25,7 @@ import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.log.ZLog;
 import com.ziggeo.androidsdk.qr.QrScannerCallback;
 import com.ziggeo.androidsdk.qr.QrScannerConfig;
+import com.ziggeo.androidsdk.recorder.MicSoundLevel;
 import com.ziggeo.androidsdk.recorder.RecorderConfig;
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView;
 import com.ziggeo.androidsdk.widgets.cameraview.Size;
@@ -373,7 +374,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 params.putString(Keys.FILE_NAME, new File(path).getName());
                 params.putString(Keys.BYTES_SENT, String.valueOf(uploaded));
                 params.putString(Keys.BYTES_TOTAL, String.valueOf(total));
-                sendEvent(Events.EVENT_PROGRESS, params);
+                sendEvent(Events.EVENT_UPLOAD_PROGRESS, params);
             }
 
             @Override
