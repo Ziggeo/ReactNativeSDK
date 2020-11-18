@@ -258,6 +258,9 @@ public class ZiggeoRecorderModule extends BaseModule {
     public void uploadFromPath(@NonNull final String path, @Nullable ReadableMap data, @NonNull final Promise promise) {
         UploadFileTask task = new UploadFileTask(promise);
         HashMap<String, String> args = ConversionUtil.toMap(data);
+        if (args == null) {
+            args = ziggeo.getRecorderConfig().getExtraArgs();
+        }
         if (args != null) {
             task.setExtraArgs(args);
         }
