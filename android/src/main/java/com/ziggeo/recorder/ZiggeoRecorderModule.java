@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.NativeMap;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
@@ -43,6 +44,7 @@ import com.ziggeo.utils.Keys;
 import com.ziggeo.utils.ThemeKeys;
 
 import java.io.File;
+import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -375,6 +377,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.uploadProgress(videoToken, path, uploaded, total);
                 ZLog.d("uploadProgress");
                 WritableMap params = Arguments.createMap();
+                params.putString(Keys.TOKEN, videoToken);
                 params.putString(Keys.FILE_NAME, new File(path).getName());
                 params.putString(Keys.BYTES_SENT, String.valueOf(uploaded));
                 params.putString(Keys.BYTES_TOTAL, String.valueOf(total));
@@ -386,6 +389,10 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.uploaded(path, token);
                 ZLog.d("uploaded");
                 resolve(task, token);
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.PATH, path);
+                map.putString(Keys.TOKEN, token);
+                sendEvent(Events.UPLOADED, map);
             }
 
             @Override
@@ -395,6 +402,9 @@ public class ZiggeoRecorderModule extends BaseModule {
                 if (task instanceof RecordVideoTask) {
                     ((RecordVideoTask) task).setUploadingStarted(true);
                 }
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.PATH, path);
+                sendEvent(Events.UPLOADING_STARTED, map);
             }
 
             @Override
@@ -429,6 +439,9 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.error(throwable);
                 ZLog.d("error:%s", throwable);
                 reject(task, ERR_UNKNOWN, throwable.toString());
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.ERROR, throwable.toString());
+                sendEvent(Events.ERROR, map);
             }
         };
     }
@@ -450,16 +463,16 @@ public class ZiggeoRecorderModule extends BaseModule {
             @Override
             public void countdown(int secondsLeft) {
                 super.countdown(secondsLeft);
-                WritableMap map = new WritableNativeMap();
-                map.putInt("seconds_left", secondsLeft);
+                WritableMap map = Arguments.createMap();
+                map.putInt(Keys.SECONDS_LEFT, secondsLeft);
                 sendEvent(Events.COUNTDOWN, map);
             }
 
             @Override
             public void recordingProgress(long millisPassed) {
                 super.recordingProgress(millisPassed);
-                WritableMap map = new WritableNativeMap();
-                map.putDouble("millis_passed", millisPassed); //TODO check double
+                WritableMap map = Arguments.createMap();
+                map.putDouble(Keys.SECONDS_LEFT, millisPassed); //TODO check double
                 sendEvent(Events.COUNTDOWN, map);
             }
 
@@ -502,8 +515,8 @@ public class ZiggeoRecorderModule extends BaseModule {
             @Override
             public void microphoneHealth(@NonNull MicSoundLevel micStatus) {
                 super.microphoneHealth(micStatus);
-                WritableMap map = new WritableNativeMap();
-                map.putString("sound_level", micStatus.toString());
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.SOUND_LEVEL, micStatus.toString());
                 sendEvent(Events.MIC_HEALTH, map);
             }
 
@@ -530,12 +543,8 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.accessForbidden(permissions);
                 ZLog.d("accessForbidden");
                 reject(task, ERR_PERMISSION_DENIED);
-                WritableMap map = new WritableNativeMap();
-                WritableNativeArray array = new WritableNativeArray();
-                for (String permission : permissions) {
-                    array.pushString(permission);
-                }
-                map.putArray("permissions", array);
+                WritableMap map = Arguments.createMap();
+                map.putArray(Keys.PERMISSIONS, Arguments.fromList(permissions));
                 sendEvent(Events.ACCESS_FORBIDDEN, map);
             }
 
@@ -544,7 +553,9 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.error(throwable);
                 ZLog.d("error:%s", throwable);
                 reject(task, ERR_UNKNOWN, throwable.toString());
-                sendEvent(Events.ERROR);
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.ERROR, throwable.toString());
+                sendEvent(Events.ERROR, map);
             }
 
             @Override
@@ -558,8 +569,8 @@ public class ZiggeoRecorderModule extends BaseModule {
             public void recordingStopped(@NonNull String path) {
                 super.recordingStopped(path);
                 ZLog.d("recordingStopped:%s", path);
-                WritableMap map = new WritableNativeMap();
-                map.putString("path", path);
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.PATH, path);
                 sendEvent(Events.RECORDING_STOPPED, map);
             }
 

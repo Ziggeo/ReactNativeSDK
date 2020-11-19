@@ -46,6 +46,7 @@ public final class Events {
     public static final String VERIFIED = "Verified";
     public static final String PROCESSING = "Processing";
     public static final String PROCESSED = "Processed";
+    public static final String UPLOADED = "Uploaded";
 
     // File selector
     public static final String UPLOAD_SELECTED = "UploadSelected";

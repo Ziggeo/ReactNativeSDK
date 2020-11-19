@@ -10,4 +10,9 @@ public final class Keys {
     public static final String PATH = "path";
     public static final String QR = "qr";
     public static final String TOKEN = "token";
+    public static final String ERROR = "error";
+    public static final String PERMISSIONS = "permissions";
+    public static final String SOUND_LEVEL = "sound_level";
+    public static final String SECONDS_LEFT = "seconds_left";
+    public static final String MILLIS_PASSED = "millis_passed";
 }
