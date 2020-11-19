@@ -4,59 +4,59 @@ public final class Events {
     private Events() {
     }
     // Camera
-    public static final String EVENT_CAMERA_OPENED = "CameraOpened";
-    public static final String EVENT_CAMERA_CLOSED = "CameraClosed";
+    public static final String CAMERA_OPENED = "CameraOpened";
+    public static final String CAMERA_CLOSED = "CameraClosed";
 
     // Common
-    public static final String EVENT_LOADED = "RecordingStarted";
-    public static final String EVENT_CANCELLED_BY_USER = "CancelledByUser";
+    public static final String LOADED = "RecordingStarted";
+    public static final String CANCELLED_BY_USER = "CancelledByUser";
 
     // Error
     public static final String ERROR = "Error";
 
     // Recorder
-    public static final String EVENT_MANUALLY_SUBMITTED = "ManuallySubmitted";
-    public static final String EVENT_RECORDING_STARTED = "RecordingStarted";
-    public static final String EVENT_RECORDING_STOPPED = "RecordingStopped";
-    public static final String EVENT_COUNTDOWN = "Countdown";
-    public static final String EVENT_RECORDING_PROGRESS = "RecordingProgress";
-    public static final String EVENT_READY_TO_RECORD = "ReadyToRecord";
-    public static final String EVENT_RERECORD = "Rerecord";
+    public static final String MANUALLY_SUBMITTED = "ManuallySubmitted";
+    public static final String RECORDING_STARTED = "RecordingStarted";
+    public static final String RECORDING_STOPPED = "RecordingStopped";
+    public static final String COUNTDOWN = "Countdown";
+    public static final String RECORDING_PROGRESS = "RecordingProgress";
+    public static final String READY_TO_RECORD = "ReadyToRecord";
+    public static final String RERECORD = "Rerecord";
 
     // Streaming
-    public static final String EVENT_STREAMING_STARTED = "StreamingStarted";
-    public static final String EVENT_STREAMING_STOPPED = "StreamingStopped";
+    public static final String STREAMING_STARTED = "StreamingStarted";
+    public static final String STREAMING_STOPPED = "StreamingStopped";
 
     // Camera hardware
-    public static final String EVENT_NO_CAMERA = "NoCamera";
-    public static final String EVENT_HAS_CAMERA = "HasCamera";
+    public static final String NO_CAMERA = "NoCamera";
+    public static final String HAS_CAMERA = "HasCamera";
 
     // Mic hardware
-    public static final String EVENT_MIC_HEALTH = "MicrophoneHealth";
-    public static final String EVENT_NO_MIC = "NoMicrophone";
-    public static final String EVENT_HAS_MIC = "HasMicrophone";
+    public static final String MIC_HEALTH = "MicrophoneHealth";
+    public static final String NO_MIC = "NoMicrophone";
+    public static final String HAS_MIC = "HasMicrophone";
 
     // Permissions
-    public static final String EVENT_ACCESS_GRANTED = "AccessGranted";
-    public static final String EVENT_ACCESS_FORBIDDEN = "AccessForbidden";
+    public static final String ACCESS_GRANTED = "AccessGranted";
+    public static final String ACCESS_FORBIDDEN = "AccessForbidden";
 
     // Uploader
-    public static final String EVENT_UPLOADING_STARTED = "UploadingStarted";
-    public static final String EVENT_UPLOAD_PROGRESS = "UploadProgress";
-    public static final String EVENT_VERIFIED = "Verified";
-    public static final String EVENT_PROCESSING = "Processing";
-    public static final String EVENT_PROCESSED = "Processed";
+    public static final String UPLOADING_STARTED = "UploadingStarted";
+    public static final String UPLOAD_PROGRESS = "UploadProgress";
+    public static final String VERIFIED = "Verified";
+    public static final String PROCESSING = "Processing";
+    public static final String PROCESSED = "Processed";
 
     // File selector
-    public static final String EVENT_UPLOAD_SELECTED = "UploadSelected";
+    public static final String UPLOAD_SELECTED = "UploadSelected";
 
     // Player
-    public static final String EVENT_PLAYING = "Playing";
-    public static final String EVENT_PAUSED = "Paused";
-    public static final String EVENT_ENDED = "Ended";
-    public static final String EVENT_SEEK = "Seek";
-    public static final String EVENT_READY_TO_PLAY = "ReadyToPlay";
+    public static final String PLAYING = "Playing";
+    public static final String PAUSED = "Paused";
+    public static final String ENDED = "Ended";
+    public static final String SEEK = "Seek";
+    public static final String READY_TO_PLAY = "ReadyToPlay";
 
     // QR scanner
-    public static final String EVENT_QR_DECODED = "QrDecoded";
+    public static final String QR_DECODED = "QrDecoded";
 }

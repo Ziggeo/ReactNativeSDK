@@ -35,6 +35,12 @@ public abstract class BaseModule extends ReactContextBaseJavaModule {
         ziggeo.setServerAuthToken(token);
     }
 
+    public void sendEvent(String eventName) {
+        getReactApplicationContext()
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, null);
+    }
+
     public void sendEvent(String eventName, @Nullable WritableMap params) {
         getReactApplicationContext()
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)

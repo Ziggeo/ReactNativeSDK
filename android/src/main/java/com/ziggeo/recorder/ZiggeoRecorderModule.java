@@ -9,8 +9,12 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableNativeArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.WritableNativeArray;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -248,7 +252,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.onDecoded(value);
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.QR, value);
-                sendEvent(Events.EVENT_QR_DECODED, params);
+                sendEvent(Events.QR_DECODED, params);
             }
         }));
 
@@ -374,7 +378,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 params.putString(Keys.FILE_NAME, new File(path).getName());
                 params.putString(Keys.BYTES_SENT, String.valueOf(uploaded));
                 params.putString(Keys.BYTES_TOTAL, String.valueOf(total));
-                sendEvent(Events.EVENT_UPLOAD_PROGRESS, params);
+                sendEvent(Events.UPLOAD_PROGRESS, params);
             }
 
             @Override
@@ -399,7 +403,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 ZLog.d("processing");
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.TOKEN, token);
-                sendEvent(Events.EVENT_PROCESSING, params);
+                sendEvent(Events.PROCESSING, params);
             }
 
             @Override
@@ -408,7 +412,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 ZLog.d("processed");
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.TOKEN, token);
-                sendEvent(Events.EVENT_PROCESSED, params);
+                sendEvent(Events.PROCESSED, params);
             }
 
             @Override
@@ -417,7 +421,7 @@ public class ZiggeoRecorderModule extends BaseModule {
                 ZLog.d("verified");
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.TOKEN, token);
-                sendEvent(Events.EVENT_VERIFIED, params);
+                sendEvent(Events.VERIFIED, params);
             }
 
             @Override
@@ -431,12 +435,108 @@ public class ZiggeoRecorderModule extends BaseModule {
 
     private RecorderCallback prepareRecorderCallback(@NonNull Task task) {
         return new RecorderCallback() {
+            @Override
+            public void loaded() {
+                super.loaded();
+                sendEvent(Events.LOADED);
+            }
+
+            @Override
+            public void manuallySubmitted() {
+                super.manuallySubmitted();
+                sendEvent(Events.MANUALLY_SUBMITTED);
+            }
+
+            @Override
+            public void countdown(int secondsLeft) {
+                super.countdown(secondsLeft);
+                WritableMap map = new WritableNativeMap();
+                map.putInt("seconds_left", secondsLeft);
+                sendEvent(Events.COUNTDOWN, map);
+            }
+
+            @Override
+            public void recordingProgress(long millisPassed) {
+                super.recordingProgress(millisPassed);
+                WritableMap map = new WritableNativeMap();
+                map.putDouble("millis_passed", millisPassed); //TODO check double
+                sendEvent(Events.COUNTDOWN, map);
+            }
+
+            @Override
+            public void readyToRecord() {
+                super.readyToRecord();
+                sendEvent(Events.READY_TO_RECORD);
+            }
+
+            @Override
+            public void accessGranted() {
+                super.accessGranted();
+                sendEvent(Events.ACCESS_GRANTED);
+            }
+
+            @Override
+            public void noCamera() {
+                super.noCamera();
+                sendEvent(Events.NO_CAMERA);
+            }
+
+            @Override
+            public void noMicrophone() {
+                super.noMicrophone();
+                sendEvent(Events.NO_MIC);
+            }
+
+            @Override
+            public void hasCamera() {
+                super.hasCamera();
+                sendEvent(Events.HAS_CAMERA);
+            }
+
+            @Override
+            public void hasMicrophone() {
+                super.hasMicrophone();
+                sendEvent(Events.HAS_MIC);
+            }
+
+            @Override
+            public void microphoneHealth(@NonNull MicSoundLevel micStatus) {
+                super.microphoneHealth(micStatus);
+                WritableMap map = new WritableNativeMap();
+                map.putString("sound_level", micStatus.toString());
+                sendEvent(Events.MIC_HEALTH, map);
+            }
+
+            @Override
+            public void streamingStarted() {
+                super.streamingStarted();
+                sendEvent(Events.STREAMING_STARTED);
+            }
+
+            @Override
+            public void streamingStopped() {
+                super.streamingStopped();
+                sendEvent(Events.STREAMING_STOPPED);
+            }
+
+            @Override
+            public void rerecord() {
+                super.rerecord();
+                sendEvent(Events.RERECORD);
+            }
 
             @Override
             public void accessForbidden(@NonNull List<String> permissions) {
                 super.accessForbidden(permissions);
                 ZLog.d("accessForbidden");
                 reject(task, ERR_PERMISSION_DENIED);
+                WritableMap map = new WritableNativeMap();
+                WritableNativeArray array = new WritableNativeArray();
+                for (String permission : permissions) {
+                    array.pushString(permission);
+                }
+                map.putArray("permissions", array);
+                sendEvent(Events.ACCESS_FORBIDDEN, map);
             }
 
             @Override
@@ -444,26 +544,30 @@ public class ZiggeoRecorderModule extends BaseModule {
                 super.error(throwable);
                 ZLog.d("error:%s", throwable);
                 reject(task, ERR_UNKNOWN, throwable.toString());
+                sendEvent(Events.ERROR);
             }
 
             @Override
             public void recordingStarted() {
                 super.recordingStarted();
                 ZLog.d("recordingStarted");
-                sendEvent(Events.EVENT_RECORDING_STARTED, null);
+                sendEvent(Events.RECORDING_STARTED);
             }
 
             @Override
             public void recordingStopped(@NonNull String path) {
                 super.recordingStopped(path);
                 ZLog.d("recordingStopped:%s", path);
-                sendEvent(Events.EVENT_RECORDING_STOPPED, null);
+                WritableMap map = new WritableNativeMap();
+                map.putString("path", path);
+                sendEvent(Events.RECORDING_STOPPED, map);
             }
 
             @Override
             public void canceledByUser() {
                 super.canceledByUser();
                 ZLog.d("canceledByUser");
+                sendEvent(Events.CANCELLED_BY_USER);
                 cancel(task);
             }
         };

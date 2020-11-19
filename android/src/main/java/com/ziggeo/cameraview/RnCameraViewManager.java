@@ -88,15 +88,15 @@ public class RnCameraViewManager extends BaseViewManager<RnCameraView> {
             @Override
             public void cameraOpened() {
                 super.cameraOpened();
-                ZLog.d(Events.EVENT_CAMERA_OPENED);
+                ZLog.d(Events.CAMERA_OPENED);
 
-                sendEvent(Events.EVENT_CAMERA_OPENED, null);
+                sendEvent(Events.CAMERA_OPENED, null);
             }
 
             @Override
             public void cameraClosed() {
                 super.cameraClosed();
-                sendEvent(Events.EVENT_CAMERA_CLOSED, null);
+                sendEvent(Events.CAMERA_CLOSED, null);
             }
         });
 
@@ -112,7 +112,7 @@ public class RnCameraViewManager extends BaseViewManager<RnCameraView> {
             @Override
             public void recordingStarted() {
                 super.recordingStarted();
-                sendEvent(Events.EVENT_RECORDING_STARTED, null);
+                sendEvent(Events.RECORDING_STARTED, null);
             }
 
             @Override
@@ -120,19 +120,19 @@ public class RnCameraViewManager extends BaseViewManager<RnCameraView> {
                 super.recordingStopped(path);
                 WritableMap params = Arguments.createMap();
                 params.putString(Keys.PATH, path);
-                sendEvent(Events.EVENT_RECORDING_STOPPED, params);
+                sendEvent(Events.RECORDING_STOPPED, params);
             }
 
             @Override
             public void streamingStarted() {
                 super.streamingStarted();
-                sendEvent(Events.EVENT_STREAMING_STARTED, null);
+                sendEvent(Events.STREAMING_STARTED, null);
             }
 
             @Override
             public void streamingStopped() {
                 super.streamingStopped();
-                sendEvent(Events.EVENT_STREAMING_STOPPED, null);
+                sendEvent(Events.STREAMING_STOPPED, null);
             }
         });
     }
