@@ -23,11 +23,17 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.ziggeo.BaseModule;
+import com.ziggeo.androidsdk.callbacks.FileSelectorCallback;
+import com.ziggeo.androidsdk.callbacks.IFileSelectorCallback;
+import com.ziggeo.androidsdk.callbacks.IPlayerCallback;
+import com.ziggeo.androidsdk.callbacks.IRecorderCallback;
 import com.ziggeo.androidsdk.callbacks.IUploadingCallback;
+import com.ziggeo.androidsdk.callbacks.PlayerCallback;
 import com.ziggeo.androidsdk.callbacks.RecorderCallback;
 import com.ziggeo.androidsdk.callbacks.UploadingCallback;
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo;
 import com.ziggeo.androidsdk.log.ZLog;
+import com.ziggeo.androidsdk.qr.IQrScanner;
 import com.ziggeo.androidsdk.qr.QrScannerCallback;
 import com.ziggeo.androidsdk.qr.QrScannerConfig;
 import com.ziggeo.androidsdk.recorder.MicSoundLevel;
@@ -446,7 +452,7 @@ public class ZiggeoRecorderModule extends BaseModule {
         };
     }
 
-    private RecorderCallback prepareRecorderCallback(@NonNull Task task) {
+    private IRecorderCallback prepareRecorderCallback(@NonNull Task task) {
         return new RecorderCallback() {
             @Override
             public void loaded() {
@@ -472,7 +478,7 @@ public class ZiggeoRecorderModule extends BaseModule {
             public void recordingProgress(long millisPassed) {
                 super.recordingProgress(millisPassed);
                 WritableMap map = Arguments.createMap();
-                map.putDouble(Keys.SECONDS_LEFT, millisPassed); //TODO check double
+                map.putDouble(Keys.MILLIS_PASSED, millisPassed); //TODO check double
                 sendEvent(Events.COUNTDOWN, map);
             }
 
@@ -495,15 +501,15 @@ public class ZiggeoRecorderModule extends BaseModule {
             }
 
             @Override
-            public void noMicrophone() {
-                super.noMicrophone();
-                sendEvent(Events.NO_MIC);
-            }
-
-            @Override
             public void hasCamera() {
                 super.hasCamera();
                 sendEvent(Events.HAS_CAMERA);
+            }
+
+            @Override
+            public void noMicrophone() {
+                super.noMicrophone();
+                sendEvent(Events.NO_MIC);
             }
 
             @Override
@@ -580,6 +586,209 @@ public class ZiggeoRecorderModule extends BaseModule {
                 ZLog.d("canceledByUser");
                 sendEvent(Events.CANCELLED_BY_USER);
                 cancel(task);
+            }
+        };
+    }
+
+    private IQrScanner.Callback prepareQrCallback(@NonNull Task task) {
+        return new QrScannerCallback() {
+            @Override
+            public void onDecoded(@NonNull String value) {
+                super.onDecoded(value);
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.VALUE, value);
+                sendEvent(Events.QR_DECODED, map);
+            }
+
+            @Override
+            public void noMicrophone() {
+                super.noMicrophone();
+                sendEvent(Events.NO_MIC);
+            }
+
+            @Override
+            public void hasMicrophone() {
+                super.hasMicrophone();
+                sendEvent(Events.HAS_MIC);
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                ZLog.d("canceledByUser");
+                sendEvent(Events.CANCELLED_BY_USER);
+                cancel(task);
+            }
+
+            @Override
+            public void accessForbidden(@NonNull List<String> permissions) {
+                super.accessForbidden(permissions);
+                ZLog.d("accessForbidden");
+                reject(task, ERR_PERMISSION_DENIED);
+                WritableMap map = Arguments.createMap();
+                map.putArray(Keys.PERMISSIONS, Arguments.fromList(permissions));
+                sendEvent(Events.ACCESS_FORBIDDEN, map);
+            }
+
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                ZLog.d("error:%s", throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.ERROR, throwable.toString());
+                sendEvent(Events.ERROR, map);
+            }
+
+            @Override
+            public void accessGranted() {
+                super.accessGranted();
+                sendEvent(Events.ACCESS_GRANTED);
+            }
+
+            @Override
+            public void noCamera() {
+                super.noCamera();
+                sendEvent(Events.NO_CAMERA);
+            }
+
+            @Override
+            public void hasCamera() {
+                super.hasCamera();
+                sendEvent(Events.HAS_CAMERA);
+            }
+
+            @Override
+            public void loaded() {
+                super.loaded();
+                sendEvent(Events.LOADED);
+            }
+
+        };
+    }
+
+    private IFileSelectorCallback prepareFileSelectorCallback(@NonNull Task task) {
+        return new FileSelectorCallback() {
+            @Override
+            public void uploadSelected(@NonNull List<String> paths) {
+                super.uploadSelected(paths);
+                WritableMap map = Arguments.createMap();
+                map.putArray(Keys.FILES, Arguments.fromList(paths));
+                sendEvent(Events.ERROR, map);
+            }
+
+            @Override
+            public void loaded() {
+                super.loaded();
+                sendEvent(Events.LOADED);
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                sendEvent(Events.CANCELLED_BY_USER);
+                cancel(task);
+            }
+
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                ZLog.d("error:%s", throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.ERROR, throwable.toString());
+                sendEvent(Events.ERROR, map);
+            }
+
+            @Override
+            public void accessForbidden(@NonNull List<String> permissions) {
+                super.accessForbidden(permissions);
+                ZLog.d("accessForbidden");
+                reject(task, ERR_PERMISSION_DENIED);
+                WritableMap map = Arguments.createMap();
+                map.putArray(Keys.PERMISSIONS, Arguments.fromList(permissions));
+                sendEvent(Events.ACCESS_FORBIDDEN, map);
+            }
+
+            @Override
+            public void accessGranted() {
+                super.accessGranted();
+                sendEvent(Events.ACCESS_GRANTED);
+            }
+        };
+    }
+
+    private IPlayerCallback preparePlayerCallback(@NonNull Task task) {
+        return new PlayerCallback() {
+            @Override
+            public void loaded() {
+                super.loaded();
+                sendEvent(Events.LOADED);
+            }
+
+            @Override
+            public void canceledByUser() {
+                super.canceledByUser();
+                sendEvent(Events.CANCELLED_BY_USER);
+                cancel(task);
+            }
+
+            @Override
+            public void error(@NonNull Throwable throwable) {
+                super.error(throwable);
+                ZLog.d("error:%s", throwable);
+                reject(task, ERR_UNKNOWN, throwable.toString());
+                WritableMap map = Arguments.createMap();
+                map.putString(Keys.ERROR, throwable.toString());
+                sendEvent(Events.ERROR, map);
+            }
+
+            @Override
+            public void playing() {
+                super.playing();
+                sendEvent(Events.PLAYING);
+            }
+
+            @Override
+            public void paused() {
+                super.paused();
+                sendEvent(Events.PAUSED);
+            }
+
+            @Override
+            public void ended() {
+                super.ended();
+                sendEvent(Events.ENDED);
+            }
+
+            @Override
+            public void seek(long millis) {
+                super.seek(millis);
+                WritableMap map = Arguments.createMap();
+                map.putDouble(Keys.MILLIS, millis);
+                sendEvent(Events.SEEK, map);
+            }
+
+            @Override
+            public void readyToPlay() {
+                super.readyToPlay();
+                sendEvent(Events.READY_TO_PLAY);
+            }
+
+            @Override
+            public void accessForbidden(@NonNull List<String> permissions) {
+                super.accessForbidden(permissions);
+                ZLog.d("accessForbidden");
+                reject(task, ERR_PERMISSION_DENIED);
+                WritableMap map = Arguments.createMap();
+                map.putArray(Keys.PERMISSIONS, Arguments.fromList(permissions));
+                sendEvent(Events.ACCESS_FORBIDDEN, map);
+            }
+
+            @Override
+            public void accessGranted() {
+                super.accessGranted();
+                sendEvent(Events.ACCESS_GRANTED);
             }
         };
     }

@@ -15,4 +15,7 @@ public final class Keys {
     public static final String SOUND_LEVEL = "sound_level";
     public static final String SECONDS_LEFT = "seconds_left";
     public static final String MILLIS_PASSED = "millis_passed";
+    public static final String MILLIS = "millis";
+    public static final String FILES = "files";
+    public static final String VALUE = "value";
 }
