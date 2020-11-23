@@ -1,0 +1,91 @@
+package com.ziggeo.api
+
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
+import com.ziggeo.BaseModule
+import com.ziggeo.androidsdk.log.ZLog
+import com.ziggeo.tasks.SimpleTask
+import com.ziggeo.tasks.Task
+import com.ziggeo.utils.ConversionUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import java.io.InputStream
+
+/**
+ * Created by alex on 6/25/2017.
+ */
+class VideosModule(reactContext: ReactApplicationContext) : BaseModule(reactContext) {
+    private val compositeDisposable: CompositeDisposable
+    override fun getName() = "Videos"
+
+    init {
+        RxJavaPlugins.setErrorHandler { t: Throwable? -> ZLog.e(t) }
+        compositeDisposable = CompositeDisposable()
+    }
+
+    @ReactMethod
+    fun index(args: ReadableMap?, promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        val d = ziggeo.apiRx()
+                .videosRaw()
+                .index(ConversionUtil.toMap(args))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result: String? -> resolve(task, result) }
+                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+        compositeDisposable.add(d)
+    }
+
+    @ReactMethod
+    fun getImageUrl(tokenOrKey: String, promise: Promise) {
+        promise.resolve(ziggeo.videos().getImageUrl(tokenOrKey))
+    }
+
+    @ReactMethod
+    fun downloadImage(tokenOrKey: String, promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        val d = ziggeo.apiRx()
+                .videosRaw()
+                .downloadImage(tokenOrKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result: InputStream? -> resolve(task, result) }
+                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+        compositeDisposable.add(d)
+    }
+
+    @ReactMethod
+    fun destroy(tokenOrKey: String, promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        val d = ziggeo.apiRx()
+                .videosRaw()
+                .destroy(tokenOrKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ resolve(task, null) }
+                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+        compositeDisposable.add(d)
+    }
+
+    @ReactMethod
+    fun update(token: String, modelJson: String, promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        val d = ziggeo.apiRx()
+                .videosRaw()
+                .update(token, modelJson)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ upd: String? -> resolve(task, upd) }
+                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+        compositeDisposable.add(d)
+    }
+
+    override fun onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy()
+        compositeDisposable.dispose()
+    }
+}
