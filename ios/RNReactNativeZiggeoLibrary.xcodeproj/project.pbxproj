@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
+		844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 844FB5F6256C6FA8006B7C05 /* RCTVideos.m */; };
 		84CDB80624AE90B9008EC6AE /* Ziggeo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */; };
 		D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */; };
 		FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */; };
@@ -40,6 +41,8 @@
 		134814201AA4EA6300B7C361 /* libRNReactNativeZiggeoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZiggeoLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		58603263C86843794188BB9C /* ButtonConfig+parse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ButtonConfig+parse.m"; sourceTree = "<group>"; };
 		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
+		844FB5F6256C6FA8006B7C05 /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
+		844FB5F9256C6FA8006B7C05 /* RCTVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTVideos.h; sourceTree = "<group>"; };
 		84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Ziggeo.xcodeproj; path = "../../ZigiOS-SDK/Ziggeo.xcodeproj"; sourceTree = "<group>"; };
 		D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingImagePickerController.h; sourceTree = "<group>"; };
 		D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingImagePickerController.m; sourceTree = "<group>"; };
@@ -72,6 +75,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				844FB5F9256C6FA8006B7C05 /* RCTVideos.h */,
+				844FB5F6256C6FA8006B7C05 /* RCTVideos.m */,
 				84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */,
 				D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */,
 				D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */,
@@ -176,6 +181,7 @@
 			files = (
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
 				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
+				844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
 			);
