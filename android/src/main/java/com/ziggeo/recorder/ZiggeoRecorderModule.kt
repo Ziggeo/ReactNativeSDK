@@ -207,14 +207,16 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
         if (config != null && config.containsKey(keyClose)) {
             close = java.lang.Boolean.parseBoolean(config[keyClose])
         }
-        ziggeo.qrScannerConfig = QrScannerConfig(close, object : QrScannerCallback() {
-            override fun onDecoded(value: String) {
-                super.onDecoded(value)
-                val params = Arguments.createMap()
-                params.putString(Keys.QR, value)
-                sendEvent(Events.QR_DECODED, params)
-            }
-        })
+        ziggeo.qrScannerConfig = QrScannerConfig.Builder()
+                .callback(object : QrScannerCallback() {
+                    override fun onDecoded(value: String) {
+                        super.onDecoded(value)
+                        val params = Arguments.createMap()
+                        params.putString(Keys.QR, value)
+                        sendEvent(Events.QR_DECODED, params)
+                    }
+                })
+                .build()
         ziggeo.startQrScanner()
     }
 

@@ -103,6 +103,7 @@ object ConversionUtil {
         val useWifiOnly = "use_wifi_only"
         val syncInterval = "sync_interval"
         val turnOffUploader = "turn_off_uploader"
+        val shouldStartAsForeground = "start_as_foreground"
         val builder = UploadingConfig.Builder()
         if (data.hasKey(useWifiOnly)) {
             builder.useWifiOnly(data.getBoolean(useWifiOnly))
@@ -112,6 +113,9 @@ object ConversionUtil {
         }
         if (data.hasKey(turnOffUploader)) {
             builder.turnOffUploader(data.getBoolean(turnOffUploader))
+        }
+        if (data.hasKey(shouldStartAsForeground)) {
+            builder.startAsForeground(data.getBoolean(shouldStartAsForeground))
         }
         return builder.build()
     }
