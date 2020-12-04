@@ -1,5 +1,6 @@
 package com.ziggeo.api
 
+import android.annotation.SuppressLint
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
@@ -11,6 +12,7 @@ import com.ziggeo.tasks.Task
 import com.ziggeo.utils.ConversionUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiConsumer
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import java.io.InputStream
@@ -40,22 +42,22 @@ class VideosModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
         compositeDisposable.add(d)
     }
 
+    @SuppressLint("CheckResult")
     @ReactMethod
     fun getImageUrl(tokenOrKey: String, promise: Promise) {
-        promise.resolve(ziggeo.videos().getImageUrl(tokenOrKey))
-    }
-
-    @ReactMethod
-    fun downloadImage(tokenOrKey: String, promise: Promise) {
-        val task: Task = SimpleTask(promise)
-        val d = ziggeo.apiRx()
-                .videosRaw()
-                .downloadImage(tokenOrKey)
+        ziggeo.apiRx()
+                .videos()
+                .getImageUrl(tokenOrKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result: InputStream? -> resolve(task, result) }
-                ) { throwable: Throwable -> reject(task, throwable.toString()) }
-        compositeDisposable.add(d)
+                .subscribe(BiConsumer { url, throwable ->
+                    url?.let {
+                        promise.resolve(it)
+                    }
+                    throwable?.let {
+                        promise.reject(it)
+                    }
+                })
     }
 
     @ReactMethod

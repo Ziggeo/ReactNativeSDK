@@ -10,9 +10,6 @@ export default {
 	getImageUrl: async function (tokenOrKey: string) {
 		return Videos.getImageUrl(tokenOrKey);
 	},
-	downloadImage: async function (tokenOrKey) {
-		return Videos.downloadImage(tokenOrKey);
-	},
 	destroy: async function (tokenOrKey) {
 		return Videos.destroy(tokenOrKey);
 	},
