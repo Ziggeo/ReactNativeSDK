@@ -9,6 +9,9 @@
 
 @interface RCTVideos : RCTEventEmitter <RCTBridgeModule>
 
+@property (strong, nonatomic) NSString *appToken;
+@property (strong, nonatomic) NSString *serverAuthToken;
+@property (strong, nonatomic) NSString *clientAuthToken;
 
 @end
 

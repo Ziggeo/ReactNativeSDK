@@ -4,10 +4,83 @@
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
 
+
+@interface VideosContext: NSObject<ZiggeoVideosDelegate>
+@property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
+@property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
+@property (strong, nonatomic) RCTVideos* videos;
+
+@end;
+
+
+
+@implementation VideosContext
+-(void)resolve:(NSString*)token {
+    if(_resolveBlock) _resolveBlock(token);
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    self.videos = nil;
+}
+
+-(void)reject:(NSString*)code message:(NSString*)message {
+    if(_rejectBlock) _rejectBlock(code, message, [NSError errorWithDomain:@"recorder" code:0 userInfo:@{code:message}]);
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    self.videos = nil;
+}
+
+- (void)videoPreparingToUploadWithPath:(NSString *)sourcePath {
+    
+}
+
+- (void)videoPreparingToUploadWithPath:(NSString *)sourcePath token:(NSString *)token {
+    
+}
+
+- (void)videoUploadCompleteForPath:(NSString *)sourcePath token:(NSString *)token withResponse:(NSURLResponse *)response error:(NSError *)error json:(NSDictionary *)json {
+    
+}
+
+- (void)videoUploadProgressForPath:(NSString *)sourcePath token:(NSString *)token totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes {
+    
+}
+
+- (void)videoUploadStartedWithPath:(NSString *)sourcePath token:(NSString *)token backgroundTask:(NSURLSessionTask *)uploadingTask {
+    
+}
+
+@end;
+
+
 @implementation RCTVideos {
 }
 
 RCT_EXPORT_MODULE();
+
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[
+    ];
+}
+
+RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
+{
+    RCTLogInfo(@"application token set: %@", token);
+    _appToken = token;
+}
+
+RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
+{
+    RCTLogInfo(@"server auth token set: %@", token);
+    _serverAuthToken = token;
+}
+
+RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
+{
+    RCTLogInfo(@"server auth token set: %@", token);
+    _clientAuthToken = token;
+}
+
 
 RCT_EXPORT_METHOD(index:(NSDictionary *)map resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -48,17 +121,24 @@ RCT_EXPORT_METHOD(downloadImage:(NSString *)tokenOrKey resolver:(RCTPromiseResol
 
 RCT_EXPORT_METHOD(destroy:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    /*
-    val task: Task = SimpleTask(promise)
-        val d = ziggeo.apiRx()
-                .videosRaw()
-                .destroy(tokenOrKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ resolve(task, null) }
-                ) { throwable: Throwable -> reject(task, throwable.toString()) }
-        compositeDisposable.add(d)
-    */
+    dispatch_async(dispatch_get_main_queue(), ^{
+        VideosContext* context = [[VideosContext alloc] init];
+        context.resolveBlock = resolve;
+        context.rejectBlock = reject;
+        context.videos = self;
+
+        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
+        ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        ziggeo.connect.clientAuthToken = self.clientAuthToken;
+        ziggeo.videos.delegate = context;
+        [ziggeo.videos deleteVideoByToken:tokenOrKey data:nil callback:^void (NSData* responseData, NSURLResponse* response, NSError* error) {
+            if (error == nil) {
+                reject(nil, nil, error);
+            } else {
+                resolve(nil);
+            }
+        }];
+    });
 }
 
 RCT_EXPORT_METHOD(update:(NSString *)tokenOrKey modelJson:(NSString *)modelJson resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
