@@ -30,6 +30,24 @@ class VideosModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
     }
 
     @ReactMethod
+    fun setAppToken(appToken: String) {
+        ZLog.d("setAppToken:%s", appToken)
+        ziggeo.appToken = appToken
+    }
+
+    // we must override this method to make @ReactMethod annotation work
+    @ReactMethod
+    override fun setClientAuthToken(token: String) {
+        super.setClientAuthToken(token)
+    }
+
+    // we must override this method to make @ReactMethod annotation work
+    @ReactMethod
+    override fun setServerAuthToken(token: String) {
+        super.setServerAuthToken(token)
+    }
+
+    @ReactMethod
     fun index(args: ReadableMap?, promise: Promise) {
         val task: Task = SimpleTask(promise)
         val d = ziggeo.apiRx()

@@ -3,6 +3,7 @@ import VideosApi from './videos';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
+const {Videos} = NativeModules;
 const {ContactUs} = NativeModules;
 
 export default {
@@ -11,14 +12,17 @@ export default {
     setAppToken: function (appToken: string) {
         ZiggeoPlayer.setAppToken(appToken);
         ZiggeoRecorder.setAppToken(appToken);
+        Videos.setAppToken(appToken);
     },
     setClientAuthToken: function (token: string) {
         ZiggeoPlayer.setClientAuthToken(token);
         ZiggeoRecorder.setClientAuthToken(token);
+        Videos.setClientAuthToken(token);
     },
     setServerAuthToken: function (token: string) {
         ZiggeoPlayer.setServerAuthToken(token);
         ZiggeoRecorder.setServerAuthToken(token);
+        Videos.setServerAuthToken(token);
     },
     sendReport(logsList) {
         ContactUs.sendReport(logsList);
