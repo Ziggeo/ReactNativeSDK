@@ -1,5 +1,6 @@
 package com.ziggeo.player
 
+import android.net.Uri
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
@@ -35,6 +36,11 @@ class ZiggeoPlayerModule(reactContext: ReactApplicationContext) : BaseModule(rea
     @ReactMethod
     fun play(videoToken: String) {
         ziggeo.startPlayer(videoToken)
+    }
+
+    @ReactMethod
+    fun playFromUri(path_or_uri: String) {
+        ziggeo.startPlayer(Uri.parse(path_or_uri))
     }
 
     @ReactMethod

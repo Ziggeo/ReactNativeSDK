@@ -130,6 +130,9 @@ export default {
     play: function (videoId: string) {
         ZiggeoPlayer.play(videoId);
     },
+    playFromUri: function (path_or_url: string) {
+        ZiggeoPlayer.playFromUri(path_or_url);
+    },
     setExtraArgsForPlayer: function (map) {
         ZiggeoPlayer.setExtraArgsForPlayer(map);
     },
