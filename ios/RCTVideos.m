@@ -133,9 +133,9 @@ RCT_EXPORT_METHOD(destroy:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBloc
         ziggeo.videos.delegate = context;
         [ziggeo.videos deleteVideoByToken:tokenOrKey data:nil callback:^void (NSData* responseData, NSURLResponse* response, NSError* error) {
             if (error == nil) {
-                reject(nil, nil, error);
-            } else {
                 resolve(nil);
+            } else {
+                reject(nil, nil, error);
             }
         }];
     });
