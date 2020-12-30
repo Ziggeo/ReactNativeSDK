@@ -72,7 +72,7 @@ RCT_EXPORT_METHOD(playFromUri:(NSString*)path_or_url)
 
     if(mergedParams == nil)
     {
-        player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken videoURL:URL];
+        player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken videoUrl:URL];
         AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
         playerController.player = player;
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
