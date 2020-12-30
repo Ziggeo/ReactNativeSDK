@@ -79,7 +79,7 @@ RCT_EXPORT_METHOD(playFromUri:(NSString*)path_or_url)
         [playerController.player play];
     }
     else {
-        [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken params:mergedParams callback:^(ZiggeoPlayer *player) {
+        [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken videoUrl:URL params:mergedParams callback:^(ZiggeoPlayer *player) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
                 playerController.player = player;
