@@ -41,6 +41,16 @@ RCT_EXPORT_METHOD(setPlayerCacheConfig:(NSDictionary *)config)
 
 RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 {
+    [self playTokenOrUrl:videoToken URL:nil];
+}
+
+RCT_EXPORT_METHOD(playFromUri:(NSString*)path_or_url)
+{
+    [self playTokenOrUrl:nil URL:path_or_url];
+}
+
+- (void) playTokenOrUrl:(NSString *)value URL:(NSString*)URL {
+    NSString *videoToken = value;
   dispatch_async(dispatch_get_main_queue(), ^{
     Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
     [ziggeo connect].serverAuthToken = self.serverAuthToken;
@@ -62,7 +72,7 @@ RCT_EXPORT_METHOD(play:(NSString*)videoToken)
 
     if(mergedParams == nil)
     {
-        player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken];
+        player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken videoURL:URL];
         AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
         playerController.player = player;
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
