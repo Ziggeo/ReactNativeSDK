@@ -142,6 +142,9 @@ export default {
     setPlayerCacheConfig: function (map) {
         ZiggeoPlayer.setPlayerCacheConfig(map);
     },
+    setAdsURL: function (url) {
+        ZiggeoPlayer.setAdsURL(url);
+    },
 
     // Constants
     REAR_CAMERA: ZiggeoRecorder.rearCamera,

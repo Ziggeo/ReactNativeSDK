@@ -58,4 +58,10 @@ class ZiggeoPlayerModule(reactContext: ReactApplicationContext) : BaseModule(rea
             }
         }
     }
+
+    @ReactMethod
+    fun setAdsURL(url: String) {
+        ZLog.d("setAdsURL:%s", url)
+        ziggeo.playerConfig.adsUri = Uri.parse(url);
+    }
 }
