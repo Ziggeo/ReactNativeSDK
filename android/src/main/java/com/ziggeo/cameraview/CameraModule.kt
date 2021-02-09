@@ -12,7 +12,7 @@ class CameraModule(
         private val rnCameraViewManager: RnCameraViewManager
 ) : BaseModule(reactContext) {
 
-    override fun getName() = "Camera"
+    override fun getName() = "ZiggeoCamera"
 
     @ReactMethod
     fun startRecording(path: String, maxDurationMillis: Int) {
