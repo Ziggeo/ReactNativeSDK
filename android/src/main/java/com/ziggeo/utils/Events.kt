@@ -6,7 +6,7 @@ object Events {
     const val CAMERA_CLOSED = "CameraClosed"
 
     // Common
-    const val LOADED = "RecordingStarted"
+    const val LOADED = "Loaded"
     const val CANCELLED_BY_USER = "CancelledByUser"
 
     // Error

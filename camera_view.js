@@ -1,3 +1,29 @@
-import { requireNativeComponent } from 'react-native';
+import {NativeModules, requireNativeComponent, StyleSheet} from 'react-native';
+import React from 'react';
+import PropTypes from 'prop-types';
+const {ZCameraModule} = NativeModules;
 
-module.exports = requireNativeComponent('ZiggeoCameraView');
+class ZiggeoCameraView extends React.Component {
+
+    startRecording(path, maxDuration) {
+        ZCameraModule.startRecording(path, 10000);
+    }
+
+    render() {
+        return <ZCameraViewManager
+            style={this.props.style}
+            {...this.props}
+        />;
+    }
+}
+
+ZiggeoCameraView.propTypes = {
+    document: PropTypes.string,
+};
+
+var ZCameraViewManager = requireNativeComponent(
+    'ZCameraViewManager',
+    ZiggeoCameraView,
+);
+
+module.exports = ZiggeoCameraView;
