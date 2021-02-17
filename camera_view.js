@@ -9,6 +9,10 @@ class ZiggeoCameraView extends React.Component {
         ZCameraModule.startRecording(path, 10000);
     }
 
+    stopRecording() {
+        ZCameraModule.stopRecording();
+    }
+
     render() {
         return <ZCameraViewManager
             style={this.props.style}
