@@ -112,14 +112,14 @@ RCT_EXPORT_METHOD(playFromUri:(NSString*)path_or_url)
         playerController.player = player;
 
         if (!_adController) {
-            _adController = [[A]
+            _adController = [[UIViewController alloc] init];
         }
 
         if (_adsUrl && [player isKindOfClass:[ZiggeoPlayer class]]) {
-            [UIApplication sharedApplication].keyWindow.rootViewController presentViewController:_adController animated:YES completion:nil]; // note that we don't show _playerController itself.
+            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:_adController animated:YES completion:nil]; // note that we don't show _playerController itself.
             [(ZiggeoPlayer *) player playWithAdsWithAdTagURL:_adsUrl playerContainer:_adController.view playerViewController:playerController];
         } else {
-            [self presentViewController:playerController animated:YES completion:nil];
+            [_adController presentViewController:playerController animated:YES completion:nil];
             [player play];
         }
 
