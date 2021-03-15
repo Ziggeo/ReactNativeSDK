@@ -11,6 +11,8 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 @import AVKit;
+#import <GoogleInteractiveMediaAds/GoogleInteractiveMediaAds.h>
+
 @implementation RCTZiggeoPlayer {
     UIViewController *_adController;
 }
