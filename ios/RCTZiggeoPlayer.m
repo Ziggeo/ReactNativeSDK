@@ -11,7 +11,11 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 @import AVKit;
-@implementation RCTZiggeoPlayer
+#import <GoogleInteractiveMediaAds/GoogleInteractiveMediaAds.h>
+
+@implementation RCTZiggeoPlayer {
+    UIViewController *_adController;
+}
 
 RCT_EXPORT_MODULE();
 
@@ -75,8 +79,8 @@ RCT_EXPORT_METHOD(playFromUri:(NSString*)path_or_url)
         player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken videoUrl:URL];
         AVPlayerViewController* playerController = [[AVPlayerViewController alloc] init];
         playerController.player = player;
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
-        [playerController.player play];
+
+        [self startPlaybackWithPlayer:player playerController: playerController];
     }
     else {
         [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken videoUrl:URL params:mergedParams callback:^(ZiggeoPlayer *player) {
@@ -95,12 +99,31 @@ RCT_EXPORT_METHOD(playFromUri:(NSString*)path_or_url)
                     playerController.showsPlaybackControls = false;
                 }
                 
-                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
-                [playerController.player play];
+                [self startPlaybackWithPlayer:player playerController:playerController];
             });
         }];
     }
   });
+}
+
+- (void)startPlaybackWithPlayer:(AVPlayer *)player playerController:(AVPlayerViewController *)playerController {
+    dispatch_async(dispatch_get_main_queue(), ^{
+
+        playerController.player = player;
+
+        if (!_adController) {
+            _adController = [[UIViewController alloc] init];
+        }
+
+        if (_adsUrl && [player isKindOfClass:[ZiggeoPlayer class]]) {
+            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:_adController animated:YES completion:nil]; // note that we don't show _playerController itself.
+            [(ZiggeoPlayer *) player playWithAdsWithAdTagURL:_adsUrl playerContainer:_adController.view playerViewController:playerController];
+        } else {
+            [_adController presentViewController:playerController animated:YES completion:nil];
+            [player play];
+        }
+
+    });
 }
 
 RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary*)map)
@@ -111,6 +134,11 @@ RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary*)map)
 RCT_EXPORT_METHOD(setThemeArgsForPlayer:(NSDictionary*)map)
 {
     _themeParams = map;
+}
+
+RCT_EXPORT_METHOD(setAdsURL:(NSString*)url)
+{
+    _adsUrl = url;
 }
 
 @end
