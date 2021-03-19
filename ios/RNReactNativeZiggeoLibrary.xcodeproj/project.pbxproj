@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
 		844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 844FB5F6256C6FA8006B7C05 /* RCTVideos.m */; };
+		8462CE5E26051C1C00FAE178 /* RCTZiggeoCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8462CE5D26051C1C00FAE178 /* RCTZiggeoCameraView.m */; };
+		84E929912605280400C7A148 /* RCTZiggeoCameraViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E929902605280400C7A148 /* RCTZiggeoCameraViewManager.m */; };
 		D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */; };
 		FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */; };
 		FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */; };
@@ -32,6 +34,10 @@
 		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
 		844FB5F6256C6FA8006B7C05 /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
 		844FB5F9256C6FA8006B7C05 /* RCTVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTVideos.h; sourceTree = "<group>"; };
+		8462CE5C26051BAD00FAE178 /* RCTZiggeoCameraView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoCameraView.h; sourceTree = "<group>"; };
+		8462CE5D26051C1C00FAE178 /* RCTZiggeoCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeoCameraView.m; sourceTree = "<group>"; };
+		8462CE612605273200FAE178 /* RCTZiggeoCameraViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoCameraViewManager.h; sourceTree = "<group>"; };
+		84E929902605280400C7A148 /* RCTZiggeoCameraViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeoCameraViewManager.m; sourceTree = "<group>"; };
 		D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingImagePickerController.h; sourceTree = "<group>"; };
 		D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingImagePickerController.m; sourceTree = "<group>"; };
 		FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoPlayer.h; sourceTree = "<group>"; };
@@ -66,6 +72,10 @@
 				844FB5F6256C6FA8006B7C05 /* RCTVideos.m */,
 				D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */,
 				D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */,
+				8462CE612605273200FAE178 /* RCTZiggeoCameraViewManager.h */,
+				84E929902605280400C7A148 /* RCTZiggeoCameraViewManager.m */,
+				8462CE5C26051BAD00FAE178 /* RCTZiggeoCameraView.h */,
+				8462CE5D26051C1C00FAE178 /* RCTZiggeoCameraView.m */,
 				FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */,
 				FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */,
 				FA441F361F2A562B00E51295 /* RCTZiggeoRecorder.h */,
@@ -143,6 +153,8 @@
 			files = (
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
 				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
+				84E929912605280400C7A148 /* RCTZiggeoCameraViewManager.m in Sources */,
+				8462CE5E26051C1C00FAE178 /* RCTZiggeoCameraView.m in Sources */,
 				844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
