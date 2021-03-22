@@ -3,11 +3,16 @@
 #import <Foundation/Foundation.h>
 
 #import "RCTBridge.h"
+#import "RCTZiggeoCameraView.h"
 
 
 @implementation RCTZiggeoCameraViewManager
 
 RCT_EXPORT_MODULE();
+
+RCT_EXPORT_VIEW_PROPERTY(style, NSString);
+
+RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 
 @synthesize bridge = _bridge;
 
@@ -24,12 +29,5 @@ RCT_EXPORT_MODULE();
 - (dispatch_queue_t)methodQueue {
     return dispatch_get_main_queue();
 }
-
-
-RCT_EXPORT_VIEW_PROPERTY(style, NSString);
-
-RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
-
-
 
 @end;

@@ -2,6 +2,7 @@
 #define RCTZiggeoCameraView_h
 
 #import "RCTEventDispatcher.h"
+#import <Ziggeo/Ziggeo.h>
 
 #endif /* RCTZiggeoCameraView_h */
 
@@ -28,7 +29,7 @@
 @property (nonatomic) bool useLiveStreaming;
 @property (nonatomic) bool controlsVisible;
 @property (nonatomic) bool showFaceOutline;
-@property (nonatomic) bool showLightIndicatorproperty (nonatomic) bool showSoundIndicator;
+//@property (nonatomic) bool showLightIndicatorproperty (nonatomic) bool showSoundIndicator;
 @property (nonatomic) ZiggeoRecorderInterfaceConfig *interfaceConfig;
 @property (nonatomic) UIImagePickerControllerCameraDevice cameraDevice;
 @property (nonatomic) id<ZiggeoRecorder2Delegate> recorderDelegate;

@@ -9,8 +9,8 @@
 
 @interface RCTZiggeoCameraViewManager: RCTViewManager
 
-RCT_EXPORT_VIEW_PROPERTY(style, NSString);
+@property (nonatomic, assign) NSString *style;
 
-RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
+@property (nonatomic, assign) NSString *ref;
 
 @end;
