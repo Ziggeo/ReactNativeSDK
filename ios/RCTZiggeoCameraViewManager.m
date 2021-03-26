@@ -11,10 +11,6 @@
 #import "RCTZiggeoRecorder.h"
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
-#import "RotatingImagePickerController.h"
-#import <Ziggeo/ZiggeoRecorderInterfaceConfig.h>
-#import <Ziggeo/ButtonConfig.h>
-#import "ButtonConfig+parse.h"
 
 @implementation RCTZiggeoCameraViewManager
 
