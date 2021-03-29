@@ -3,14 +3,12 @@
 #import <Foundation/Foundation.h>
 
 #import "RCTBridge.h"
-#import "RCTZiggeoCameraView.h"
-#import "../../ZigiOS-SDK/Ziggeo/Recorder2/ZiggeoRecorder2.h"
-#import "../../ZigiOS-SDK/Ziggeo/Ziggeo.h"
-
-#import <Foundation/Foundation.h>
-#import "RCTZiggeoRecorder.h"
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
+#import <UIKit/UIKit.h>
+#import <Ziggeo/Ziggeo.h>
+#import "RCTZiggeoCameraView.h"
+#import "RCTZiggeo.h"
 
 @implementation RCTZiggeoCameraViewManager
 
@@ -23,10 +21,10 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
-    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
-    m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
-    m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
-    [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
+    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:[RCTZiggeo appToken]];
+    m_ziggeo.connect.serverAuthToken = [RCTZiggeo serverAuthToken];
+    m_ziggeo.connect.clientAuthToken = [RCTZiggeo clientAuthToken];
+    // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
     ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
     /*
@@ -61,20 +59,21 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
     }
     */
 
-    m_ziggeo.videos.delegate = context;
+    // todo? m_ziggeo.videos.delegate = context;
 
     RCTZiggeoCameraView *view = [[RCTZiggeoCameraView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 
     UIView *recorderView = recorder.view;
-    recorderView.recorder = recorder;
+    view.recorder = recorder;
 
     [view addSubview:recorderView];
 
     recorderView.translatesAutoresizingMaskIntoConstraints = false;
-    [view.leadingAnchor constraintEqualToAnchor:recorderView.leadingAnchor].isActive = true;
-    [view.trailingAnchor constraintEqualToAnchor:recorderView.trailingAnchor].isActive = true;
-    [view.topAnchor constraintEqualToAnchor:recorderView.topAnchor].isActive = true;
-    [view.bottomAnchor constraintEqualToAnchor:recorderView.bottomAnchor].isActive = true;
+    
+    [view.leadingAnchor constraintEqualToAnchor:recorderView.leadingAnchor].active = true;
+    [view.trailingAnchor constraintEqualToAnchor:recorderView.trailingAnchor].active = true;
+    [view.topAnchor constraintEqualToAnchor:recorderView.topAnchor].active = true;
+    [view.bottomAnchor constraintEqualToAnchor:recorderView.bottomAnchor].active = true;
 
 
     return view;

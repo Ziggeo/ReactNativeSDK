@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		58603443F3D756620EFB23D8 /* RCTZiggeo.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603B49026C36FE3B84ED8B /* RCTZiggeo.m */; };
 		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
 		844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 844FB5F6256C6FA8006B7C05 /* RCTVideos.m */; };
 		8462CE5E26051C1C00FAE178 /* RCTZiggeoCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8462CE5D26051C1C00FAE178 /* RCTZiggeoCameraView.m */; };
@@ -32,6 +33,8 @@
 		134814201AA4EA6300B7C361 /* libRNReactNativeZiggeoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZiggeoLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		58603263C86843794188BB9C /* ButtonConfig+parse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ButtonConfig+parse.m"; sourceTree = "<group>"; };
 		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
+		58603B49026C36FE3B84ED8B /* RCTZiggeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeo.m; sourceTree = "<group>"; };
+		58603F98FC3D02FB6607F122 /* RCTZiggeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeo.h; sourceTree = "<group>"; };
 		844FB5F6256C6FA8006B7C05 /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
 		844FB5F9256C6FA8006B7C05 /* RCTVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTVideos.h; sourceTree = "<group>"; };
 		8462CE5C26051BAD00FAE178 /* RCTZiggeoCameraView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoCameraView.h; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 				FA441F791F2A595300E51295 /* Frameworks */,
 				58603263C86843794188BB9C /* ButtonConfig+parse.m */,
 				58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */,
+				58603B49026C36FE3B84ED8B /* RCTZiggeo.m */,
+				58603F98FC3D02FB6607F122 /* RCTZiggeo.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,6 +163,7 @@
 				844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
+				58603443F3D756620EFB23D8 /* RCTZiggeo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

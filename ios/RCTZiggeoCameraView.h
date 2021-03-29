@@ -12,6 +12,8 @@
 
 @property (nonatomic, assign) NSString *ref;
 
+@property (nonatomic, assign) ZiggeoRecorder2 *recorder;
+
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
 
