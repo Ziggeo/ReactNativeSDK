@@ -1,4 +1,4 @@
-#include "RCTZiggeoCameraViewManager.h"
+#include "ZCameraViewManager.h"
 
 #import <Foundation/Foundation.h>
 
@@ -6,12 +6,11 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import <UIKit/UIKit.h>
-#import <Ziggeo/Ziggeo.h>
-#import "RCTZiggeoCameraView.h"
+#import "ZCameraView.h"
 #import "RCTZiggeo.h"
-#import "RCTZiggeoCameraViewManager.h"
+#import "ZCameraViewManager.h"
 
-@implementation RCTZiggeoCameraViewManager
+@implementation ZCameraViewManager
 
 RCT_EXPORT_MODULE();
 
@@ -62,7 +61,7 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 
     // todo? m_ziggeo.videos.delegate = context;
 
-    RCTZiggeoCameraView *view = [[RCTZiggeoCameraView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
+    ZCameraView *view = [[ZCameraView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 
     UIView *recorderView = recorder.view;
     view.recorder = recorder;

@@ -4,10 +4,11 @@
 #import "RCTBridgeModule.h"
 #import "RCTEventDispatcher.h"
 #import "UIView+React.h"
-#import "RCTZiggeoCameraView.h"
+#import "ZCameraView.h"
+#import "RCTVideos.h"
 
 
-@implementation RCTZiggeoCameraView {
+@implementation ZCameraView {
     RCTEventDispatcher *_eventDispatcher;
 
     dispatch_block_t cleanup;

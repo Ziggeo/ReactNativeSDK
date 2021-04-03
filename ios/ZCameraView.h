@@ -1,12 +1,11 @@
-#ifndef RCTZiggeoCameraView_h
-#define RCTZiggeoCameraView_h
+#ifndef ZCameraView_h
+#define ZCameraView_h
 
+#import <UIKit/UIKit.h>
 #import "RCTEventDispatcher.h"
 #import <Ziggeo/Ziggeo.h>
 
-#endif /* RCTZiggeoCameraView_h */
-
-@interface RCTZiggeoCameraView: UIView
+@interface ZCameraView: UIView
 
 @property (nonatomic, assign) NSString *style;
 
@@ -53,3 +52,5 @@
 
 
 @end;
+
+#endif /* ZCameraView_h */
