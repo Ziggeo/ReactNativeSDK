@@ -29,5 +29,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Ziggeo SDK",
-  "version": "1.4.33"
+  "version": "1.4.33.custom.b2"
 }

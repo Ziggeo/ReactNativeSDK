@@ -65,19 +65,16 @@ object ConversionUtil {
      * @param readableArray The ReadableArray to be conveted.
      * @return An ArrayList containing the data that was in the ReadableArray.
      */
-    fun toList(readableArray: ReadableArray?): MutableList<Any?>? {
-        if (readableArray == null) {
-            return null
-        }
-        var result: MutableList<Any?>? = ArrayList(readableArray.size())
+    fun toList(readableArray: ReadableArray): MutableList<Any?> {
+        var result: MutableList<Any?> = ArrayList(readableArray.size())
         for (index in 0 until readableArray.size()) {
             when (readableArray.getType(index)) {
-                ReadableType.Null -> result!!.add(index.toString())
-                ReadableType.Boolean -> result!!.add(readableArray.getBoolean(index))
+                ReadableType.Null -> result.add(index.toString())
+                ReadableType.Boolean -> result.add(readableArray.getBoolean(index))
                 ReadableType.Number -> readableArray.getDouble(index)
-                ReadableType.String -> result!!.add(readableArray.getString(index))
-                ReadableType.Map -> result!!.add(toMap(readableArray.getMap(index)))
-                ReadableType.Array -> result = toList(readableArray.getArray(index))
+                ReadableType.String -> result.add(readableArray.getString(index))
+                ReadableType.Map -> result.add(toMap(readableArray.getMap(index)))
+                ReadableType.Array -> result = toList(readableArray.getArray(index)!!)
                 else -> throw IllegalArgumentException("Could not convert object with index: $index.")
             }
         }
