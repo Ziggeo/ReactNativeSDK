@@ -164,6 +164,24 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     }
 }
 
+-(void) ziggeoRecorderDidVerify {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Verified" body:@{}];
+    }
+}
+
+-(void) ziggeoRecorderDidProcess {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Processed" body:@{}];
+    }
+}
+
+-(void) ziggeoRecorderProcessing {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Processing" body:@{}];
+    }
+}
+
 -(void)setRecorder:(RCTZiggeoRecorder *)recorder {
     if(recorder != nil)
     {
@@ -203,6 +221,9 @@ RCT_EXPORT_MODULE();
     return @[
         @"UploadProgress",
         @"RecordingStopped",
+        @"Verified",
+        @"Processed",
+        @"Processing",
     ];
 }
 

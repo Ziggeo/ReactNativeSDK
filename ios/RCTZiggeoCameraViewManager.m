@@ -9,6 +9,7 @@
 #import <Ziggeo/Ziggeo.h>
 #import "RCTZiggeoCameraView.h"
 #import "RCTZiggeo.h"
+#import "RCTZiggeoCameraViewManager.h"
 
 @implementation RCTZiggeoCameraViewManager
 
