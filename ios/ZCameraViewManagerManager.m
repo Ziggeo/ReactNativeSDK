@@ -7,6 +7,7 @@
 #import "ZCameraView.h"
 #import "RCTZiggeo.h"
 #import "ZCameraViewManagerManager.h"
+#import "RCTZCameraModule.h"
 
 @implementation ZCameraViewManagerManager
 
@@ -32,6 +33,8 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
     recorder.sendImmediately = false;
     recorder.autostartRecordingAfterSeconds = 0;
     recorder.maxRecordedDurationSeconds = 0;
+
+    [RCTZCameraModule setLastZiggeoRecorder:recorder];
 
     /*
     recorder.coverSelectorEnabled = self->_coverSelectorEnabled;

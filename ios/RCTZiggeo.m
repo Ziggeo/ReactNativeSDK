@@ -1,7 +1,10 @@
+#import <React/RCTLog.h>
 #import "RCTZiggeo.h"
 
 
 @implementation RCTZiggeo
+
+RCT_EXPORT_MODULE();
 
 static NSString *_appToken;
 static NSString *_serverAuthToken;
@@ -11,7 +14,7 @@ static NSString *_clientAuthToken;
     return _appToken;
 }
 
-+ (void)setAppToken:(NSString *)token {
+RCT_EXPORT_METHOD(setAppToken:(NSString *)token) {
     _appToken = token;
 }
 
@@ -19,7 +22,7 @@ static NSString *_clientAuthToken;
     return _serverAuthToken;
 }
 
-+ (void)setServerAuthToken:(NSString *)token {
+RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token) {
     _serverAuthToken = token;
 }
 
@@ -27,8 +30,13 @@ static NSString *_clientAuthToken;
     return _clientAuthToken;
 }
 
-+ (void)setClientAuthToken:(NSString *)token {
+RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token) {
     _clientAuthToken = token;
+}
+
+- (NSArray<NSString *> *)supportedEvents {
+    return @[
+    ];
 }
 
 @end
