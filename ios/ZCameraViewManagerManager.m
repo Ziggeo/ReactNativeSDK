@@ -25,6 +25,14 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
     // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
     ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
+    recorder.controlsVisible = false;
+
+    // settings controlsVisible to false also sets autostart, send immediately and max video duration.
+    // Setting everything back because we will actually have custom UI  so these settings are not needed
+    recorder.sendImmediately = false;
+    recorder.autostartRecordingAfterSeconds = 0;
+    recorder.maxRecordedDurationSeconds = 0;
+
     /*
     recorder.coverSelectorEnabled = self->_coverSelectorEnabled;
     recorder.cameraFlipButtonVisible = self->_cameraFlipButtonVisible;
