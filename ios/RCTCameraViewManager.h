@@ -2,9 +2,9 @@
 #define ZCameraViewManager_h
 
 #import <Foundation/Foundation.h>
-#import "RCTViewManager.h"
+#import <React/RCTViewManager.h>
 
-@interface ZCameraViewManager: RCTViewManager
+@interface RCTCameraViewManager: RCTViewManager
 
 @property (nonatomic, assign) NSString *style;
 

@@ -1,5 +1,3 @@
-#include "ZCameraViewManager.h"
-
 #import <Foundation/Foundation.h>
 
 #import "RCTBridge.h"
@@ -8,9 +6,9 @@
 #import <UIKit/UIKit.h>
 #import "ZCameraView.h"
 #import "RCTZiggeo.h"
-#import "ZCameraViewManager.h"
+#import "RCTCameraViewManager.h"
 
-@implementation ZCameraViewManager
+@implementation RCTCameraViewManager
 
 RCT_EXPORT_MODULE();
 
@@ -77,6 +75,12 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 
 
     return view;
+}
+
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[
+    ];
 }
 
 - (NSArray *) customDirectEventTypes {
