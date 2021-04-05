@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <Ziggeo/Ziggeo.h>
-#import "RCTCameraModule.h"
+#import "RCTZCameraModule.h"
 
-@implementation RCTCameraModule
+@implementation RCTZCameraModule
 
 RCT_EXPORT_MODULE();
 

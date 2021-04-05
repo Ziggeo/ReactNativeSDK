@@ -7,7 +7,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface RCTCameraModule : RCTEventEmitter <RCTBridgeModule>
+@interface RCTZCameraModule : RCTEventEmitter <RCTBridgeModule>
 
 
 

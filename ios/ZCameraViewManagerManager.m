@@ -6,9 +6,9 @@
 #import <UIKit/UIKit.h>
 #import "ZCameraView.h"
 #import "RCTZiggeo.h"
-#import "RCTCameraViewManager.h"
+#import "ZCameraViewManagerManager.h"
 
-@implementation RCTCameraViewManager
+@implementation ZCameraViewManagerManager
 
 RCT_EXPORT_MODULE();
 
