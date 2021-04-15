@@ -33,6 +33,7 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
     recorder.sendImmediately = false;
     recorder.autostartRecordingAfterSeconds = 0;
     recorder.maxRecordedDurationSeconds = 0;
+    recorder.videoPreview = nil; // we don't need any UI because it's a customizable component
 
     [RCTZCameraModule setLastZiggeoRecorder:recorder];
 
