@@ -9,8 +9,6 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
-#import <Ziggeo/ZiggeoRecorderInterfaceConfig.h>
-#import <Ziggeo/ButtonConfig.h>
 #import "ButtonConfig+parse.h"
 
 @interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
@@ -164,6 +162,24 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     }
 }
 
+-(void) ziggeoRecorderDidVerify {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Verified" body:@{}];
+    }
+}
+
+-(void) ziggeoRecorderDidProcess {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Processed" body:@{}];
+    }
+}
+
+-(void) ziggeoRecorderProcessing {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Processing" body:@{}];
+    }
+}
+
 -(void)setRecorder:(RCTZiggeoRecorder *)recorder {
     if(recorder != nil)
     {
@@ -203,6 +219,9 @@ RCT_EXPORT_MODULE();
     return @[
         @"UploadProgress",
         @"RecordingStopped",
+        @"Verified",
+        @"Processed",
+        @"Processing",
     ];
 }
 

@@ -10,6 +10,8 @@ import com.ziggeo.cameraview.RnCameraViewManager
 import com.ziggeo.contactus.ContactUsModule
 import com.ziggeo.player.ZiggeoPlayerModule
 import com.ziggeo.recorder.ZiggeoRecorderModule
+import com.ziggeo.videorview.RnVideoViewManager
+import com.ziggeo.videorview.VideoViewModule
 import java.util.*
 
 /**
@@ -17,26 +19,33 @@ import java.util.*
  */
 class ZiggeoPackage : ReactPackage {
     private var rnCameraViewManager: RnCameraViewManager? = null
+    private var rnVideoViewManager: RnVideoViewManager? = null
+
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        initCameraManager(reactContext)
+        initNativeManagers(reactContext)
         val modules: MutableList<NativeModule> = ArrayList()
         modules.add(ZiggeoRecorderModule(reactContext))
         modules.add(ZiggeoPlayerModule(reactContext))
         modules.add(VideosModule(reactContext))
         modules.add(ContactUsModule(reactContext))
         modules.add(CameraModule(reactContext, rnCameraViewManager!!))
+        modules.add(VideoViewModule(reactContext, rnVideoViewManager!!))
         return modules
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>?> {
         val modules: MutableList<ViewManager<*, *>?> = ArrayList()
         modules.add(rnCameraViewManager)
+        modules.add(rnVideoViewManager)
         return modules
     }
 
-    private fun initCameraManager(context: ReactApplicationContext) {
+    private fun initNativeManagers(context: ReactApplicationContext) {
         if (rnCameraViewManager == null) {
             rnCameraViewManager = RnCameraViewManager(context)
+        }
+        if (rnVideoViewManager == null) {
+            rnVideoViewManager = RnVideoViewManager(context)
         }
     }
 }
