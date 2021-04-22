@@ -8,23 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
+		843872782630960000520AB0 /* RCTZVideoViewModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 84387273263095FF00520AB0 /* RCTZVideoViewModule.m */; };
+		843872792630960000520AB0 /* ZVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84387276263095FF00520AB0 /* ZVideoView.m */; };
+		8438727A2630960000520AB0 /* ZVideoViewManagerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 843872772630960000520AB0 /* ZVideoViewManagerManager.m */; };
 		844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 844FB5F6256C6FA8006B7C05 /* RCTVideos.m */; };
 		84AA474125E3080D00DF9C4B /* RCTZiggeoVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84AA474025E3080D00DF9C4B /* RCTZiggeoVideoView.m */; };
-		84CDB80624AE90B9008EC6AE /* Ziggeo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */; };
 		D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */; };
 		FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */; };
 		FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		84CDB80424AE8D7A008EC6AE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = FAE668951BB4345200A45B41;
-			remoteInfo = Ziggeo;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
@@ -42,11 +34,16 @@
 		134814201AA4EA6300B7C361 /* libRNReactNativeZiggeoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZiggeoLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		58603263C86843794188BB9C /* ButtonConfig+parse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ButtonConfig+parse.m"; sourceTree = "<group>"; };
 		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
+		84387270263095FF00520AB0 /* ZVideoViewManagerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZVideoViewManagerManager.h; sourceTree = "<group>"; };
+		84387273263095FF00520AB0 /* RCTZVideoViewModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZVideoViewModule.m; sourceTree = "<group>"; };
+		84387274263095FF00520AB0 /* ZVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZVideoView.h; sourceTree = "<group>"; };
+		84387275263095FF00520AB0 /* RCTZVideoViewModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZVideoViewModule.h; sourceTree = "<group>"; };
+		84387276263095FF00520AB0 /* ZVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZVideoView.m; sourceTree = "<group>"; };
+		843872772630960000520AB0 /* ZVideoViewManagerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZVideoViewManagerManager.m; sourceTree = "<group>"; };
 		844FB5F6256C6FA8006B7C05 /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
 		844FB5F9256C6FA8006B7C05 /* RCTVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTVideos.h; sourceTree = "<group>"; };
 		84AA473D25E3080D00DF9C4B /* RCTZiggeoVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoVideoView.h; sourceTree = "<group>"; };
 		84AA474025E3080D00DF9C4B /* RCTZiggeoVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeoVideoView.m; sourceTree = "<group>"; };
-		84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Ziggeo.xcodeproj; path = "../../ZigiOS-SDK/Ziggeo.xcodeproj"; sourceTree = "<group>"; };
 		D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotatingImagePickerController.h; sourceTree = "<group>"; };
 		D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotatingImagePickerController.m; sourceTree = "<group>"; };
 		FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoPlayer.h; sourceTree = "<group>"; };
@@ -60,7 +57,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CDB80624AE90B9008EC6AE /* Ziggeo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,9 +74,16 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				134814211AA4EA7D00B7C361 /* Products */,
+				FA441F791F2A595300E51295 /* Frameworks */,
+				84387275263095FF00520AB0 /* RCTZVideoViewModule.h */,
+				84387273263095FF00520AB0 /* RCTZVideoViewModule.m */,
+				84387274263095FF00520AB0 /* ZVideoView.h */,
+				84387276263095FF00520AB0 /* ZVideoView.m */,
+				84387270263095FF00520AB0 /* ZVideoViewManagerManager.h */,
+				843872772630960000520AB0 /* ZVideoViewManagerManager.m */,
 				844FB5F9256C6FA8006B7C05 /* RCTVideos.h */,
 				844FB5F6256C6FA8006B7C05 /* RCTVideos.m */,
-				84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */,
 				D9CE4215246AD158009C1684 /* RotatingImagePickerController.h */,
 				D9CE4216246AD158009C1684 /* RotatingImagePickerController.m */,
 				FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */,
@@ -89,19 +92,9 @@
 				FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */,
 				84AA473D25E3080D00DF9C4B /* RCTZiggeoVideoView.h */,
 				84AA474025E3080D00DF9C4B /* RCTZiggeoVideoView.m */,
-				134814211AA4EA7D00B7C361 /* Products */,
-				FA441F791F2A595300E51295 /* Frameworks */,
 				58603263C86843794188BB9C /* ButtonConfig+parse.m */,
 				58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */,
 			);
-			sourceTree = "<group>";
-		};
-		84CDB80024AE8D7A008EC6AE /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		FA441F791F2A595300E51295 /* Frameworks */ = {
@@ -156,28 +149,12 @@
 			mainGroup = 58B511D21A9E6C8500147676;
 			productRefGroup = 58B511D21A9E6C8500147676;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 84CDB80024AE8D7A008EC6AE /* Products */;
-					ProjectRef = 84CDB7FF24AE8D7A008EC6AE /* Ziggeo.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				58B511DA1A9E6C8500147676 /* RNReactNativeZiggeoLibrary */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		84CDB80524AE8D7A008EC6AE /* Ziggeo.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Ziggeo.framework;
-			remoteRef = 84CDB80424AE8D7A008EC6AE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
@@ -187,9 +164,12 @@
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
 				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
 				844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */,
+				8438727A2630960000520AB0 /* ZVideoViewManagerManager.m in Sources */,
+				843872792630960000520AB0 /* ZVideoView.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
 				84AA474125E3080D00DF9C4B /* RCTZiggeoVideoView.m in Sources */,
+				843872782630960000520AB0 /* RCTZVideoViewModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
