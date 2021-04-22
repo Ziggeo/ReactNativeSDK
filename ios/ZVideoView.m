@@ -10,13 +10,6 @@
 
 @implementation ZVideoView {
     RCTEventDispatcher *_eventDispatcher;
-
-    dispatch_block_t cleanup;
-    NSString *m_videoToken;
-    NSTimer *durationUpdateTimer;
-    bool _showLightIndicator, _showFaceOutline, _showAudioIndicator;
-    AVLayerVideoGravity _videoGravity;
-    int delayCountdownCounter;
 }
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher {
