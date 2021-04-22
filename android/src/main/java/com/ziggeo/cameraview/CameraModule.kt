@@ -3,6 +3,7 @@ package com.ziggeo.cameraview
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.ziggeo.BaseModule
+import com.ziggeo.androidsdk.log.ZLog
 
 /**
  * Created by alex on 6/25/2017.
@@ -12,7 +13,7 @@ class CameraModule(
         private val rnCameraViewManager: RnCameraViewManager
 ) : BaseModule(reactContext) {
 
-    override fun getName() = "Camera"
+    override fun getName() = "ZCameraModule"
 
     @ReactMethod
     fun startRecording(path: String, maxDurationMillis: Int) {
