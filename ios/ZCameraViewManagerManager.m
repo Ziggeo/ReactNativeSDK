@@ -92,6 +92,8 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[
+        @"RecordingStarted",
+        @"RecordingStopped",
     ];
 }
 
