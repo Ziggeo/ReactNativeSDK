@@ -15,6 +15,7 @@
 @property (nonatomic, assign) NSString *style;
 
 @property (nonatomic, assign) NSString *ref;
+@property (nonatomic, assign) NSArray *tokens;
 
 @end;
 
