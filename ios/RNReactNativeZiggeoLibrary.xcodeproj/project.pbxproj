@@ -10,6 +10,10 @@
 		58603443F3D756620EFB23D8 /* RCTZiggeo.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603B49026C36FE3B84ED8B /* RCTZiggeo.m */; };
 		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
 		58603C1F09BE7D4B2D1EBED8 /* RCTZCameraModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */; };
+		843872852632EEAD00520AB0 /* ZVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8438727D2632EEAC00520AB0 /* ZVideoView.m */; };
+		843872862632EEAD00520AB0 /* ZVideoViewManagerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8438727E2632EEAC00520AB0 /* ZVideoViewManagerManager.m */; };
+		843872872632EEAD00520AB0 /* RCTZiggeoVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8438727F2632EEAC00520AB0 /* RCTZiggeoVideoView.m */; };
+		843872882632EEAD00520AB0 /* RCTZVideoViewModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 843872812632EEAD00520AB0 /* RCTZVideoViewModule.m */; };
 		844A42EC2617607E00FFC8DA /* ZCameraViewManagerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 844A42EA2617607E00FFC8DA /* ZCameraViewManagerManager.m */; };
 		844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 844FB5F6256C6FA8006B7C05 /* RCTVideos.m */; };
 		8462CE5E26051C1C00FAE178 /* ZCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8462CE5D26051C1C00FAE178 /* ZCameraView.m */; };
@@ -38,6 +42,14 @@
 		58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZCameraModule.m; sourceTree = "<group>"; };
 		58603EF5C18338BF365E9D35 /* RCTZCameraModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZCameraModule.h; sourceTree = "<group>"; };
 		58603F98FC3D02FB6607F122 /* RCTZiggeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeo.h; sourceTree = "<group>"; };
+		8438727D2632EEAC00520AB0 /* ZVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZVideoView.m; sourceTree = "<group>"; };
+		8438727E2632EEAC00520AB0 /* ZVideoViewManagerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZVideoViewManagerManager.m; sourceTree = "<group>"; };
+		8438727F2632EEAC00520AB0 /* RCTZiggeoVideoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeoVideoView.m; sourceTree = "<group>"; };
+		843872802632EEAC00520AB0 /* RCTZVideoViewModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZVideoViewModule.h; sourceTree = "<group>"; };
+		843872812632EEAD00520AB0 /* RCTZVideoViewModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZVideoViewModule.m; sourceTree = "<group>"; };
+		843872822632EEAD00520AB0 /* RCTZiggeoVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoVideoView.h; sourceTree = "<group>"; };
+		843872832632EEAD00520AB0 /* ZVideoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZVideoView.h; sourceTree = "<group>"; };
+		843872842632EEAD00520AB0 /* ZVideoViewManagerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZVideoViewManagerManager.h; sourceTree = "<group>"; };
 		844A42EA2617607E00FFC8DA /* ZCameraViewManagerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCameraViewManagerManager.m; sourceTree = "<group>"; };
 		844A42EB2617607E00FFC8DA /* ZCameraViewManagerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCameraViewManagerManager.h; sourceTree = "<group>"; };
 		844FB5F6256C6FA8006B7C05 /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
@@ -94,7 +106,23 @@
 				844A42EA2617607E00FFC8DA /* ZCameraViewManagerManager.m */,
 				58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */,
 				58603EF5C18338BF365E9D35 /* RCTZCameraModule.h */,
+				8438728A2632EEC000520AB0 /* VideoView */,
 			);
+			sourceTree = "<group>";
+		};
+		8438728A2632EEC000520AB0 /* VideoView */ = {
+			isa = PBXGroup;
+			children = (
+				843872822632EEAD00520AB0 /* RCTZiggeoVideoView.h */,
+				8438727F2632EEAC00520AB0 /* RCTZiggeoVideoView.m */,
+				843872802632EEAC00520AB0 /* RCTZVideoViewModule.h */,
+				843872812632EEAD00520AB0 /* RCTZVideoViewModule.m */,
+				843872832632EEAD00520AB0 /* ZVideoView.h */,
+				8438727D2632EEAC00520AB0 /* ZVideoView.m */,
+				843872842632EEAD00520AB0 /* ZVideoViewManagerManager.h */,
+				8438727E2632EEAC00520AB0 /* ZVideoViewManagerManager.m */,
+			);
+			path = VideoView;
 			sourceTree = "<group>";
 		};
 		FA441F791F2A595300E51295 /* Frameworks */ = {
@@ -161,15 +189,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843872862632EEAD00520AB0 /* ZVideoViewManagerManager.m in Sources */,
 				844A42EC2617607E00FFC8DA /* ZCameraViewManagerManager.m in Sources */,
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
+				843872882632EEAD00520AB0 /* RCTZVideoViewModule.m in Sources */,
 				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
 				8462CE5E26051C1C00FAE178 /* ZCameraView.m in Sources */,
 				844FB5FA256C6FA9006B7C05 /* RCTVideos.m in Sources */,
+				843872852632EEAD00520AB0 /* ZVideoView.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
 				58603443F3D756620EFB23D8 /* RCTZiggeo.m in Sources */,
 				58603C1F09BE7D4B2D1EBED8 /* RCTZCameraModule.m in Sources */,
+				843872872632EEAD00520AB0 /* RCTZiggeoVideoView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
