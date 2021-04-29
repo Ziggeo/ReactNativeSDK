@@ -260,8 +260,8 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
                             reject(task, ERR_DURATION_EXCEEDED, errorMsg)
                         } else {
                             ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
-                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(path),
-                                    null, task.extraArgs))
+//                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(path),
+//                                    null, task.extraArgs))
                         }
                     }
 
