@@ -67,18 +67,21 @@ RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
 {
     RCTLogInfo(@"application token set: %@", token);
     _appToken = token;
+    __appToken = token;
 }
 
 RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
 {
     RCTLogInfo(@"server auth token set: %@", token);
     _serverAuthToken = token;
+    __serverAuthToken = token;
 }
 
 RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 {
     RCTLogInfo(@"server auth token set: %@", token);
     _clientAuthToken = token;
+    __clientAuthToken = token;
 }
 
 

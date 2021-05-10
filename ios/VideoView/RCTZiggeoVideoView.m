@@ -3,10 +3,14 @@
 #import "RCTZiggeoVideoView.h"
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
+#import "RCTVideos.h"
 @import AVKit;
+
 @implementation RCTZiggeoVideoView {
+    RCTEventDispatcher *_eventDispatcher;
     ZiggeoPlayer *_player;
     ZiggeoPlayerReferenceBlock _ref;
+    NSArray *_tokens;
     AVPlayerViewController* playerController;
 }
 
@@ -18,26 +22,29 @@
 RCT_EXPORT_MODULE();
 
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        _player = [[ZiggeoPlayer alloc] init];
+- (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher tokens:(NSArray *)tokens {
+    if ((self = [super init])) {
+        _eventDispatcher = eventDispatcher;
+        _tokens = tokens;
+        
+        [self initPlayer];
     }
-
-    [self initPlayer];
 
     return self;
 }
 
-- (id)initPlayer {
+
+- (void)initPlayer {
     dispatch_async(dispatch_get_main_queue(), ^{
-        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
-        [ziggeo connect].serverAuthToken = self.serverAuthToken;
-        [ziggeo connect].clientAuthToken = self.clientAuthToken;
-        [ziggeo.config setPlayerCacheConfig:self.cacheConfig];
+        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:__appToken];
+        [ziggeo connect].serverAuthToken = __serverAuthToken;
+        [ziggeo connect].clientAuthToken = __clientAuthToken;
+        // todo [ziggeo.config setPlayerCacheConfig:self.cacheConfig];
         ZiggeoPlayer* player = nil;
 
         NSMutableDictionary* mergedParams = nil;
+        
+        /*
         if(self->_additionalParams != nil)
         {
             mergedParams = [[NSMutableDictionary alloc] initWithDictionary:self->_additionalParams];
@@ -47,45 +54,42 @@ RCT_EXPORT_MODULE();
         {
             mergedParams = [[NSMutableDictionary alloc] initWithDictionary:self->_themeParams];
         }
-        bool hideControls = mergedParams && ([@"true" isEqualToString:mergedParams[@"hidePlayerControls"]] || [[mergedParams valueForKey:@"hidePlayerControls"] boolValue] );
+        */
+         
+        bool hideControls = true;
 
-        if(mergedParams == nil)
-        {
-            player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:videoToken videoUrl:URL];
-            playerController = [[AVPlayerViewController alloc] init];
-            playerController.player = player;
-            [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
-            [playerController.player play];
-        }
-        else {
-            [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken videoUrl:URL params:mergedParams callback:^(ZiggeoPlayer *player) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    playerController = [[AVPlayerViewController alloc] init];
-                    playerController.player = player;
+        player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:ziggeo videoToken:[_tokens firstObject] videoUrl:nil];
+        playerController = [[AVPlayerViewController alloc] init];
+        playerController.player = player;
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
+        [playerController.player play];
+        playerController.showsPlaybackControls = false;
+        
+        /*
+         Alternative method:
+            
+         [ZiggeoPlayer createPlayerWithAdditionalParams:ziggeo videoToken:videoToken videoUrl:URL params:mergedParams callback:^(ZiggeoPlayer *player) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                playerController = [[AVPlayerViewController alloc] init];
+                playerController.player = player;
 
-                    if(hideControls)
-                    {
-                        player.didFinishPlaying = ^(NSString *videoToken, NSError *error) {
-                            dispatch_async(dispatch_get_main_queue(), ^
-                            {
-                                [playerController dismissViewControllerAnimated:true completion:nil];
-                            });
-                        };
-                        playerController.showsPlaybackControls = false;
-                    }
+                if(hideControls)
+                {
+                    player.didFinishPlaying = ^(NSString *videoToken, NSError *error) {
+                        dispatch_async(dispatch_get_main_queue(), ^
+                        {
+                            [playerController dismissViewControllerAnimated:true completion:nil];
+                        });
+                    };
+                    playerController.showsPlaybackControls = false;
+                }
 
-                    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
-                    [playerController.player play];
-                });
-            }];
-        }
-}
-
-- (void)setRef:(ZiggeoPlayerReferenceBlock) ref {
-    _ref = ref;
-    if (ref != nil) {
-        ref(_player);
-    }
+                [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:playerController animated:true completion:nil];
+                [playerController.player play];
+            });
+        }];
+        */
+    });
 }
 
 

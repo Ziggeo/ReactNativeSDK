@@ -5,9 +5,9 @@
 #import <React/RCTLog.h>
 #import <UIKit/UIKit.h>
 #import "ZCameraView.h"
-#import "RCTZiggeo.h"
 #import "ZCameraViewManagerManager.h"
 #import "RCTZCameraModule.h"
+#import "RCTVideos.h"
 
 @implementation ZCameraViewManagerManager
 
@@ -20,9 +20,9 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
-    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:[RCTZiggeo appToken]];
-    m_ziggeo.connect.serverAuthToken = [RCTZiggeo serverAuthToken];
-    m_ziggeo.connect.clientAuthToken = [RCTZiggeo clientAuthToken];
+    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:__appToken];
+    m_ziggeo.connect.serverAuthToken = __serverAuthToken;
+    m_ziggeo.connect.clientAuthToken = __clientAuthToken;
     // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
     ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
