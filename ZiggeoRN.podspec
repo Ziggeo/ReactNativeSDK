@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'Confidential', :file => 'LICENSE' }
   s.author           = { 'Ziggeo Inc' => 'support@ziggeo.com' }
   s.source           = { :git => 'https://github.com/Ziggeo/ReactNativeSDK.git' }
-  s.source_files     = "ios/*.{m,mm,h}"
+  s.source_files     = "ios/**/*.{m,mm,h}"
 
   s.ios.deployment_target = '9.0'
   s.dependency 'React-Core'
