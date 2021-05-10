@@ -18,5 +18,10 @@ static ZiggeoPlayer *lastZiggeoPlayer;
     lastZiggeoPlayer = player;
 }
 
+RCT_EXPORT_METHOD(startPlaying) {
+    if (lastZiggeoPlayer != nil) {
+        [lastZiggeoPlayer play];
+    }
+}
 
 @end

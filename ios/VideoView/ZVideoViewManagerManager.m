@@ -13,36 +13,40 @@
 
 @implementation ZVideoViewManagerManager {
     AVPlayerViewController *playerController;
+    RCTZiggeoVideoView *_view;
 }
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_VIEW_PROPERTY(style, NSString);
+RCT_EXPORT_VIEW_PROPERTY(style, NSString *);
 
-RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
+RCT_EXPORT_VIEW_PROPERTY(ref, NSString *);
 
-RCT_EXPORT_VIEW_PROPERTY(tokens, NSArray);
+RCT_CUSTOM_VIEW_PROPERTY(tokens, NSArray *, NSString *)
+{
+    _tokens = json;
+    
+    if (_view != nil) {
+        [_view setVideoToken:[_tokens firstObject]];
+    }
+}
 
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
-    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:__appToken];
-    m_ziggeo.connect.serverAuthToken = __serverAuthToken;
-    m_ziggeo.connect.clientAuthToken = __clientAuthToken;
     // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
+    NSLog(@"Video tokens to play: %@", _tokens);
+
     // todo implement playback of playlist consisting of video tokens
-    ZiggeoPlayer* player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:m_ziggeo videoToken:[_tokens firstObject]];
-
+    
     playerController = [[AVPlayerViewController alloc] init];
-    playerController.player = player;
     playerController.showsPlaybackControls = false;
-
-    [RCTZVideoViewModule setLastZiggeoPlayer:player];
 
     // todo? m_ziggeo.videos.delegate = context;
 
-    RCTZiggeoVideoView *view = [[RCTZiggeoVideoView alloc] initWithEventDispatcher:self.bridge.eventDispatcher tokens:_tokens];
+    RCTZiggeoVideoView *view = [[RCTZiggeoVideoView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
+
 
     UIView *playerView = playerController.view;
     // todo? view.player = player;
@@ -55,7 +59,13 @@ RCT_EXPORT_VIEW_PROPERTY(tokens, NSArray);
     [view.trailingAnchor constraintEqualToAnchor:playerView.trailingAnchor].active = true;
     [view.topAnchor constraintEqualToAnchor:playerView.topAnchor].active = true;
     [view.bottomAnchor constraintEqualToAnchor:playerView.bottomAnchor].active = true;
+    
+    view.playerController = playerController;
 
+    [view setVideoToken:[_tokens firstObject]];
+    
+    _view = view;
+    
     return view;
 }
 

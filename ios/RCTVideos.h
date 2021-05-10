@@ -6,16 +6,16 @@
 #import <Ziggeo/Ziggeo.h>
 #import <UIKit/UIKit.h>
 
-static NSString *__appToken;
-static NSString *__serverAuthToken;
-static NSString *__clientAuthToken;
-
 
 @interface RCTVideos : RCTEventEmitter <RCTBridgeModule>
 
 @property (strong, nonatomic) NSString *appToken;
 @property (strong, nonatomic) NSString *serverAuthToken;
 @property (strong, nonatomic) NSString *clientAuthToken;
+
++ (NSString *) _appToken;
++ (NSString *) _serverAuthToken;
++ (NSString *) _clientAuthToken;
 
 @end
 

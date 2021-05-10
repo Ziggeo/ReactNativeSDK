@@ -55,6 +55,16 @@
 @implementation RCTVideos {
 }
 
+static NSString *__appToken;
+static NSString *__serverAuthToken;
+static NSString *__clientAuthToken;
+
+
++ (NSString *) _appToken { return __appToken; }
++ (NSString *) _serverAuthToken { return __serverAuthToken; }
++ (NSString *) _clientAuthToken { return __clientAuthToken; }
+
+
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
