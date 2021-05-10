@@ -62,12 +62,12 @@ RCT_EXPORT_VIEW_PROPERTY(tokens, NSArray);
 - (NSArray<NSString *> *)supportedEvents
 {
     return @[
-        @"Error"
-        @"Playing"
-        @"Paused"
-        @"Ended"
-        @"Seek"
-        @"ReadyToPlay"
+        @"Error",
+        @"Playing",
+        @"Paused",
+        @"Ended",
+        @"Seek",
+        @"ReadyToPlay",
     ];
 }
 
