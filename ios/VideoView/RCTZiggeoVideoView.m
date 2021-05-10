@@ -19,9 +19,6 @@
     return playerController.view;
 }
 
-RCT_EXPORT_MODULE();
-
-
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher tokens:(NSArray *)tokens {
     if ((self = [super init])) {
         _eventDispatcher = eventDispatcher;
