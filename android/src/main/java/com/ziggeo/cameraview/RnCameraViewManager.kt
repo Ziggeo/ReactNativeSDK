@@ -33,7 +33,7 @@ class RnCameraViewManager(reactContext: ReactApplicationContext) : BaseViewManag
 
 
     @ReactProp(name = "cameraFaceFront")
-    fun setFacing(cameraView: CameraView, cameraFaceFront: Boolean) {
+    fun setCameraFaceFront(cameraView: CameraView, cameraFaceFront: Boolean) {
         cameraView.facing = if (cameraFaceFront) {
             FACING_FRONT
         } else {
