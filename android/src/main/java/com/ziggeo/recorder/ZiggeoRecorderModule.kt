@@ -18,7 +18,6 @@ import com.ziggeo.androidsdk.qr.QrScannerConfig
 import com.ziggeo.androidsdk.recorder.MicSoundLevel
 import com.ziggeo.androidsdk.recorder.RecorderConfig
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView
-import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Facing
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Quality
 import com.ziggeo.androidsdk.widgets.cameraview.Size
 import com.ziggeo.tasks.RecordVideoTask
@@ -154,9 +153,13 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
-    fun setCamera(@Facing facing: Int) {
-        ZLog.d("setCamera:%s", facing)
-        ziggeo.recorderConfig.facing = facing
+    fun setCameraFaceFront(cameraFaceFront: Boolean) {
+        ZLog.d("setCamera:%s", cameraFaceFront)
+        ziggeo.recorderConfig.facing = if (cameraFaceFront) {
+            CameraView.FACING_FRONT
+        } else {
+            CameraView.FACING_BACK
+        }
     }
 
     @ReactMethod
