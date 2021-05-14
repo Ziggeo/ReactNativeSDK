@@ -2,9 +2,9 @@ import {NativeModules, NativeEventEmitter, requireNativeComponent} from 'react-n
 import VideosApi from './videos';
 
 const {ZiggeoPlayer} = NativeModules;
-const {ZiggeoCamera} = NativeModules;
+const {ZiggeoRecorder} = NativeModules;
 import ZiggeoVideoView from './video_view.js';
-import ZiggeoRecorder from './camera_view.js';
+import ZiggeoCameraView from './camera_view.js';
 const {Videos} = NativeModules;
 const {ContactUs} = NativeModules;
 
