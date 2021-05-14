@@ -3,8 +3,8 @@ import VideosApi from './videos';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoCamera} = NativeModules;
-const {ZiggeoVideoView} = NativeModules;
-const {ZiggeoRecorder} = NativeModules;
+import ZiggeoVideoView from './video_view.js';
+import ZiggeoRecorder from './camera_view.js';
 const {Videos} = NativeModules;
 const {ContactUs} = NativeModules;
 
