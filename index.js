@@ -128,7 +128,7 @@ export default {
         return new NativeEventEmitter(ZiggeoRecorder);
     },
     cameraViewEmitter: function () {
-        return new NativeEventEmitter(ZiggeoCamera);
+        return new NativeEventEmitter(ZiggeoCameraView);
     },
     videoViewEmitter: function () {
         return new NativeEventEmitter(ZiggeoVideoView);
