@@ -1,6 +1,7 @@
 #ifndef RCTZiggeoVideoView_h
 #define RCTZiggeoVideoView_h
 #import <React/RCTEventEmitter.h>
+#import <React/RCTComponent.h>
 #import <Ziggeo/Ziggeo.h>
 #import <AVKit/AVKit.h>
 

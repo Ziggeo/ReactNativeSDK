@@ -37,14 +37,14 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
     ZiggeoPlayer* player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:_m_ziggeo videoToken:token];
 
     if (lastPlayerItem != nil) {
-        [lastPlayerItem removeObserver:self forKeyPath:nil context:RCTZiggeoVideoViewKVOContext];
+        [lastPlayerItem removeObserver:self forKeyPath:@"status" context:RCTZiggeoVideoViewKVOContext];
     }
 
     lastPlayerItem = player.currentItem;
 
     [lastPlayerItem addObserver:self
-                     forKeyPath:keyPath(AVPlayerItem.status)
-                        options:NSKeyValueChangeOldKey & NSKeyValueChangeNewKey
+                     forKeyPath:@"status"
+                        options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew
                         context:RCTZiggeoVideoViewKVOContext
     ];
 
@@ -57,7 +57,7 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
 
 -(void)dealloc {
     if (lastPlayerItem != nil) {
-        [lastPlayerItem removeObserver:self forKeyPath:nil context:RCTZiggeoVideoViewKVOContext];
+        [lastPlayerItem removeObserver:self forKeyPath:@"status" context:RCTZiggeoVideoViewKVOContext];
     }
 }
 
@@ -79,13 +79,13 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
 
             case AVPlayerStatusReadyToPlay:
                 if (self.onReadyToPlay) {
-                    self.onReadyToPlay();
+                    self.onReadyToPlay([NSDictionary new]);
                 }
                 break;
 
             case AVPlayerStatusFailed:
                 if (self.onError) {
-                    self.onError();
+                    self.onError([NSDictionary new]);
                 }
                 break;
         }
