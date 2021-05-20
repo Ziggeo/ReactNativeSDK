@@ -13,6 +13,13 @@ typedef void (^ZiggeoPlayerReferenceBlock) (ZiggeoPlayer *player);
 @property (strong, nonatomic) AVPlayerViewController *playerController;
 @property (strong, nonatomic) Ziggeo *m_ziggeo;
 
+@property (nonatomic, copy) RCTBubblingEventBlock onError;
+@property (nonatomic, copy) RCTBubblingEventBlock onPlaying;
+@property (nonatomic, copy) RCTBubblingEventBlock onPaused;
+@property (nonatomic, copy) RCTBubblingEventBlock onEnded;
+@property (nonatomic, copy) RCTBubblingEventBlock onSeek;
+@property (nonatomic, copy) RCTBubblingEventBlock onReadyToPlay;
+
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
 
 - (void)setVideoToken:(NSString *)token;

@@ -10,7 +10,10 @@
     RCTEventDispatcher *_eventDispatcher;
     ZiggeoPlayerReferenceBlock _ref;
     NSArray *_tokens;
+    AVPlayerItem *lastPlayerItem;
 }
+
+static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVOContext;
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher {
     if ((self = [super init])) {
@@ -32,11 +35,60 @@
     _m_ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
 
     ZiggeoPlayer* player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:_m_ziggeo videoToken:token];
-    
+
+    if (lastPlayerItem != nil) {
+        [lastPlayerItem removeObserver:self forKeyPath:nil context:RCTZiggeoVideoViewKVOContext];
+    }
+
+    lastPlayerItem = player.currentItem;
+
+    [lastPlayerItem addObserver:self
+                     forKeyPath:keyPath(AVPlayerItem.status)
+                        options:NSKeyValueChangeOldKey & NSKeyValueChangeNewKey
+                        context:RCTZiggeoVideoViewKVOContext
+    ];
+
     [RCTZVideoViewModule setLastZiggeoPlayer:player];
 
     if (_playerController != nil) {
         _playerController.player = player;
+    }
+}
+
+-(void)dealloc {
+    if (lastPlayerItem != nil) {
+        [lastPlayerItem removeObserver:self forKeyPath:nil context:RCTZiggeoVideoViewKVOContext];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey, id> *)change context:(void *)context {
+
+    // Only handle observations for the playerItemContext
+    if (context != RCTZiggeoVideoViewKVOContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
+    }
+
+
+    if (context == @"AVPlayerStatus") {
+        AVPlayerStatus status = [change[NSKeyValueChangeNewKey] integerValue];
+
+        switch (status) {
+            case AVPlayerStatusUnknown:
+                break;
+
+            case AVPlayerStatusReadyToPlay:
+                if (self.onReadyToPlay) {
+                    self.onReadyToPlay();
+                }
+                break;
+
+            case AVPlayerStatusFailed:
+                if (self.onError) {
+                    self.onError();
+                }
+                break;
+        }
     }
 }
 

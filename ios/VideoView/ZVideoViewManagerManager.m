@@ -31,6 +31,13 @@ RCT_CUSTOM_VIEW_PROPERTY(tokens, NSArray *, NSString *)
     }
 }
 
+RCT_EXPORT_VIEW_PROPERTY(onError, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPlaying, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onPaused, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onEnded, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onSeek, RCTBubblingEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onReadyToPlay, RCTBubblingEventBlock)
+
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
