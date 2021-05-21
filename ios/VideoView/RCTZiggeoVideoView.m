@@ -8,7 +8,6 @@
 #import <React/RCTEventDispatcher.h>
 
 #import "RCTZVideoViewModule.h"
-#import "RCTZVideoViewModule.h"
 #import "RCTVideos.h"
 @import AVKit;
 
@@ -75,8 +74,16 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
         return;
     }
 
+    if (keyPath == @"rate") {
+        float rate = [change[NSKeyValueChangeNewKey] floatValue];
+        if (rate == 0) {
+            [[RCTZVideoViewModule instance] sendEventWithName:@"Ended" body:@{}];
+        } else {
+            [[RCTZVideoViewModule instance] sendEventWithName:@"Playing" body:@{}];
+        }
+    }
 
-    if (context == @"AVPlayerStatus") {
+    if (keyPath == @"status") {
         AVPlayerStatus status = [change[NSKeyValueChangeNewKey] integerValue];
 
         switch (status) {
