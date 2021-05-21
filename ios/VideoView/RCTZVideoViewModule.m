@@ -42,10 +42,10 @@ static RCTZVideoViewModule *_instance;
     return _instance;
 }
 
-
 RCT_EXPORT_METHOD(startPlaying) {
     if (lastZiggeoPlayer != nil) {
         [lastZiggeoPlayer play];
+        [self sendEventWithName:@"Playing" body:@{}];
     }
 }
 
