@@ -3,6 +3,10 @@
 #import "RCTZiggeoVideoView.h"
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
+#import <React/RCTEventEmitter.h>
+#import <React/RCTComponent.h>
+
+#import "RCTZVideoViewModule.h"
 #import "RCTVideos.h"
 @import AVKit;
 
