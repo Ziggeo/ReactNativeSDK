@@ -11,6 +11,8 @@
 
 + (void) setLastZiggeoPlayer:(ZiggeoPlayer *) player;
 
++ (RCTZVideoViewModule *) instance;
+
 @end
 
 #endif

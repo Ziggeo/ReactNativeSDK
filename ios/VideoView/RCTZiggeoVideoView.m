@@ -5,7 +5,9 @@
 #import <React/RCTLog.h>
 #import <React/RCTEventEmitter.h>
 #import <React/RCTComponent.h>
+#import <React/RCTEventDispatcher.h>
 
+#import "RCTZVideoViewModule.h"
 #import "RCTZVideoViewModule.h"
 #import "RCTVideos.h"
 @import AVKit;
@@ -81,17 +83,15 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
             case AVPlayerStatusUnknown:
                 break;
 
-            case AVPlayerStatusReadyToPlay:
-                if (self.onReadyToPlay) {
-                    self.onReadyToPlay([NSDictionary new]);
-                }
+            case AVPlayerStatusReadyToPlay: {
+                [[RCTZVideoViewModule instance] sendEventWithName:@"ReadyToPlay" body:@{}];
                 break;
+            }
 
-            case AVPlayerStatusFailed:
-                if (self.onError) {
-                    self.onError([NSDictionary new]);
-                }
+            case AVPlayerStatusFailed: {
+                [[RCTZVideoViewModule instance] sendEventWithName:@"Error" body:@{}];
                 break;
+            }
         }
     }
 }

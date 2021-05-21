@@ -15,7 +15,11 @@ RCT_EXPORT_MODULE();
 
 static ZiggeoPlayer *lastZiggeoPlayer;
 
+static RCTZVideoViewModule *_instance;
+
 - (NSArray<NSString *> *)supportedEvents {
+    _instance = self;
+
     return @[
         @"Error",
         @"Playing",
@@ -27,14 +31,17 @@ static ZiggeoPlayer *lastZiggeoPlayer;
 }
 
 - (NSArray *) customDirectEventTypes {
-    return @[
-        @"onFrameChange"
-    ];
+    return @[];
 }
 
 + (void)setLastZiggeoPlayer:(ZiggeoPlayer *) player {
     lastZiggeoPlayer = player;
 }
+
++ (RCTZVideoViewModule *)instance {
+    return _instance;
+}
+
 
 RCT_EXPORT_METHOD(startPlaying) {
     if (lastZiggeoPlayer != nil) {
