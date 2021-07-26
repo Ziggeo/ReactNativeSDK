@@ -11,14 +11,9 @@
 
 @property (nonatomic, assign) NSString *ref;
 
-@property (nonatomic, assign) ZiggeoRecorder2 *recorder;
+@property (nonatomic, assign) ZiggeoRecorder *recorder;
 
 - (instancetype)initWithEventDispatcher:(RCTEventDispatcher *)eventDispatcher NS_DESIGNATED_INITIALIZER;
-
-
-
-
-
 
 - (void)retake;
 - (void)upload:(NSURL*)fileToUpload;
@@ -33,7 +28,7 @@
 //@property (nonatomic) bool showLightIndicatorproperty (nonatomic) bool showSoundIndicator;
 @property (nonatomic) ZiggeoRecorderInterfaceConfig *interfaceConfig;
 @property (nonatomic) UIImagePickerControllerCameraDevice cameraDevice;
-@property (nonatomic) id<ZiggeoRecorder2Delegate> recorderDelegate;
+@property (nonatomic) id<ZiggeoRecorderDelegate> recorderDelegate;
 @property (nonatomic) NSDictionary* extraArgsForCreateVideo;
 @property (nonatomic) double maxRecordedDurationSeconds;
 @property (nonatomic) double autostartRecordingAfterSeconds;

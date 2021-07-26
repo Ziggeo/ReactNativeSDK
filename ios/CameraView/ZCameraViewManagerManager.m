@@ -25,7 +25,7 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
     m_ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
     // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
-    ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
+    ZiggeoRecorder* recorder = [[ZiggeoRecorder alloc] initWithZiggeoApplication:m_ziggeo];
     recorder.controlsVisible = false;
 
     // settings controlsVisible to false also sets autostart, send immediately and max video duration.

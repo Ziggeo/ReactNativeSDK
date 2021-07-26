@@ -11,7 +11,7 @@
 #import "RotatingImagePickerController.h"
 #import "ButtonConfig+parse.h"
 
-@interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
+@interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate, ZiggeoRecorderDelegate, ZiggeoVideosDelegate>
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
 @property (strong, nonatomic) RCTZiggeoRecorder* recorder;
@@ -352,7 +352,7 @@ RCT_REMAP_METHOD(record,
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
-        ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
+        ZiggeoRecorder* recorder = [[ZiggeoRecorder alloc] initWithZiggeoApplication:m_ziggeo];
         recorder.coverSelectorEnabled = self->_coverSelectorEnabled;
         recorder.cameraFlipButtonVisible = self->_cameraFlipButtonVisible;
         recorder.cameraDevice = self->_camera;

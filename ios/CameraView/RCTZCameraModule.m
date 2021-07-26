@@ -6,7 +6,7 @@
 
 RCT_EXPORT_MODULE();
 
-static ZiggeoRecorder2 *lastZiggeoRecorder;
+static ZiggeoRecorder *lastZiggeoRecorder;
 
 RCT_EXPORT_METHOD(startRecording:(NSString *)path maxDuration:(int)maxDuration) {
     if (lastZiggeoRecorder != nil) {
@@ -27,7 +27,7 @@ RCT_EXPORT_METHOD(stopRecording) {
     ];
 }
 
-+ (void)setLastZiggeoRecorder:(ZiggeoRecorder2 *) recorder {
++ (void)setLastZiggeoRecorder:(ZiggeoRecorder *) recorder {
     lastZiggeoRecorder = recorder;
 }
 

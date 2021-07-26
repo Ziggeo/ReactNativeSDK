@@ -9,7 +9,7 @@
 
 @interface RCTZCameraModule : RCTEventEmitter <RCTBridgeModule>
 
-+ (void) setLastZiggeoRecorder:(ZiggeoRecorder2 *) recorder;
++ (void) setLastZiggeoRecorder:(ZiggeoRecorder *) recorder;
 
 @end
 
