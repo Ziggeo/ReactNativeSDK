@@ -173,6 +173,10 @@ object FileUtils {
         return "com.google.android.apps.photos.content" == uri.authority
     }
 
+    fun isUri(path: String): Boolean {
+        return path.contains("://")
+    }
+
     /**
      * Get the value of the data column for this Uri. This is useful for
      * MediaStore Uris, and other file-based ContentProviders.
