@@ -7,8 +7,8 @@
   },
   "description": "We will presume that you are already familiar and have set up everything needed for the React Native setup on your system.  If not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):",
   "devDependencies": {
-    "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react": "17.0.1",
+    "react-native": "^0.64.2"
   },
   "homepage": "https://github.com/Ziggeo/ReactNativeSDK#readme",
   "keywords": [
@@ -18,8 +18,8 @@
   "main": "index.js",
   "name": "react-native-ziggeo-library",
   "peerDependencies": {
-    "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react": "17.0.1",
+    "react-native": "^0.64.2"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Ziggeo SDK",
-  "version": "1.4.36"
+  "version": "1.4.36.pf1"
 }

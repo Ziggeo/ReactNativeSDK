@@ -25,7 +25,7 @@ apply plugin: "kotlin-android-extensions"
 // https://github.com/facebook/react-native/blob/0.62-stable/template/android/build.gradle#L5-L9
 def DEFAULT_COMPILE_SDK_VERSION = 29
 def DEFAULT_BUILD_TOOLS_VERSION = "29.0.3"
-def DEFAULT_MIN_SDK_VERSION = 16
+def DEFAULT_MIN_SDK_VERSION = 21
 def DEFAULT_TARGET_SDK_VERSION = 29
 
 android {
@@ -71,7 +71,7 @@ dependencies {
     def androidX = '1.2.0'
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "com.google.code.gson:gson:2.8.6"
-    implementation("com.github.ZiggeoJitpackService:Android-SDK:2.2.4:reactnative@aar") {
+    implementation("com.github.ZiggeoJitpackService:Android-SDK:2.2.5_fullscreen1:reactnative@aar") {
         transitive = true
     }
     implementation 'com.karumi:dexter:6.2.1'
