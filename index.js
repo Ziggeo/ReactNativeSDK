@@ -3,7 +3,6 @@ import VideosApi from './videos';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
-const {ZVideoViewModule} = NativeModules;
 import ZiggeoVideoView from './video_view.js';
 import ZiggeoCameraView from './camera_view.js';
 const {Videos} = NativeModules;
@@ -132,7 +131,7 @@ export default {
         return new NativeEventEmitter(ZiggeoCameraView);
     },
     videoViewEmitter: function () {
-        return new NativeEventEmitter(ZVideoViewModule);
+        return new NativeEventEmitter(ZiggeoVideoView);
     },
 
     // ZiggeoPlayer
