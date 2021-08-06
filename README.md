@@ -50,7 +50,6 @@ Android project also requires to follow point 2 and point 3(the first part) ment
 #### iOS installation using pods
 add these lines to your Podfile and run 'pod install'
 ```
-  pod 'ZiggeoRN', :git => 'https://github.com/Ziggeo/ReactNativeSDK.git'
   pod 'iOS-Client-SDK', :git => 'https://github.com/Ziggeo/iOS-Client-SDK.git'
 ```
 
