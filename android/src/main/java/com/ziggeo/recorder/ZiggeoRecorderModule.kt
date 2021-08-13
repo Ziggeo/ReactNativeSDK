@@ -155,13 +155,9 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
-    fun setCameraFaceFront(cameraFaceFront: Boolean) {
-        ZLog.d("setCamera:%s", cameraFaceFront)
-        ziggeo.recorderConfig.facing = if (cameraFaceFront) {
-            CameraView.FACING_FRONT
-        } else {
-            CameraView.FACING_BACK
-        }
+    fun setCamera(@CameraView.Facing facing: Int) {
+        ZLog.d("setCamera:%s", facing)
+        ziggeo.recorderConfig.facing = facing
     }
 
     @ReactMethod
