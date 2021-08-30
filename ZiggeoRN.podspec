@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ZiggeoRN'
-  s.version          = '1.4.3'
+  s.version          = '1.5.0'
   s.summary          = 'Ziggeo iOS ReactNative SDK'
   s.description      = 'Ziggeo iOS recording and playback SDK'
 

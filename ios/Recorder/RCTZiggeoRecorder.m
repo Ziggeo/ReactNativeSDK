@@ -151,6 +151,7 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     if(_recorder != nil) [_recorder sendEventWithName:@"UploadProgress" body:@{@"bytesSent": @(bytesSent), @"totalBytes":@(totalBytes), @"fileName":sourcePath, @"token":token }];
 }
 
+//MARK: - ZiggeoRecorderDelegate
 -(void) ziggeoRecorderDidCancel
 {
     [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
@@ -179,6 +180,46 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
         [_recorder sendEventWithName:@"Processing" body:@{}];
     }
 }
+
+//MARK: - ZiggeoAudioRecorderDelegate
+- (void)ziggeoAudioRecorderReady {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"ReadyToAudioRecord" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderCanceled {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"AudioRecordCanceled" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderRecoding {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"AudioRecordingStarted" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderCurrentRecordedDurationSeconds:(double)seconds {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"AudioRecordingProgress" body:@{@"recording_seconds": [NSString stringWithFormat:@"%.02f", seconds]}];
+    }
+}
+
+- (void)ziggeoAudioRecorderFinished:(double)seconds {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"AudioRecordingStopped" body:@{@"duration": [NSString stringWithFormat:@"%.02f", seconds]}];
+    }
+}
+
+- (void)ziggeoAudioRecorderPlaying {
+
+}
+
+- (void)ziggeoAudioRecorderPaused {
+
+}
+
 
 -(void)setRecorder:(RCTZiggeoRecorder *)recorder {
     if(recorder != nil)
@@ -222,6 +263,12 @@ RCT_EXPORT_MODULE();
         @"Verified",
         @"Processed",
         @"Processing",
+
+        @"AudioRecordCanceled",
+        @"ReadyToAudioRecord",
+        @"AudioRecordingStarted",
+        @"AudioRecordingProgress",
+        @"AudioRecordingStopped",
     ];
 }
 
@@ -393,6 +440,56 @@ RCT_REMAP_METHOD(record,
     //_currentContext = context;
 }
 
+RCT_REMAP_METHOD(recordAudio,
+                 recordAudioWithResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    UploadingContext* context = [[UploadingContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
+        [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
+
+        ZiggeoAudioRecorder *audioRecorder = [[ZiggeoAudioRecorder alloc] initWithZiggeoApplication:m_ziggeo];
+        audioRecorder.recorderDelegate = context;
+
+        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
+            parentController = parentController.presentedViewController;
+        }
+        [parentController presentViewController:audioRecorder animated:true completion:nil];
+    });
+}
+
+RCT_EXPORT_METHOD(playAudio:(NSString *)audioToken
+                  playAudioWithResolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    UploadingContext* context = [[UploadingContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
+        [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
+
+        ZiggeoAudioPlayer *audioPlayer = [[ZiggeoAudioPlayer alloc] initWithZiggeoApplication:m_ziggeo audioToken:audioToken];
+
+        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
+            parentController = parentController.presentedViewController;
+        }
+        [parentController presentViewController:audioPlayer animated:true completion:nil];
+    });
+}
 
 RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDurationInSeconds
                   enforceDuration:(int)enforceDuration

@@ -101,6 +101,12 @@ export default {
     record: async function () {
         return ZiggeoRecorder.record();
     },
+    recordAudio: async function () {
+        return ZiggeoRecorder.recordAudio();
+    },
+    playAudio: async function (audioToken: string) {
+        return ZiggeoRecorder.playAudio(audioToken);
+    },
     startScreenRecorder: async function () {
         return ZiggeoRecorder.startScreenRecorder();
     },
