@@ -3,6 +3,8 @@ import VideosApi from './videos';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
+const {ZiggeoAudio} = NativeModules;
+const {ZiggeoImage} = NativeModules;
 import ZiggeoVideoView from './video_view.js';
 import ZiggeoCameraView from './camera_view.js';
 const {Videos} = NativeModules;
@@ -101,17 +103,11 @@ export default {
     record: async function () {
         return ZiggeoRecorder.record();
     },
-    recordAudio: async function () {
-        return ZiggeoRecorder.recordAudio();
-    },
-    playAudio: async function (audioToken: string) {
-        return ZiggeoRecorder.playAudio(audioToken);
+    chooseVideo: async function (map) {
+        return ZiggeoRecorder.chooseVideo(map);
     },
     startScreenRecorder: async function () {
         return ZiggeoRecorder.startScreenRecorder();
-    },
-    uploadFromFileSelector: async function (map) {
-        return ZiggeoRecorder.uploadFromFileSelector(map);
     },
     uploadFromPath: async function (fileName, createObject: CreateObject) {
         return ZiggeoRecorder.uploadFromPath(fileName, createObject);
@@ -140,9 +136,9 @@ export default {
         return new NativeEventEmitter(ZiggeoVideoView);
     },
 
-    // ZiggeoPlayer
-    play: function (videoId: string) {
-        ZiggeoPlayer.play(videoId);
+    // Video Player
+    playVideo: function (videoId: string) {
+        ZiggeoPlayer.playVideo(videoId);
     },
     playFromUri: function (path_or_url: string) {
         ZiggeoPlayer.playFromUri(path_or_url);
@@ -158,6 +154,25 @@ export default {
     },
     setAdsURL: function (url) {
         ZiggeoPlayer.setAdsURL(url);
+    },
+
+    // Audio
+    recordAudio: async function () {
+        return ZiggeoRecorder.recordAudio();
+    },
+    playAudio: async function (audioToken: string) {
+        return ZiggeoRecorder.playAudio(audioToken);
+    },
+
+    // Image
+    takePhoto: function () {
+        return ZiggeoImage.takePhoto();
+    },
+    chooseImage: function () {
+        return ZiggeoImage.chooseImage();
+    },
+    showImage: async function (imageToken) {
+        return ZiggeoImage.showImage(imageToken);
     },
 
     // Constants

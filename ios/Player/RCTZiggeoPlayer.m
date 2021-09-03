@@ -43,7 +43,7 @@ RCT_EXPORT_METHOD(setPlayerCacheConfig:(NSDictionary *)config)
     self.cacheConfig = config;
 }
 
-RCT_EXPORT_METHOD(play:(NSString*)videoToken)
+RCT_EXPORT_METHOD(playVideo:(NSString*)videoToken)
 {
     [self playTokenOrUrl:videoToken URL:nil];
 }

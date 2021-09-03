@@ -1,11 +1,11 @@
 //
-//  ZiggeoRecorderRCT.h
+//  RCTZiggeoRecorder.h
 //
 //  Copyright © 2017 Ziggeo. All rights reserved.
 //
 
-#ifndef ZiggeoRecorderRCT_h
-#define ZiggeoRecorderRCT_h
+#ifndef RCTZiggeoRecorder_h
+#define RCTZiggeoRecorder_h
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
@@ -36,11 +36,10 @@
 @property (nonatomic) BOOL sendImmediately;
 @property (strong, nonatomic) NSDictionary *cacheConfig;
 @property (strong, nonatomic) NSDictionary *interfaceConfig;
-
 @property (strong, nonatomic) NSMutableArray* contexts;
 
 @end
 
 
-#endif /* ZiggeoRecorderRCT_h */
+#endif /* RCTZiggeoRecorder_h */
 

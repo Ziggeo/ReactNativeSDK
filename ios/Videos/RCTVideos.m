@@ -5,7 +5,8 @@
 #import "RotatingImagePickerController.h"
 
 
-@interface VideosContext: NSObject<ZiggeoVideosDelegate>
+@interface VideosContext: NSObject<ZiggeoUploadDelegate>
+
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
 @property (strong, nonatomic) RCTVideos* videos;
@@ -15,37 +16,44 @@
 
 
 @implementation VideosContext
--(void)resolve:(NSString*)token {
+
+- (void)resolve:(NSString*)token {
     if(_resolveBlock) _resolveBlock(token);
     _resolveBlock = nil;
     _rejectBlock = nil;
     self.videos = nil;
 }
 
--(void)reject:(NSString*)code message:(NSString*)message {
+- (void)reject:(NSString*)code message:(NSString*)message {
     if(_rejectBlock) _rejectBlock(code, message, [NSError errorWithDomain:@"recorder" code:0 userInfo:@{code:message}]);
     _resolveBlock = nil;
     _rejectBlock = nil;
     self.videos = nil;
 }
 
-- (void)videoPreparingToUploadWithPath:(NSString *)sourcePath {
+- (void)preparingToUploadWithPath:(NSString *)sourcePath {
     
 }
 
-- (void)videoPreparingToUploadWithPath:(NSString *)sourcePath token:(NSString *)token {
+- (void)preparingToUploadWithPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken {
     
 }
 
-- (void)videoUploadCompleteForPath:(NSString *)sourcePath token:(NSString *)token withResponse:(NSURLResponse *)response error:(NSError *)error json:(NSDictionary *)json {
+- (void)failedToUploadWithPath:(NSString *)sourcePath {
     
 }
 
-- (void)videoUploadProgressForPath:(NSString *)sourcePath token:(NSString *)token totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes {
+- (void)uploadStartedWithPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken backgroundTask:(NSURLSessionTask *)uploadingTask {
     
 }
 
-- (void)videoUploadStartedWithPath:(NSString *)sourcePath token:(NSString *)token backgroundTask:(NSURLSessionTask *)uploadingTask {
+- (void)uploadProgressForPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes {
+}
+
+- (void)uploadCompletedForPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken withResponse:(NSURLResponse *)response error:(NSError *)error json:(NSDictionary *)json {
+}
+
+- (void)deleteWithToken:(NSString *)token streamToken:(NSString *)streamToken withResponse:(NSURLResponse *)response error:(NSError *)error json:(NSDictionary *)json {
     
 }
 
@@ -129,7 +137,7 @@ RCT_EXPORT_METHOD(downloadImage:(NSString *)tokenOrKey resolver:(RCTPromiseResol
     */
 }
 
-RCT_EXPORT_METHOD(destroy:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(destroy:(NSString *)token resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         VideosContext* context = [[VideosContext alloc] init];
@@ -140,8 +148,8 @@ RCT_EXPORT_METHOD(destroy:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBloc
         Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:[RCTVideos _appToken]];
         ziggeo.connect.serverAuthToken = [RCTVideos _serverAuthToken];
         ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
-        ziggeo.videos.delegate = context;
-        [ziggeo.videos deleteVideoByToken:tokenOrKey data:nil callback:^void (NSData* responseData, NSURLResponse* response, NSError* error) {
+        ziggeo.videos.uploadDelegate = context;
+        [ziggeo.videos deleteVideoByToken:token StreamToken:@"" Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
             if (error == nil) {
                 resolve(nil);
             } else {
