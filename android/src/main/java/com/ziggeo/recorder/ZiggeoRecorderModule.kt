@@ -248,7 +248,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
                             }
                         }
                         var actualPath = path
-                        if (FileUtils.isUri("://")) {
+                        if (FileUtils.isUri(actualPath)) {
                             FileUtils.getPath(reactApplicationContext, Uri.parse(path))?.let {
                                 actualPath = it
                             }
