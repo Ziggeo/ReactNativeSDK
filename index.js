@@ -103,20 +103,26 @@ export default {
     setCamera: function (camera) {
         ZiggeoRecorder.setCamera(camera);
     },
+    /**
+     * @deprecated Use `startCameraRecorder()` instead.
+     */
     record: async function () {
         return ZiggeoRecorder.record();
     },
+    startCameraRecorder: async function () {
+        return ZiggeoRecorder.record();
+    },
     startImageRecorder: async function () {
-        return  ImagesApi.startImageRecorder();
+        return ZiggeoRecorder.startImageRecorder();
     },
     startAudioRecorder: async function () {
-        return ImagesApi.startAudioRecorder();
+        return ZiggeoRecorder.startAudioRecorder();
     },
     startAudioPlayer:async function (token: string) {
-        return ImagesApi.startAudioPlayer(token);
+        return ZiggeoRecorder.startAudioPlayer(token);
     },
     showImage:async function (token: string) {
-        return ImagesApi.showImage(token);
+        return ZiggeoRecorder.showImage(token);
     },
     startScreenRecorder: async function () {
         return ZiggeoRecorder.startScreenRecorder();

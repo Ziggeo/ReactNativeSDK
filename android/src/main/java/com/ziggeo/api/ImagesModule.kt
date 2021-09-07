@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.ziggeo.BaseModule
 import com.ziggeo.androidsdk.log.ZLog
+import com.ziggeo.androidsdk.net.models.images.ImageDetails
 import com.ziggeo.tasks.SimpleTask
 import com.ziggeo.tasks.Task
 import com.ziggeo.utils.ConversionUtil
@@ -107,17 +108,15 @@ class ImagesModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
 
     @ReactMethod
     fun update(modelJson: String, promise: Promise) {
-        //todo add update with String arg instead AudiosModel
-
-//        val task: Task = SimpleTask(promise)
-//        val d = ziggeo.apiRx()
-//                .audiosRaw()
-//                .update(modelJson)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({ upd: String? -> resolve(task, upd) }
-//                ) { throwable: Throwable -> reject(task, throwable.toString()) }
-//        compositeDisposable.add(d)
+        val task: Task = SimpleTask(promise)
+        val d = ziggeo.apiRx()
+                .imagesRaw()
+                .update(ImageDetails.fromJson(modelJson))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ upd: String? -> resolve(task, upd) }
+                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+        compositeDisposable.add(d)
     }
 
     @SuppressLint("CheckResult")
@@ -154,26 +153,6 @@ class ImagesModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
                         promise.reject(it)
                     }
                 })
-    }
-
-    @ReactMethod
-    fun startImageRecorder() {
-        ziggeo.startImageRecorder()
-    }
-
-    @ReactMethod
-    fun startAudioRecorder() {
-        ziggeo.startAudioRecorder()
-    }
-
-    @ReactMethod
-    fun startAudioPlayer(token: String) {
-        ziggeo.startAudioPlayer(null, token)
-    }
-
-    @ReactMethod
-    fun showImage(token: String) {
-        ziggeo.showImage(token)
     }
 
     override fun onCatalystInstanceDestroy() {

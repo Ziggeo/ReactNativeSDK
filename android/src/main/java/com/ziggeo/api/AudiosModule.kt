@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.ziggeo.BaseModule
 import com.ziggeo.androidsdk.log.ZLog
+import com.ziggeo.androidsdk.net.models.audios.AudioDetails
 import com.ziggeo.tasks.SimpleTask
 import com.ziggeo.tasks.Task
 import com.ziggeo.utils.ConversionUtil
@@ -15,7 +16,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiConsumer
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import java.io.InputStream
 import java.io.File
 
 /**
@@ -52,12 +52,12 @@ class AudiosModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
     fun index(args: ReadableMap?, promise: Promise) {
         val task: Task = SimpleTask(promise)
         val d = ziggeo.apiRx()
-                .audiosRaw()
-                .index(ConversionUtil.toMap(args))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result: String? -> resolve(task, result) }
-                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+            .audiosRaw()
+            .index(ConversionUtil.toMap(args))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ result: String? -> resolve(task, result) }
+            ) { throwable: Throwable -> reject(task, throwable.toString()) }
         compositeDisposable.add(d)
     }
 
@@ -65,12 +65,12 @@ class AudiosModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
     fun destroy(tokenOrKey: String, promise: Promise) {
         val task: Task = SimpleTask(promise)
         val d = ziggeo.apiRx()
-                .audiosRaw()
-                .destroy(tokenOrKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ resolve(task, null) }
-                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+            .audiosRaw()
+            .destroy(tokenOrKey)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ resolve(task, null) }
+            ) { throwable: Throwable -> reject(task, throwable.toString()) }
         compositeDisposable.add(d)
     }
 
@@ -78,82 +78,80 @@ class AudiosModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
     @ReactMethod
     fun get(tokenOrKey: String, promise: Promise) {
         ziggeo.apiRx()
-                .audios()
-                .get(tokenOrKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(BiConsumer { url, throwable ->
-                    url?.let {
-                        promise.resolve(it)
-                    }
-                    throwable?.let {
-                        promise.reject(it)
-                    }
-                })
+            .audios()
+            .get(tokenOrKey)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { url, throwable ->
+                url?.let {
+                    promise.resolve(it)
+                }
+                throwable?.let {
+                    promise.reject(it)
+                }
+            }
     }
 
     @ReactMethod
     fun create(file: File, args: ReadableMap?, promise: Promise) {
         val task: Task = SimpleTask(promise)
         val d = ziggeo.apiRx()
-                .audiosRaw()
-                .create(file, ConversionUtil.toMap(args))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ upd: String? -> resolve(task, upd) }
-                ) { throwable: Throwable -> reject(task, throwable.toString()) }
+            .audiosRaw()
+            .create(file, ConversionUtil.toMap(args))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ upd: String? -> resolve(task, upd) }
+            ) { throwable: Throwable -> reject(task, throwable.toString()) }
         compositeDisposable.add(d)
     }
 
     @ReactMethod
     fun update(modelJson: String, promise: Promise) {
-        //todo add update with String arg instead AudiosModel
-
-//        val task: Task = SimpleTask(promise)
-//        val d = ziggeo.apiRx()
-//                .audiosRaw()
-//                .update(modelJson)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({ upd: String? -> resolve(task, upd) }
-//                ) { throwable: Throwable -> reject(task, throwable.toString()) }
-//        compositeDisposable.add(d)
+        val task: Task = SimpleTask(promise)
+        val d = ziggeo.apiRx()
+            .audiosRaw()
+            .update(AudioDetails.fromJson(modelJson))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ upd: String? -> resolve(task, upd) }
+            ) { throwable: Throwable -> reject(task, throwable.toString()) }
+        compositeDisposable.add(d)
     }
 
     @SuppressLint("CheckResult")
     @ReactMethod
     fun source(tokenOrKey: String, promise: Promise) {
         ziggeo.apiRx()
-                .audios()
-                .source(tokenOrKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(BiConsumer { url, throwable ->
-                    url?.let {
-                        promise.resolve(it)
-                    }
-                    throwable?.let {
-                        promise.reject(it)
-                    }
-                })
+            .audios()
+            .source(tokenOrKey)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(BiConsumer { url, throwable ->
+                url?.let {
+                    promise.resolve(it)
+                }
+                throwable?.let {
+                    promise.reject(it)
+                }
+            })
     }
 
     @SuppressLint("CheckResult")
     @ReactMethod
     fun getAudioUrl(tokenOrKey: String, promise: Promise) {
         ziggeo.apiRx()
-                .audios()
-                .getAudioUrl(tokenOrKey)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(BiConsumer { url, throwable ->
-                    url?.let {
-                        promise.resolve(it)
-                    }
-                    throwable?.let {
-                        promise.reject(it)
-                    }
-                })
+            .audios()
+            .getAudioUrl(tokenOrKey)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(BiConsumer { url, throwable ->
+                url?.let {
+                    promise.resolve(it)
+                }
+                throwable?.let {
+                    promise.reject(it)
+                }
+            })
     }
 
     override fun onCatalystInstanceDestroy() {

@@ -25,17 +25,4 @@ export default {
     getImagesUrl: async function (tokenOrKey: string) {
         return Images.getImagesUrl(tokenOrKey);
     },
-
-    startImageRecorder: async function () {
-        return Images.startImageRecorder();
-    },
-    startAudioRecorder: async function () {
-        return Images.startAudioRecorder();
-    },
-    startAudioPlayer: async function (token: string) {
-        return Images.startAudioPlayer(token);
-    },
-    showImage: async function (token: string) {
-        return Images.showImage(token);
-    },
 };
