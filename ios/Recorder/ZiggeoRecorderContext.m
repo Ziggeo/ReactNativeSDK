@@ -45,7 +45,7 @@
 // MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     NSURL* url = info[@"UIImagePickerControllerMediaURL"];
-    
+
     NSMutableDictionary* recordingParams = [[NSMutableDictionary alloc] init];
     if (self.recorder.additionalRecordingParams != nil) {
         [recordingParams addEntriesFromDictionary:self.recorder.additionalRecordingParams];
@@ -66,14 +66,27 @@
         }
     }
     
+    NSString *path = url.path;
+    NSString *documentsDirectory = NSTemporaryDirectory();
+    NSString *newFilePath = [documentsDirectory stringByAppendingPathComponent:@"video.mp4"];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:newFilePath]) {
+        [[NSFileManager defaultManager] fileExistsAtPath:newFilePath];
+    }
+    
+    NSError *error = nil;
+    BOOL success = [[NSFileManager defaultManager] copyItemAtPath:path toPath:newFilePath error:&error];
+    if (success) {
+        path = newFilePath;
+    }
+    
     Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
     m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
     m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
     [m_ziggeo.config setRecorderCacheConfig:self.recorder.cacheConfig];
     m_ziggeo.videos.uploadDelegate = self;
-    [m_ziggeo.videos uploadVideoWithPath:url.path];
-    
-    _pickerController = picker;
+    [m_ziggeo.videos uploadVideoWithPath:path];
+    [picker dismissViewControllerAnimated:true completion:nil];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -89,21 +102,9 @@
 }
 
 - (void)preparingToUploadWithPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken {
-    // dispatch_async(dispatch_get_main_queue(), ^{
-    //     if (self->_pickerController != nil) {
-    //         [self->_pickerController dismissViewControllerAnimated:true completion:nil];
-    //         self->_pickerController = nil;
-    //     }
-    // });
 }
 
 - (void)failedToUploadWithPath:(NSString *)sourcePath {
-    // dispatch_async(dispatch_get_main_queue(), ^{
-    //     if (self->_pickerController != nil) {
-    //         [self->_pickerController dismissViewControllerAnimated:true completion:nil];
-    //         self->_pickerController = nil;
-    //     }
-    // });
 }
 
 - (void)uploadStartedWithPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken backgroundTask:(NSURLSessionTask *)uploadingTask {

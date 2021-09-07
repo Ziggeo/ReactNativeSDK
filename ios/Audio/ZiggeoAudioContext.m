@@ -15,32 +15,32 @@
 @implementation ZiggeoAudioContext
 
 - (void)resolve:(NSString*)token {
-    if (self.resolveBlock)
-        self.resolveBlock(token);
+    if (_resolveBlock)
+        _resolveBlock(token);
     
-    self.resolveBlock = nil;
-    self.rejectBlock = nil;
-    self.ziggeoAudio = nil;
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    _ziggeoAudio = nil;
 }
 
 - (void)reject:(NSString*)code message:(NSString*)message {
-    if (self.rejectBlock)
-        self.rejectBlock(code, message, [NSError errorWithDomain:@"ziggeo_audio" code:0 userInfo:@{code:message}]);
+    if (_rejectBlock)
+        _rejectBlock(code, message, [NSError errorWithDomain:@"ziggeo_audio" code:0 userInfo:@{code:message}]);
     
-    self.resolveBlock = nil;
-    self.rejectBlock = nil;
-    self.ziggeoAudio = nil;
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    _ziggeoAudio = nil;
 }
 
-- (void)setAudio:(RCTZiggeoAudio *)audio {
-    if (audio != nil) {
-        if (audio.contexts == nil)
-            audio.contexts = [[NSMutableArray alloc] init];
-        [audio.contexts addObject:self];
-    } else if(self.ziggeoAudio != nil) {
-        [self.ziggeoAudio.contexts removeObject:self];
+- (void)setZiggeoAudio:(RCTZiggeoAudio *)ziggeoAudio {
+    if (ziggeoAudio != nil) {
+        if (ziggeoAudio.contexts == nil)
+            ziggeoAudio.contexts = [[NSMutableArray alloc] init];
+        [ziggeoAudio.contexts addObject:self];
+    } else if(_ziggeoAudio != nil) {
+        [_ziggeoAudio.contexts removeObject:self];
     }
-    self.ziggeoAudio = audio;
+    _ziggeoAudio = ziggeoAudio;
 }
 
 

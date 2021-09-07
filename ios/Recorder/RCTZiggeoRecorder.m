@@ -260,12 +260,12 @@ RCT_REMAP_METHOD(record,
             else recorder.extraArgsForCreateVideo = self->_additionalThemeParams;
         }
         recorder.maxRecordedDurationSeconds = self->_maxRecordingDuration;
-        if (recorder.extraArgsForCreateVideo && ([recorder.extraArgsForCreateVideo[@"hideRecorderControls"] isEqualToString:@"true"] || [[recorder.extraArgsForCreateVideo valueForKey:@"hideRecorderControls"] boolValue] )) {
+        if (recorder.extraArgsForCreateVideo && ([@"true" isEqualToString:recorder.extraArgsForCreateVideo[@"hideRecorderControls"]] || [[recorder.extraArgsForCreateVideo valueForKey:@"hideRecorderControls"] boolValue] )) {
             recorder.controlsVisible = false;
         }
         
         // [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
-        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
         while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
             parentController = parentController.presentedViewController;
         }
@@ -281,19 +281,19 @@ RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDuratio
 {
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        ZiggeoRecorderContext* context = [[ZiggeoRecorderContext alloc] init];
+        ZiggeoRecorderContext *context = [[ZiggeoRecorderContext alloc] init];
         context.resolveBlock = resolve;
         context.rejectBlock = reject;
         context.recorder = self;
         context.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
         context.enforceDuration = (enforceDuration != 0);
 
-        UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
+        UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
         
-        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
         while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
             parentController = parentController.presentedViewController;
         }
@@ -339,7 +339,7 @@ RCT_EXPORT_METHOD(chooseVideo:(NSDictionary*)map
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
         
-        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
         while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
             parentController = parentController.presentedViewController;
         }

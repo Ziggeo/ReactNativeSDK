@@ -7,6 +7,7 @@
 
 @import AVKit;
 #import <Foundation/Foundation.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "ZiggeoImageContext.h"
@@ -15,32 +16,32 @@
 @implementation ZiggeoImageContext
 
 - (void)resolve:(NSString*)token {
-    if (self.resolveBlock)
-        self.resolveBlock(token);
+    if (_resolveBlock)
+        _resolveBlock(token);
     
-    self.resolveBlock = nil;
-    self.rejectBlock = nil;
-    self.ziggeoImage = nil;
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    _ziggeoImage = nil;
 }
 
 - (void)reject:(NSString*)code message:(NSString*)message {
-    if (self.rejectBlock)
-        self.rejectBlock(code, message, [NSError errorWithDomain:@"ziggeo_image" code:0 userInfo:@{code:message}]);
+    if (_rejectBlock)
+        _rejectBlock(code, message, [NSError errorWithDomain:@"ziggeo_image" code:0 userInfo:@{code:message}]);
     
-    self.resolveBlock = nil;
-    self.rejectBlock = nil;
-    self.ziggeoImage = nil;
+    _resolveBlock = nil;
+    _rejectBlock = nil;
+    _ziggeoImage = nil;
 }
 
-- (void)setImage:(RCTZiggeoImage *)image {
-    if (image != nil) {
-        if (image.contexts == nil)
-            image.contexts = [[NSMutableArray alloc] init];
-        [image.contexts addObject:self];
-    } else if(self.ziggeoImage != nil) {
-        [self.ziggeoImage.contexts removeObject:self];
+- (void)setZiggeoImage:(RCTZiggeoImage *)ziggeoImage {
+    if (ziggeoImage != nil) {
+        if (ziggeoImage.contexts == nil)
+            ziggeoImage.contexts = [[NSMutableArray alloc] init];
+        [ziggeoImage.contexts addObject:self];
+    } else if(_ziggeoImage != nil) {
+        [_ziggeoImage.contexts removeObject:self];
     }
-    self.ziggeoImage = image;
+    _ziggeoImage = ziggeoImage;
 }
 
 
@@ -48,14 +49,12 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     UIImage* imageFile = info[@"UIImagePickerControllerOriginalImage"];
-
     Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:_ziggeoImage.appToken];
     m_ziggeo.connect.serverAuthToken = _ziggeoImage.serverAuthToken;
     m_ziggeo.connect.clientAuthToken = _ziggeoImage.clientAuthToken;
     m_ziggeo.images.uploadDelegate = self;
     [m_ziggeo.images uploadImageWithFile:imageFile];
-    
-    _pickerController = picker;
+    [picker dismissViewControllerAnimated:true completion:nil];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -67,25 +66,14 @@
 // MARK: - ZiggeoUploadDelegate
 
 - (void)preparingToUploadWithPath:(NSString *)sourcePath {
-    
+    NSLog(@"preparingToUploadWithPath : %@", sourcePath);
 }
 
 - (void)preparingToUploadWithPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_pickerController != nil) {
-            [self->_pickerController dismissViewControllerAnimated:true completion:nil];
-            self->_pickerController = nil;
-        }
-    });
+    NSLog(@"preparingToUploadWithPath : %@", token);
 }
 
 - (void)failedToUploadWithPath:(NSString *)sourcePath {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self->_pickerController != nil) {
-            [self->_pickerController dismissViewControllerAnimated:true completion:nil];
-            self->_pickerController = nil;
-        }
-    });
 }
 
 - (void)uploadStartedWithPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken backgroundTask:(NSURLSessionTask *)uploadingTask {
@@ -96,6 +84,7 @@
 //    if (_ziggeoImage != nil) {
 //        [_ziggeoImage sendEventWithName:@"UploadProgress" body:@{@"bytesSent": @(bytesSent), @"totalBytes":@(totalBytes), @"fileName":sourcePath, @"token":token }];
 //    }
+    NSLog(@"uploadProgressForPath : %i - %i", bytesSent, totalBytes);
 }
 
 - (void)uploadCompletedForPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken withResponse:(NSURLResponse *)response error:(NSError *)error json:(NSDictionary *)json {

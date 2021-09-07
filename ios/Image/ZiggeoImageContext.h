@@ -20,7 +20,6 @@
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
 @property (strong, nonatomic) RCTZiggeoImage* ziggeoImage;
-@property (strong, nonatomic) UIImagePickerController* pickerController;
 
 - (void)resolve:(NSString*)token;
 - (void)reject:(NSString*)code message:(NSString*)message;

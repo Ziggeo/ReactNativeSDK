@@ -17,16 +17,22 @@ export default {
         ZiggeoPlayer.setAppToken(appToken);
         ZiggeoRecorder.setAppToken(appToken);
         Videos.setAppToken(appToken);
+        ZiggeoImage.setAppToken(appToken);
+        ZiggeoAudio.setAppToken(appToken);
     },
     setClientAuthToken: function (token: string) {
         ZiggeoPlayer.setClientAuthToken(token);
         ZiggeoRecorder.setClientAuthToken(token);
         Videos.setClientAuthToken(token);
+        ZiggeoImage.setClientAuthToken(token);
+        ZiggeoAudio.setClientAuthToken(token);
     },
     setServerAuthToken: function (token: string) {
         ZiggeoPlayer.setServerAuthToken(token);
         ZiggeoRecorder.setServerAuthToken(token);
         Videos.setServerAuthToken(token);
+        ZiggeoImage.setServerAuthToken(token);
+        ZiggeoAudio.setServerAuthToken(token);
     },
     sendReport(logsList) {
         ContactUs.sendReport(logsList);
@@ -155,24 +161,30 @@ export default {
     setAdsURL: function (url) {
         ZiggeoPlayer.setAdsURL(url);
     },
+    downloadVideo: async function (videoToken: string) {
+        ZiggeoPlayer.downloadVideo(videoToken);
+    },
 
     // Audio
     recordAudio: async function () {
-        return ZiggeoRecorder.recordAudio();
+        return ZiggeoAudio.recordAudio();
     },
     playAudio: async function (audioToken: string) {
-        return ZiggeoRecorder.playAudio(audioToken);
+        return ZiggeoAudio.playAudio(audioToken);
+    },
+    downloadAudio: async function (audioToken: string) {
+        return ZiggeoAudio.downloadAudio(audioToken);
     },
 
     // Image
-    takePhoto: function () {
-        return ZiggeoImage.takePhoto();
+    takePhoto: async function (map) {
+        return ZiggeoImage.takePhoto(map);
     },
-    chooseImage: function () {
-        return ZiggeoImage.chooseImage();
+    chooseImage: async function (map) {
+        return ZiggeoImage.chooseImage(map);
     },
-    showImage: async function (imageToken) {
-        return ZiggeoImage.showImage(imageToken);
+    downloadImage: async function (imageToken) {
+        return ZiggeoImage.downloadImage(imageToken);
     },
 
     // Constants

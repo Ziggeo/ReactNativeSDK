@@ -12,6 +12,7 @@
 #import "RCTZiggeoImage.h"
 #import "ZiggeoImageContext.h"
 #import "RotatingImagePickerController.h"
+#import "ZiggeoRecorderContext.h"
 
 
 @implementation RCTZiggeoImage {
@@ -57,9 +58,10 @@ RCT_REMAP_METHOD(takePhoto,
         UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         imagePicker.delegate = context;
+        imagePicker.allowsEditing = false;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.image", nil];
         
-        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
         while (parentController.presentedViewController && parentController != parentController.presentedViewController) {
             parentController = parentController.presentedViewController;
         }
@@ -68,30 +70,38 @@ RCT_REMAP_METHOD(takePhoto,
 }
 
 RCT_REMAP_METHOD(chooseImage,
-                chooseImageWithResolver:(RCTPromiseResolveBlock)resolve
-                rejecter:(RCTPromiseRejectBlock)reject)
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
 {
+    [self chooseImage:nil resolver:resolve rejecter:reject];
+}
+
+RCT_EXPORT_METHOD(chooseImage:(NSDictionary*)map
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         ZiggeoImageContext *context = [[ZiggeoImageContext alloc] init];
         context.resolveBlock = resolve;
         context.rejectBlock = reject;
         context.ziggeoImage = self;
-
-        UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
+        
+        UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.image", nil];
         
-        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while (parentController.presentedViewController && parentController != parentController.presentedViewController) {
+        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
             parentController = parentController.presentedViewController;
         }
         [parentController presentViewController:imagePicker animated:true completion:nil];
     });
 }
 
-RCT_EXPORT_METHOD(showImage:(NSString *)imageToken
-                showImageWithResolver:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(downloadImage:(NSString *)imageToken
+                downloadImageWithResolver:(RCTPromiseResolveBlock)resolve
                 rejecter:(RCTPromiseRejectBlock)reject)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -101,13 +111,7 @@ RCT_EXPORT_METHOD(showImage:(NSString *)imageToken
 
         [m_ziggeo.images downloadImageWithToken:imageToken Callback:^(NSString *filePath) {
             dispatch_async(dispatch_get_global_queue(0,0), ^{
-                NSData *data = [[NSData alloc] initWithContentsOfURL:[NSURL fileURLWithPath:filePath]];
-                if (data == nil)
-                    return;
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    resolve([UIImage imageWithData: data]);
-                });
+                RCTLogInfo(@"image downloaded: %@", filePath);
             });
         }];
     });
