@@ -2,6 +2,7 @@ package com.ziggeo.cameraview
 
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
@@ -18,7 +19,7 @@ class RnCameraViewManager(reactContext: ReactApplicationContext) : BaseViewManag
     lateinit var cameraView: RnCameraView
         private set
 
-    override fun getName() = "ZiggeoCameraView"
+    override fun getName() = "ZCameraViewManager"
 
     init {
         context = reactContext
@@ -32,9 +33,13 @@ class RnCameraViewManager(reactContext: ReactApplicationContext) : BaseViewManag
     }
 
 
-    @ReactProp(name = "facing")
-    fun setFacing(cameraView: CameraView, @Facing facing: Int) {
-        cameraView.facing = facing
+    @ReactProp(name = "cameraFaceFront")
+    fun setCameraFaceFront(cameraView: CameraView, cameraFaceFront: Boolean) {
+        cameraView.facing = if (cameraFaceFront) {
+            FACING_FRONT
+        } else {
+            FACING_BACK
+        }
     }
 
     @ReactProp(name = "quality")
@@ -89,7 +94,7 @@ class RnCameraViewManager(reactContext: ReactApplicationContext) : BaseViewManag
             override fun error(throwable: Throwable) {
                 super.error(throwable)
                 val params = Arguments.createMap()
-                params.putString(Events.ERROR, throwable.toString())
+                params.putString(Keys.ERROR, throwable.toString())
                 sendEvent(Events.ERROR, params)
             }
 

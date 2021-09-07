@@ -5,6 +5,8 @@ import ImagesApi from './images';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
+import ZiggeoVideoView from './video_view.js';
+import ZiggeoCameraView from './camera_view.js';
 const {Videos} = NativeModules;
 const {Audios} = NativeModules;
 const {ContactUs} = NativeModules;
@@ -141,6 +143,12 @@ export default {
     },
     recorderEmitter: function () {
         return new NativeEventEmitter(ZiggeoRecorder);
+    },
+    cameraViewEmitter: function () {
+        return new NativeEventEmitter(ZiggeoCameraView);
+    },
+    videoViewEmitter: function () {
+        return new NativeEventEmitter(ZiggeoVideoView);
     },
 
     // ZiggeoPlayer

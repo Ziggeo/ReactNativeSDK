@@ -55,6 +55,16 @@
 @implementation RCTVideos {
 }
 
+static NSString *__appToken;
+static NSString *__serverAuthToken;
+static NSString *__clientAuthToken;
+
+
++ (NSString *) _appToken { return __appToken; }
++ (NSString *) _serverAuthToken { return __serverAuthToken; }
++ (NSString *) _clientAuthToken { return __clientAuthToken; }
+
+
 RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
@@ -66,19 +76,19 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
 {
     RCTLogInfo(@"application token set: %@", token);
-    _appToken = token;
+    __appToken = token;
 }
 
 RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
 {
     RCTLogInfo(@"server auth token set: %@", token);
-    _serverAuthToken = token;
+    __serverAuthToken = token;
 }
 
 RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 {
     RCTLogInfo(@"server auth token set: %@", token);
-    _clientAuthToken = token;
+    __clientAuthToken = token;
 }
 
 
@@ -127,9 +137,9 @@ RCT_EXPORT_METHOD(destroy:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBloc
         context.rejectBlock = reject;
         context.videos = self;
 
-        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
-        ziggeo.connect.serverAuthToken = self.serverAuthToken;
-        ziggeo.connect.clientAuthToken = self.clientAuthToken;
+        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:[RCTVideos _appToken]];
+        ziggeo.connect.serverAuthToken = [RCTVideos _serverAuthToken];
+        ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
         ziggeo.videos.delegate = context;
         [ziggeo.videos deleteVideoByToken:tokenOrKey data:nil callback:^void (NSData* responseData, NSURLResponse* response, NSError* error) {
             if (error == nil) {

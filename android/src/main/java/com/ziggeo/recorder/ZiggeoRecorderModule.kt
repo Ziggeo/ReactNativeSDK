@@ -1,6 +1,7 @@
 package com.ziggeo.recorder
 
 import android.Manifest
+import android.net.Uri
 import com.facebook.react.bridge.*
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -18,7 +19,6 @@ import com.ziggeo.androidsdk.qr.QrScannerConfig
 import com.ziggeo.androidsdk.recorder.MicSoundLevel
 import com.ziggeo.androidsdk.recorder.RecorderConfig
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView
-import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Facing
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Quality
 import com.ziggeo.androidsdk.widgets.cameraview.Size
 import com.ziggeo.tasks.RecordVideoTask
@@ -28,6 +28,7 @@ import com.ziggeo.utils.ConversionUtil.dataToCacheConfig
 import com.ziggeo.utils.ConversionUtil.dataToUploadingConfig
 import com.ziggeo.utils.ConversionUtil.toMap
 import com.ziggeo.utils.Events
+import com.ziggeo.utils.FileUtils
 import com.ziggeo.utils.FileUtils.getVideoDurationInSeconds
 import com.ziggeo.utils.Keys
 import com.ziggeo.utils.ThemeKeys
@@ -154,7 +155,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
-    fun setCamera(@Facing facing: Int) {
+    fun setCamera(@CameraView.Facing facing: Int) {
         ZLog.d("setCamera:%s", facing)
         ziggeo.recorderConfig.facing = facing
     }
@@ -247,21 +248,28 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
                                 enforceDuration = enforce.toBoolean()
                             }
                         }
-                        val videoFile = File(path)
+                        var actualPath = path
+                        if (FileUtils.isUri("://")) {
+                            FileUtils.getPath(reactApplicationContext, Uri.parse(path))?.let {
+                                actualPath = it
+                            }
+                        }
+
+                        val videoFile = File(actualPath)
                         if (!videoFile.exists()) {
-                            ZLog.e("File does not exist: %s", path)
-                            reject(task, ERR_FILE_DOES_NOT_EXIST, path)
-                        } else if (enforceDuration && maxDurationInSeconds > 0 && getVideoDurationInSeconds(path, reactApplicationContext) > maxDurationInSeconds) {
+                            ZLog.e("File does not exist: %s", actualPath)
+                            reject(task, ERR_FILE_DOES_NOT_EXIST, actualPath)
+                        } else if (enforceDuration && maxDurationInSeconds > 0 && getVideoDurationInSeconds(actualPath, reactApplicationContext) > maxDurationInSeconds) {
                             val errorMsg = "Video duration is more than allowed."
                             ZLog.e(errorMsg)
-                            ZLog.e("Path: %s", path)
-                            ZLog.e("Duration: %s", getVideoDurationInSeconds(path, reactApplicationContext))
+                            ZLog.e("Path: %s", actualPath)
+                            ZLog.e("Duration: %s", getVideoDurationInSeconds(actualPath, reactApplicationContext))
                             ZLog.e("Max allowed duration: %s", maxDurationInSeconds)
                             reject(task, ERR_DURATION_EXCEEDED, errorMsg)
                         } else {
                             ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
-//                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(path),
-//                                    null, task.extraArgs))
+                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(actualPath),
+                                    null, task.extraArgs))
                         }
                     }
 

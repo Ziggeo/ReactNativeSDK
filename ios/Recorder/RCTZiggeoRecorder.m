@@ -9,11 +9,9 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
-#import <Ziggeo/ZiggeoRecorderInterfaceConfig.h>
-#import <Ziggeo/ButtonConfig.h>
 #import "ButtonConfig+parse.h"
 
-@interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate,ZiggeoRecorder2Delegate,ZiggeoVideosDelegate>
+@interface UploadingContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate, ZiggeoRecorderDelegate, ZiggeoVideosDelegate>
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
 @property (strong, nonatomic) RCTZiggeoRecorder* recorder;
@@ -164,6 +162,24 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     }
 }
 
+-(void) ziggeoRecorderDidVerify {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Verified" body:@{}];
+    }
+}
+
+-(void) ziggeoRecorderDidProcess {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Processed" body:@{}];
+    }
+}
+
+-(void) ziggeoRecorderProcessing {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:@"Processing" body:@{}];
+    }
+}
+
 -(void)setRecorder:(RCTZiggeoRecorder *)recorder {
     if(recorder != nil)
     {
@@ -203,6 +219,9 @@ RCT_EXPORT_MODULE();
     return @[
         @"UploadProgress",
         @"RecordingStopped",
+        @"Verified",
+        @"Processed",
+        @"Processing",
     ];
 }
 
@@ -333,7 +352,7 @@ RCT_REMAP_METHOD(record,
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
-        ZiggeoRecorder2* recorder = [[ZiggeoRecorder2 alloc] initWithZiggeoApplication:m_ziggeo];
+        ZiggeoRecorder* recorder = [[ZiggeoRecorder alloc] initWithZiggeoApplication:m_ziggeo];
         recorder.coverSelectorEnabled = self->_coverSelectorEnabled;
         recorder.cameraFlipButtonVisible = self->_cameraFlipButtonVisible;
         recorder.cameraDevice = self->_camera;
@@ -364,7 +383,12 @@ RCT_REMAP_METHOD(record,
             recorder.controlsVisible = false;
         }
         m_ziggeo.videos.delegate = context;
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
+        // [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
+        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
+            parentController = parentController.presentedViewController;
+        }
+        [parentController presentViewController:recorder animated:true completion:nil];
     });
     //_currentContext = context;
 }
@@ -388,7 +412,12 @@ RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDuratio
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:imagePicker animated:true completion:nil];
+        
+        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
+            parentController = parentController.presentedViewController;
+        }
+        [parentController presentViewController:imagePicker animated:true completion:nil];
     });
 }
 
@@ -430,7 +459,12 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:imagePicker animated:true completion:nil];
+        
+        UIViewController* parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
+            parentController = parentController.presentedViewController;
+        }
+        [parentController presentViewController:imagePicker animated:true completion:nil];
     });
 }
 
