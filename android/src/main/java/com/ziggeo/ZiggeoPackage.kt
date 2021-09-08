@@ -5,6 +5,8 @@ import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
 import com.ziggeo.api.VideosModule
+import com.ziggeo.api.ImagesModule
+import com.ziggeo.api.AudiosModule
 import com.ziggeo.cameraview.CameraModule
 import com.ziggeo.cameraview.RnCameraViewManager
 import com.ziggeo.contactus.ContactUsModule
@@ -27,6 +29,8 @@ class ZiggeoPackage : ReactPackage {
         modules.add(ZiggeoRecorderModule(reactContext))
         modules.add(ZiggeoPlayerModule(reactContext))
         modules.add(VideosModule(reactContext))
+        modules.add(AudiosModule(reactContext))
+        modules.add(ImagesModule(reactContext))
         modules.add(ContactUsModule(reactContext))
         modules.add(CameraModule(reactContext, rnCameraViewManager!!))
         modules.add(VideoViewModule(reactContext, rnVideoViewManager!!))

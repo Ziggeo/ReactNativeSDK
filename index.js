@@ -1,5 +1,7 @@
-import {NativeModules, NativeEventEmitter, requireNativeComponent} from 'react-native';
+import {NativeEventEmitter, NativeModules} from 'react-native';
 import VideosApi from './videos';
+import AudiosApi from './audios';
+import ImagesApi from './images';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
@@ -8,10 +10,13 @@ const {ZiggeoImage} = NativeModules;
 import ZiggeoVideoView from './video_view.js';
 import ZiggeoCameraView from './camera_view.js';
 const {Videos} = NativeModules;
+const {Audios} = NativeModules;
 const {ContactUs} = NativeModules;
 
 export default {
     VideosApi,
+    AudiosApi,
+    ImagesApi,
     // Common
     setAppToken: function (appToken: string) {
         ZiggeoPlayer.setAppToken(appToken);
@@ -106,8 +111,26 @@ export default {
     setCamera: function (camera) {
         ZiggeoRecorder.setCamera(camera);
     },
+    /**
+     * @deprecated Use `startCameraRecorder()` instead.
+     */
     record: async function () {
         return ZiggeoRecorder.record();
+    },
+    startCameraRecorder: async function () {
+        return ZiggeoRecorder.record();
+    },
+    startImageRecorder: async function () {
+        return ZiggeoRecorder.startImageRecorder();
+    },
+    startAudioRecorder: async function () {
+        return ZiggeoRecorder.startAudioRecorder();
+    },
+    startAudioPlayer:async function (token: string) {
+        return ZiggeoRecorder.startAudioPlayer(token);
+    },
+    showImage:async function (token: string) {
+        return ZiggeoRecorder.showImage(token);
     },
     chooseVideo: async function (map) {
         return ZiggeoRecorder.chooseVideo(map);
