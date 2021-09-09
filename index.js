@@ -117,6 +117,9 @@ export default {
     record: async function () {
         return ZiggeoRecorder.record();
     },
+    chooseVideo: async function (map) {
+        return ZiggeoRecorder.chooseVideo(map);
+    },
     startCameraRecorder: async function () {
         return ZiggeoRecorder.record();
     },
