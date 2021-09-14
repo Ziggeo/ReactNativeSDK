@@ -14,7 +14,7 @@
 @class RCTZiggeoRecorder;
 
 
-@interface ZiggeoRecorderContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate, ZiggeoRecorderDelegate, ZiggeoUploadDelegate>
+@interface ZiggeoRecorderContext: NSObject<UIImagePickerControllerDelegate, UINavigationControllerDelegate, ZiggeoRecorderDelegate, ZiggeoUploadDelegate, ZiggeoAudioRecorderDelegate>
 
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;

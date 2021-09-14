@@ -8,9 +8,11 @@
 #import "ZiggeoRecorderContext.h"
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "RotatingImagePickerController.h"
 #import "ButtonConfig+parse.h"
 #import "RCTZiggeoRecorder.h"
+
 
 @implementation ZiggeoRecorderContext
 
@@ -42,55 +44,71 @@
     _recorder = recorder;
 }
 
-// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    NSURL* url = info[@"UIImagePickerControllerMediaURL"];
 
-    NSMutableDictionary* recordingParams = [[NSMutableDictionary alloc] init];
-    if (self.recorder.additionalRecordingParams != nil) {
-        [recordingParams addEntriesFromDictionary:self.recorder.additionalRecordingParams];
-    }
-    if (self.maxAllowedDurationInSeconds > 0) {
-        if (self.enforceDuration) {
-            AVAsset* audioAsset = [AVURLAsset assetWithURL:url];
-            CMTime assetTime = [audioAsset duration];
-            Float64 duration = CMTimeGetSeconds(assetTime);
-            if (duration > self.maxAllowedDurationInSeconds) {
-                [self reject:@"ERR_DURATION_EXCEEDED" message:@"video duration is more than allowed"];
-                [picker dismissViewControllerAnimated:true completion:nil];
-                return;
-            }
-        } else {
-            NSDictionary *durationRecordingParams = @{ @"max_duration" : @(self.maxAllowedDurationInSeconds), @"enforce_duration": @"false"};
-            [recordingParams addEntriesFromDictionary:durationRecordingParams];
+// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    NSString *mediaType = info[UIImagePickerControllerMediaType];
+    if (CFStringCompare ((__bridge_retained CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo) {
+        NSURL *url = info[UIImagePickerControllerMediaURL];
+
+        NSMutableDictionary *recordingParams = [[NSMutableDictionary alloc] init];
+        if (self.recorder.additionalRecordingParams != nil) {
+            [recordingParams addEntriesFromDictionary:self.recorder.additionalRecordingParams];
         }
+        if (self.maxAllowedDurationInSeconds > 0) {
+            if (self.enforceDuration) {
+                AVAsset* audioAsset = [AVURLAsset assetWithURL:url];
+                CMTime assetTime = [audioAsset duration];
+                Float64 duration = CMTimeGetSeconds(assetTime);
+                if (duration > self.maxAllowedDurationInSeconds) {
+                    [self reject:@"ERR_DURATION_EXCEEDED" message:@"video duration is more than allowed"];
+                    [picker dismissViewControllerAnimated:true completion:nil];
+                    return;
+                }
+            } else {
+                NSDictionary *durationRecordingParams = @{ @"max_duration" : @(self.maxAllowedDurationInSeconds), @"enforce_duration": @"false"};
+                [recordingParams addEntriesFromDictionary:durationRecordingParams];
+            }
+        }
+        
+        NSString *path = url.path;
+        NSString *documentsDirectory = NSTemporaryDirectory();
+        NSString *newFilePath = [documentsDirectory stringByAppendingPathComponent:@"video.mp4"];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:newFilePath]) {
+            [[NSFileManager defaultManager] fileExistsAtPath:newFilePath];
+        }
+        
+        NSError *error = nil;
+        BOOL success = [[NSFileManager defaultManager] copyItemAtPath:path toPath:newFilePath error:&error];
+        if (success) {
+            path = newFilePath;
+        }
+        
+        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
+        m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
+        [m_ziggeo.config setRecorderCacheConfig:self.recorder.cacheConfig];
+        m_ziggeo.videos.uploadDelegate = self;
+        [m_ziggeo.videos uploadVideoWithPath:path];
+        [picker dismissViewControllerAnimated:true completion:nil];
+        
+    } else if (CFStringCompare ((__bridge_retained CFStringRef) mediaType, kUTTypeImage, 0) == kCFCompareEqualTo) {
+        UIImage* imageFile = info[UIImagePickerControllerOriginalImage];
+        Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
+        m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
+        m_ziggeo.images.uploadDelegate = self;
+        [m_ziggeo.images uploadImageWithFile:imageFile];
+        [picker dismissViewControllerAnimated:true completion:nil];
+        
+    } else {
+        [picker dismissViewControllerAnimated:true completion:nil];
     }
-    
-    NSString *path = url.path;
-    NSString *documentsDirectory = NSTemporaryDirectory();
-    NSString *newFilePath = [documentsDirectory stringByAppendingPathComponent:@"video.mp4"];
-    
-    if ([[NSFileManager defaultManager] fileExistsAtPath:newFilePath]) {
-        [[NSFileManager defaultManager] fileExistsAtPath:newFilePath];
-    }
-    
-    NSError *error = nil;
-    BOOL success = [[NSFileManager defaultManager] copyItemAtPath:path toPath:newFilePath error:&error];
-    if (success) {
-        path = newFilePath;
-    }
-    
-    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
-    m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
-    m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
-    [m_ziggeo.config setRecorderCacheConfig:self.recorder.cacheConfig];
-    m_ziggeo.videos.uploadDelegate = self;
-    [m_ziggeo.videos uploadVideoWithPath:path];
-    [picker dismissViewControllerAnimated:true completion:nil];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    NSLog(@"image picker cancelled delegate");
     [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
     [picker dismissViewControllerAnimated:true completion:nil];
 }
@@ -155,6 +173,58 @@
 }
 
 - (void)faceDetected:(int)faceID rect:(CGRect)rect {
+    
+}
+
+
+// MARK: - ZiggeoAudioRecorderDelegate
+
+- (void)ziggeoAudioRecorderReady {
+    if (_recorder != nil) {
+       [_recorder sendEventWithName:@"ready_to_record" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderCanceled {
+    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
+}
+
+- (void)ziggeoAudioRecorderRecoding {
+    if (_recorder != nil) {
+       [_recorder sendEventWithName:@"recording_started" body:@{}];
+       [_recorder sendEventWithName:@"streaming_started" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderCurrentRecordedDurationSeconds:(double)seconds {
+    if (_recorder != nil) {
+       [_recorder sendEventWithName:@"recording_progress" body:@{@"millis_passed": @(seconds)}];
+    }
+}
+
+- (void)ziggeoAudioRecorderFinished:(NSString *)path {
+    if (_recorder != nil) {
+       [_recorder sendEventWithName:@"recording_stopped" body:@{@"path": path}];
+    }
+}
+
+- (void)ziggeoAudioRecorderRerecord {
+    if (_recorder != nil) {
+       [_recorder sendEventWithName:@"rerecord" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderManuallySubmitted {
+    if (_recorder != nil) {
+       [_recorder sendEventWithName:@"manually_submitted" body:@{}];
+    }
+}
+
+- (void)ziggeoAudioRecorderPlaying {
+    
+}
+
+- (void)ziggeoAudioRecorderPaused {
     
 }
 

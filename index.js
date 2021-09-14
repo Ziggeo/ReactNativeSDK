@@ -5,8 +5,6 @@ import ImagesApi from './images';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
-const {ZiggeoAudio} = NativeModules;
-const {ZiggeoImage} = NativeModules;
 import ZiggeoVideoView from './video_view.js';
 import ZiggeoCameraView from './camera_view.js';
 const {Videos} = NativeModules;
@@ -22,22 +20,16 @@ export default {
         ZiggeoPlayer.setAppToken(appToken);
         ZiggeoRecorder.setAppToken(appToken);
         Videos.setAppToken(appToken);
-        ZiggeoImage.setAppToken(appToken);
-        ZiggeoAudio.setAppToken(appToken);
     },
     setClientAuthToken: function (token: string) {
         ZiggeoPlayer.setClientAuthToken(token);
         ZiggeoRecorder.setClientAuthToken(token);
         Videos.setClientAuthToken(token);
-        ZiggeoImage.setClientAuthToken(token);
-        ZiggeoAudio.setClientAuthToken(token);
     },
     setServerAuthToken: function (token: string) {
         ZiggeoPlayer.setServerAuthToken(token);
         ZiggeoRecorder.setServerAuthToken(token);
         Videos.setServerAuthToken(token);
-        ZiggeoImage.setServerAuthToken(token);
-        ZiggeoAudio.setServerAuthToken(token);
     },
     sendReport(logsList) {
         ContactUs.sendReport(logsList);
@@ -117,9 +109,6 @@ export default {
     record: async function () {
         return ZiggeoRecorder.record();
     },
-    chooseVideo: async function (map) {
-        return ZiggeoRecorder.chooseVideo(map);
-    },
     startCameraRecorder: async function () {
         return ZiggeoRecorder.record();
     },
@@ -135,14 +124,14 @@ export default {
     showImage:async function (token: string) {
         return ZiggeoRecorder.showImage(token);
     },
-    chooseVideo: async function (map) {
-        return ZiggeoRecorder.chooseVideo(map);
-    },
     startScreenRecorder: async function () {
         return ZiggeoRecorder.startScreenRecorder();
     },
     uploadFromPath: async function (fileName, createObject: CreateObject) {
         return ZiggeoRecorder.uploadFromPath(fileName, createObject);
+    },
+    uploadImageFromFileSelector: async function () {
+        return ZiggeoRecorder.uploadImageFromFileSelector();
     },
     /**
      * @deprecated Use `uploadFromFileSelector(map)` instead.
@@ -150,6 +139,9 @@ export default {
     uploadFromFileSelectorWithDurationLimit: async function (maxAllowedDurationInSeconds, enforceDuration) {
         console.warn('Calling deprecated function!');
         var argsMap = {'max_duration': maxAllowedDurationInSeconds, 'enforce_duration': enforceDuration};
+        return ZiggeoRecorder.uploadFromFileSelector(argsMap);
+    },
+    uploadFromFileSelector: async function (argsMap) {
         return ZiggeoRecorder.uploadFromFileSelector(argsMap);
     },
     cancelRequest: function () {
@@ -189,28 +181,6 @@ export default {
     },
     downloadVideo: async function (videoToken: string) {
         ZiggeoPlayer.downloadVideo(videoToken);
-    },
-
-    // Audio
-    recordAudio: async function () {
-        return ZiggeoAudio.recordAudio();
-    },
-    playAudio: async function (audioToken: string) {
-        return ZiggeoAudio.playAudio(audioToken);
-    },
-    downloadAudio: async function (audioToken: string) {
-        return ZiggeoAudio.downloadAudio(audioToken);
-    },
-
-    // Image
-    takePhoto: async function (map) {
-        return ZiggeoImage.takePhoto(map);
-    },
-    chooseImage: async function (map) {
-        return ZiggeoImage.chooseImage(map);
-    },
-    downloadImage: async function (imageToken) {
-        return ZiggeoImage.downloadImage(imageToken);
     },
 
     // Constants

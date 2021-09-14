@@ -18,14 +18,16 @@
 @implementation VideosContext
 
 - (void)resolve:(NSString*)token {
-    if(_resolveBlock) _resolveBlock(token);
+    if (_resolveBlock) 
+        _resolveBlock(token);
     _resolveBlock = nil;
     _rejectBlock = nil;
     self.videos = nil;
 }
 
 - (void)reject:(NSString*)code message:(NSString*)message {
-    if(_rejectBlock) _rejectBlock(code, message, [NSError errorWithDomain:@"recorder" code:0 userInfo:@{code:message}]);
+    if (_rejectBlock) 
+        _rejectBlock(code, message, [NSError errorWithDomain:@"recorder" code:0 userInfo:@{code:message}]);
     _resolveBlock = nil;
     _rejectBlock = nil;
     self.videos = nil;

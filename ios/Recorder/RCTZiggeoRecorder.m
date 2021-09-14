@@ -104,6 +104,17 @@ RCT_EXPORT_MODULE();
         @"AudioRecordingStarted",
         @"AudioRecordingProgress",
         @"AudioRecordingStopped",
+
+        @"manually_submitted",
+        @"recording_started",
+        @"recording_stopped",
+        @"countdown",
+        @"recording_progress",
+        @"ready_to_record",
+        @"rerecord",
+
+        @"streaming_started",
+        @"streaming_stopped",
     ];
 }
 
@@ -214,11 +225,21 @@ RCT_EXPORT_METHOD(cancelRequest)
     
 }
 
-+(BOOL)requiresMainQueueSetup
++ (BOOL)requiresMainQueueSetup
 {
     return YES;
 }
 
+- (void)showPresentViewController:(UIViewController *)viewController {
+    UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
+        parentController = parentController.presentedViewController;
+    }
+    [parentController presentViewController:viewController animated:true completion:nil];
+}
+
+
+// MARK: - Videos
 RCT_REMAP_METHOD(record,
                  recordWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
@@ -263,50 +284,27 @@ RCT_REMAP_METHOD(record,
         if (recorder.extraArgsForCreateVideo && ([@"true" isEqualToString:recorder.extraArgsForCreateVideo[@"hideRecorderControls"]] || [[recorder.extraArgsForCreateVideo valueForKey:@"hideRecorderControls"] boolValue] )) {
             recorder.controlsVisible = false;
         }
-        
-        // [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:recorder animated:true completion:nil];
-        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
-            parentController = parentController.presentedViewController;
-        }
-        [parentController presentViewController:recorder animated:true completion:nil];
+        [self showPresentViewController:recorder];
     });
-    //_currentContext = context;
 }
 
-RCT_EXPORT_METHOD(uploadFromFileSelectorWithDurationLimit:(int)maxAllowedDurationInSeconds
-                  enforceDuration:(int)enforceDuration
+RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         ZiggeoRecorderContext *context = [[ZiggeoRecorderContext alloc] init];
         context.resolveBlock = resolve;
         context.rejectBlock = reject;
         context.recorder = self;
-        context.maxAllowedDurationInSeconds = maxAllowedDurationInSeconds;
-        context.enforceDuration = (enforceDuration != 0);
+        [self applyAdditionalParams:map context:context];
 
         UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.delegate = context;
         imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
-        
-        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
-            parentController = parentController.presentedViewController;
-        }
-        [parentController presentViewController:imagePicker animated:true completion:nil];
+        [self showPresentViewController:imagePicker];
     });
-}
-
-
-RCT_REMAP_METHOD(chooseVideo,
-                 resolver:(RCTPromiseResolveBlock)resolve
-                 rejecter:(RCTPromiseRejectBlock)reject)
-{
-    [self chooseVideo:nil resolver:resolve rejecter:reject];
 }
 
 - (void)applyAdditionalParams:(NSDictionary*)map context:(ZiggeoRecorderContext*)context {
@@ -320,47 +318,12 @@ RCT_REMAP_METHOD(chooseVideo,
     }
 }
 
-RCT_EXPORT_METHOD(chooseVideo:(NSDictionary*)map
-                 resolver:(RCTPromiseResolveBlock)resolve
-                 rejecter:(RCTPromiseRejectBlock)reject)
-{
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ZiggeoRecorderContext *context = [[ZiggeoRecorderContext alloc] init];
-        context.resolveBlock = resolve;
-        context.rejectBlock = reject;
-        context.recorder = self;
-        context.maxAllowedDurationInSeconds = 0;
-        context.enforceDuration = false;
-        [self applyAdditionalParams:map context:context];
-        
-        UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
-        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        imagePicker.delegate = context;
-        imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.movie", nil];
-        
-        UIViewController *parentController = [UIApplication sharedApplication].keyWindow.rootViewController;
-        while(parentController.presentedViewController && parentController != parentController.presentedViewController) {
-            parentController = parentController.presentedViewController;
-        }
-        [parentController presentViewController:imagePicker animated:true completion:nil];
-    });
-}
-
-
-RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-{
-    [self uploadFromPath:fileName argsMap:nil resolver:resolve rejecter:reject];
-}
-
 RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
                   argsMap:(NSDictionary*)map
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    ZiggeoRecorderContext* context = [[ZiggeoRecorderContext alloc] init];
+    ZiggeoRecorderContext *context = [[ZiggeoRecorderContext alloc] init];
     context.resolveBlock = resolve;
     context.rejectBlock = reject;
     context.recorder = self;
@@ -393,6 +356,121 @@ RCT_EXPORT_METHOD(setRecorderInterfaceConfig:(NSDictionary *)config)
 {
     RCTLogInfo(@"recorder interface config set: %@", config);
     self.interfaceConfig = config;
+}
+
+
+// MARK: Audios
+
+RCT_REMAP_METHOD(startAudioRecorder,
+                 resolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    ZiggeoRecorderContext* context = [[ZiggeoRecorderContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
+
+        ZiggeoAudioRecorder *audioRecorder = [[ZiggeoAudioRecorder alloc] initWithZiggeoApplication:m_ziggeo];
+        audioRecorder.recorderDelegate = context;
+        audioRecorder.uploadDelegate = context;
+        [self showPresentViewController:audioRecorder];
+    });
+}
+
+RCT_EXPORT_METHOD(startAudioPlayer:(NSString *)audioToken
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
+
+        [m_ziggeo.audios downloadAudioWithToken:audioToken Callback:^(NSString *filePath) {
+            dispatch_async(dispatch_get_global_queue(0,0), ^{
+                RCTLogInfo(@"audio downloaded: %@", filePath);
+                [self playAudioWithPath:filePath];
+            });
+        }];
+    });
+}
+
+- (void)playAudioWithPath:(NSString*)path {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:self.appToken];
+        [ziggeo connect].serverAuthToken = self.serverAuthToken;
+        [ziggeo connect].clientAuthToken = self.clientAuthToken;
+        
+        NSURL *url = [[NSURL alloc] initWithString:path];
+        AVPlayer *player = [AVPlayer playerWithURL:url];
+
+        AVPlayerViewController *playerController = [[AVPlayerViewController alloc] init];
+        playerController.player = player;
+        [player play];
+        [self showPresentViewController:playerController];
+    });
+}
+
+
+// MARK: Images
+
+RCT_REMAP_METHOD(startImageRecorder,
+                 startImageRecorderResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    ZiggeoRecorderContext* context = [[ZiggeoRecorderContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        imagePicker.delegate = context;
+        imagePicker.allowsEditing = false;
+        imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.image", nil];
+        [self showPresentViewController:imagePicker];
+    });
+}
+
+RCT_REMAP_METHOD(uploadImageFromFileSelector,
+                 uploadImageFromFileSelectorResolver:(RCTPromiseResolveBlock)resolve
+                 rejecter:(RCTPromiseRejectBlock)reject)
+{
+    ZiggeoRecorderContext* context = [[ZiggeoRecorderContext alloc] init];
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
+    context.recorder = self;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.delegate = context;
+        imagePicker.mediaTypes = [[NSArray alloc] initWithObjects:@"public.image", nil];
+        [self showPresentViewController:imagePicker];
+    });
+}
+
+RCT_EXPORT_METHOD(showImage:(NSString *)imageToken
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
+        m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
+
+        [m_ziggeo.images downloadImageWithToken:imageToken Callback:^(NSString *filePath) {
+            dispatch_async(dispatch_get_global_queue(0,0), ^{
+                RCTLogInfo(@"image downloaded: %@", filePath);
+            });
+        }];
+    });
 }
 
 @end
