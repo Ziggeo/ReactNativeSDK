@@ -99,8 +99,10 @@ object FileUtils {
                 val filepath = file.absolutePath
 
                 // Construct path without file name.
-                var pathwithoutname = filepath.substring(0,
-                        filepath.length - filename.length)
+                var pathwithoutname = filepath.substring(
+                    0,
+                    filepath.length - filename.length
+                )
                 if (pathwithoutname.endsWith("/")) {
                     pathwithoutname = pathwithoutname.substring(0, pathwithoutname.length - 1)
                 }
@@ -188,16 +190,20 @@ object FileUtils {
      * @return The value of the _data column, which is typically a file path.
      * @author paulburke
      */
-    fun getDataColumn(context: Context, uri: Uri?, selection: String?,
-                      selectionArgs: Array<String>?): String? {
+    fun getDataColumn(
+        context: Context, uri: Uri?, selection: String?,
+        selectionArgs: Array<String>?
+    ): String? {
         var cursor: Cursor? = null
         val column = "_data"
         val projection = arrayOf(
-                column
+            column
         )
         try {
-            cursor = context.contentResolver.query(uri!!, projection, selection, selectionArgs,
-                    null)
+            cursor = context.contentResolver.query(
+                uri!!, projection, selection, selectionArgs,
+                null
+            )
             if (cursor != null && cursor.moveToFirst()) {
                 if (DEBUG) DatabaseUtils.dumpCursor(cursor)
                 val column_index = cursor.getColumnIndexOrThrow(column)
@@ -224,18 +230,23 @@ object FileUtils {
      * @see .getFile
      */
     fun getPath(context: Context, uri: Uri): String? {
-        if (DEBUG) Log.d(TAG + " File -",
-                "Authority: " + uri.authority +
-                        ", Fragment: " + uri.fragment +
-                        ", Port: " + uri.port +
-                        ", Query: " + uri.query +
-                        ", Scheme: " + uri.scheme +
-                        ", Host: " + uri.host +
-                        ", Segments: " + uri.pathSegments.toString()
+        if (DEBUG) Log.d(
+            TAG + " File -",
+            "Authority: " + uri.authority +
+                    ", Fragment: " + uri.fragment +
+                    ", Port: " + uri.port +
+                    ", Query: " + uri.query +
+                    ", Scheme: " + uri.scheme +
+                    ", Host: " + uri.host +
+                    ", Segments: " + uri.pathSegments.toString()
         )
 
         // DocumentProvider
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(
+                context,
+                uri
+            )
+        ) {
             // LocalStorageProvider
             if (isLocalStorageDocument(uri)) {
                 // The path is the id
@@ -252,7 +263,8 @@ object FileUtils {
             } else if (isDownloadsDocument(uri)) {
                 val id = DocumentsContract.getDocumentId(uri)
                 val contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id))
+                    Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)
+                )
                 return getDataColumn(context, contentUri, null, null)
             } else if (isMediaDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
@@ -268,14 +280,19 @@ object FileUtils {
                 }
                 val selection = "_id=?"
                 val selectionArgs = arrayOf(
-                        split[1]
+                    split[1]
                 )
                 return getDataColumn(context, contentUri, selection, selectionArgs)
             }
         } else if ("content".equals(uri.scheme, ignoreCase = true)) {
 
             // Return the remote address
-            return if (isGooglePhotosUri(uri)) uri.lastPathSegment else getDataColumn(context, uri, null, null)
+            return if (isGooglePhotosUri(uri)) uri.lastPathSegment else getDataColumn(
+                context,
+                uri,
+                null,
+                null
+            )
         } else if ("file".equals(uri.scheme, ignoreCase = true)) {
             return uri.path
         }
@@ -383,16 +400,18 @@ object FileUtils {
                     if (DEBUG) Log.d(TAG, "Got thumb ID: $id")
                     if (mimeType!!.contains("video")) {
                         bm = MediaStore.Video.Thumbnails.getThumbnail(
-                                resolver,
-                                id.toLong(),
-                                MediaStore.Video.Thumbnails.MINI_KIND,
-                                null)
+                            resolver,
+                            id.toLong(),
+                            MediaStore.Video.Thumbnails.MINI_KIND,
+                            null
+                        )
                     } else if (mimeType.contains(MIME_TYPE_IMAGE)) {
                         bm = MediaStore.Images.Thumbnails.getThumbnail(
-                                resolver,
-                                id.toLong(),
-                                MediaStore.Images.Thumbnails.MINI_KIND,
-                                null)
+                            resolver,
+                            id.toLong(),
+                            MediaStore.Images.Thumbnails.MINI_KIND,
+                            null
+                        )
                     }
                 }
             } catch (e: Exception) {
@@ -409,10 +428,12 @@ object FileUtils {
      *
      * @author paulburke
      */
-    var sComparator = Comparator<File> { f1, f2 -> // Sort alphabetically by lower case, which is much cleaner
-        f1.name.toLowerCase().compareTo(
-                f2.name.toLowerCase())
-    }
+    var sComparator =
+        Comparator<File> { f1, f2 -> // Sort alphabetically by lower case, which is much cleaner
+            f1.name.toLowerCase().compareTo(
+                f2.name.toLowerCase()
+            )
+        }
 
     /**
      * File (not directories) filter.
@@ -458,8 +479,11 @@ object FileUtils {
         // use one of overloaded setDataSource() functions to set your data source
         retriever.setDataSource(context, Uri.parse(path))
         val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        val timeInMillis = time.toLong()
         retriever.release()
-        return timeInMillis / 1000f
+        time?.let {
+            val timeInMillis = it.toLong()
+            return timeInMillis / 1000F
+        }
+        return 0F
     }
 }
