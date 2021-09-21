@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		143E094226E259DB009FBC6B /* ZiggeoRecorderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 143E094126E259DA009FBC6B /* ZiggeoRecorderContext.m */; };
 		143E098E26E26A84009FBC6B /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 143E098D26E26A84009FBC6B /* RCTVideos.m */; };
+		1494B82026F1975000DBD19F /* ZiggeoConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 1494B81F26F1975000DBD19F /* ZiggeoConstants.m */; };
 		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
 		58603C1F09BE7D4B2D1EBED8 /* RCTZCameraModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */; };
 		843872862632EEAD00520AB0 /* ZVideoViewManagerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8438727E2632EEAC00520AB0 /* ZVideoViewManagerManager.m */; };
@@ -35,11 +36,12 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNReactNativeZiggeoLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZiggeoLibrary.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		14261B8926EE252C0090CBF6 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		143E094026E259DA009FBC6B /* ZiggeoRecorderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZiggeoRecorderContext.h; sourceTree = "<group>"; };
 		143E094126E259DA009FBC6B /* ZiggeoRecorderContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZiggeoRecorderContext.m; sourceTree = "<group>"; };
 		143E098C26E26A84009FBC6B /* RCTVideos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTVideos.h; sourceTree = "<group>"; };
 		143E098D26E26A84009FBC6B /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
+		1494B81E26F1975000DBD19F /* ZiggeoConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZiggeoConstants.h; sourceTree = "<group>"; };
+		1494B81F26F1975000DBD19F /* ZiggeoConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZiggeoConstants.m; sourceTree = "<group>"; };
 		58603263C86843794188BB9C /* ButtonConfig+parse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ButtonConfig+parse.m"; sourceTree = "<group>"; };
 		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
 		58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZCameraModule.m; sourceTree = "<group>"; };
@@ -81,10 +83,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		14261B8826EE252C0090CBF6 /* Utils */ = {
+		1494B81D26F1975000DBD19F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				14261B8926EE252C0090CBF6 /* Constants.h */,
+				1494B81E26F1975000DBD19F /* ZiggeoConstants.h */,
+				1494B81F26F1975000DBD19F /* ZiggeoConstants.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -92,7 +95,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				14261B8826EE252C0090CBF6 /* Utils */,
+				1494B81D26F1975000DBD19F /* Utils */,
 				8485A25C2649008200040940 /* CameraView */,
 				FA441F791F2A595300E51295 /* Frameworks */,
 				848D3E45264BEA3700212143 /* Player */,
@@ -233,6 +236,7 @@
 				D9CE4217246AD158009C1684 /* RotatingImagePickerController.m in Sources */,
 				8462CE5E26051C1C00FAE178 /* ZCameraView.m in Sources */,
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
+				1494B82026F1975000DBD19F /* ZiggeoConstants.m in Sources */,
 				143E098E26E26A84009FBC6B /* RCTVideos.m in Sources */,
 				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
 				58603C1F09BE7D4B2D1EBED8 /* RCTZCameraModule.m in Sources */,
