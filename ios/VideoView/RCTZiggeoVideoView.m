@@ -6,7 +6,6 @@
 #import <React/RCTEventEmitter.h>
 #import <React/RCTComponent.h>
 #import <React/RCTEventDispatcher.h>
-
 #import "RCTZVideoViewModule.h"
 #import "RCTVideos.h"
 @import AVKit;
