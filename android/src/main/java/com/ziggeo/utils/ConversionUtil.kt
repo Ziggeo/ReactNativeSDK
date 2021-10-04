@@ -26,11 +26,11 @@ object ConversionUtil {
             return null
         }
         var result: Any? = null
-        when (readableMap.getType(key)) {
-            ReadableType.Null -> result = null
-            ReadableType.Boolean -> result = readableMap.getBoolean(key)
+        result = when (readableMap.getType(key)) {
+            ReadableType.Null -> null
+            ReadableType.Boolean -> readableMap.getBoolean(key)
             ReadableType.Number -> readableMap.getDouble(key)
-            ReadableType.String -> result = readableMap.getString(key)
+            ReadableType.String -> readableMap.getString(key)
             else -> throw IllegalArgumentException("Could not convert object with key: $key.")
         }
         return result?.toString()

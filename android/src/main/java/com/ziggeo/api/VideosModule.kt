@@ -62,6 +62,42 @@ class VideosModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
 
     @SuppressLint("CheckResult")
     @ReactMethod
+    fun get(tokenOrKey: String, promise: Promise) {
+        ziggeo.apiRx()
+                .videos()
+                .get(tokenOrKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(BiConsumer { url, throwable ->
+                    url?.let {
+                        promise.resolve(it)
+                    }
+                    throwable?.let {
+                        promise.reject(it)
+                    }
+                })
+    }
+
+    @SuppressLint("CheckResult")
+    @ReactMethod
+    fun getVideoUrl(tokenOrKey: String, promise: Promise) {
+        ziggeo.apiRx()
+                .videos()
+                .getVideoUrl(tokenOrKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(BiConsumer { url, throwable ->
+                    url?.let {
+                        promise.resolve(it)
+                    }
+                    throwable?.let {
+                        promise.reject(it)
+                    }
+                })
+    }
+
+    @SuppressLint("CheckResult")
+    @ReactMethod
     fun getImageUrl(tokenOrKey: String, promise: Promise) {
         ziggeo.apiRx()
                 .videos()

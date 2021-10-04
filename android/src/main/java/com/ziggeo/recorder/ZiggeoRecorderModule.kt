@@ -99,8 +99,8 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     fun setLiveStreamingEnabled(enabled: Boolean) {
         ZLog.d("setLiveStreamingEnabled:%s", enabled)
         ziggeo.recorderConfig = RecorderConfig.Builder(ziggeo.recorderConfig)
-                .isLiveStreaming(enabled)
-                .build()
+            .isLiveStreaming(enabled)
+            .build()
     }
 
     @ReactMethod
@@ -208,15 +208,15 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
             close = java.lang.Boolean.parseBoolean(config[keyClose])
         }
         ziggeo.qrScannerConfig = QrScannerConfig.Builder()
-                .callback(object : QrScannerCallback() {
-                    override fun onDecoded(value: String) {
-                        super.onDecoded(value)
-                        val params = Arguments.createMap()
-                        params.putString(Keys.QR, value)
-                        sendEvent(Events.QR_DECODED, params)
-                    }
-                })
-                .build()
+            .callback(object : QrScannerCallback() {
+                override fun onDecoded(value: String) {
+                    super.onDecoded(value)
+                    val params = Arguments.createMap()
+                    params.putString(Keys.QR, value)
+                    sendEvent(Events.QR_DECODED, params)
+                }
+            })
+            .build()
         ziggeo.startQrScanner()
     }
 
@@ -231,56 +231,73 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
             task.extraArgs = args
         }
         Dexter.withContext(currentActivity)
-                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        ZLog.d("onPermissionGranted")
-                        var enforceDuration = false
-                        var maxDurationInSeconds = 0
-                        task.extraArgs?.let {
-                            val strDuration = it[ARG_DURATION]
-                            if (strDuration?.isNotEmpty() == true) {
-                                maxDurationInSeconds = strDuration.toInt()
-                            }
-                            val enforce = it[ARG_ENFORCE_DURATION]
-                            if (enforce?.isNotEmpty() == true) {
-                                enforceDuration = enforce.toBoolean()
-                            }
+            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                    ZLog.d("onPermissionGranted")
+                    var enforceDuration = false
+                    var maxDurationInSeconds = 0
+                    task.extraArgs?.let {
+                        val strDuration = it[ARG_DURATION]
+                        if (strDuration?.isNotEmpty() == true) {
+                            maxDurationInSeconds = strDuration.toInt()
                         }
-                        var actualPath = path
-                        if (FileUtils.isUri(actualPath)) {
-                            FileUtils.getPath(reactApplicationContext, Uri.parse(path))?.let {
-                                actualPath = it
-                            }
+                        val enforce = it[ARG_ENFORCE_DURATION]
+                        if (enforce?.isNotEmpty() == true) {
+                            enforceDuration = enforce.toBoolean()
                         }
-
-                        val videoFile = File(actualPath)
-                        if (!videoFile.exists()) {
-                            ZLog.e("File does not exist: %s", actualPath)
-                            reject(task, ERR_FILE_DOES_NOT_EXIST, actualPath)
-                        } else if (enforceDuration && maxDurationInSeconds > 0 && FileUtils.getDurationSeconds(Uri.parse(actualPath), reactApplicationContext) > maxDurationInSeconds) {
-                            val errorMsg = "Video duration is more than allowed."
-                            ZLog.e(errorMsg)
-                            ZLog.e("Path: %s", actualPath)
-                            ZLog.e("Duration: %s", FileUtils.getDurationSeconds(Uri.parse(actualPath), reactApplicationContext))
-                            ZLog.e("Max allowed duration: %s", maxDurationInSeconds)
-                            reject(task, ERR_DURATION_EXCEEDED, errorMsg)
-                        } else {
-                            ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
-                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(actualPath),
-                                    null, task.extraArgs, FileUtils.getMediaType(actualPath)))
+                    }
+                    var actualPath = path
+                    if (FileUtils.isUri(actualPath)) {
+                        FileUtils.getPath(reactApplicationContext, Uri.parse(path))?.let {
+                            actualPath = it
                         }
                     }
 
-                    override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        ZLog.d("onPermissionDenied")
-                        reject(task, ERR_PERMISSION_DENIED)
+                    val videoFile = File(actualPath)
+                    if (!videoFile.exists()) {
+                        ZLog.e("File does not exist: %s", actualPath)
+                        reject(task, ERR_FILE_DOES_NOT_EXIST, actualPath)
+                    } else if (enforceDuration && maxDurationInSeconds > 0 && FileUtils.getDurationSeconds(
+                            Uri.parse(actualPath),
+                            reactApplicationContext
+                        ) > maxDurationInSeconds
+                    ) {
+                        val errorMsg = "Video duration is more than allowed."
+                        ZLog.e(errorMsg)
+                        ZLog.e("Path: %s", actualPath)
+                        ZLog.e(
+                            "Duration: %s",
+                            FileUtils.getDurationSeconds(
+                                Uri.parse(actualPath),
+                                reactApplicationContext
+                            )
+                        )
+                        ZLog.e("Max allowed duration: %s", maxDurationInSeconds)
+                        reject(task, ERR_DURATION_EXCEEDED, errorMsg)
+                    } else {
+                        ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
+                        ziggeo.uploadingHandler.uploadNow(
+                            RecordingInfo(
+                                File(actualPath),
+                                null, task.extraArgs, FileUtils.getMediaType(actualPath)
+                            )
+                        )
                     }
+                }
 
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        ZLog.d("onPermissionRationaleShouldBeShown")
-                    }
-                }).check()
+                override fun onPermissionDenied(response: PermissionDeniedResponse) {
+                    ZLog.d("onPermissionDenied")
+                    reject(task, ERR_PERMISSION_DENIED)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest,
+                    token: PermissionToken
+                ) {
+                    ZLog.d("onPermissionRationaleShouldBeShown")
+                }
+            }).check()
     }
 
     @ReactMethod
@@ -291,12 +308,19 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
             task.extraArgs = args
         }
         var maxDurationInSeconds = 0
+        var mediaType = FileUtils.VIDEO
         task.extraArgs?.let {
             val strDuration = it[ARG_DURATION]
             if (strDuration?.isNotEmpty() == true) {
                 maxDurationInSeconds = strDuration.toInt()
             }
+
+            val strMediaType = it[ARG_MEDIA_TYPE]
+            if (strMediaType?.isNotEmpty() == true) {
+                mediaType = strMediaType.toFloat().toInt()
+            }
         }
+        ziggeo.fileSelectorConfig.mediaType = mediaType
         ziggeo.fileSelectorConfig.maxDuration = maxDurationInSeconds * 1000L
         ziggeo.fileSelectorConfig.extraArgs = task.extraArgs
         ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
@@ -344,12 +368,20 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
         constants[HIGH_QUALITY] = CameraView.QUALITY_HIGH
         constants[MEDIUM_QUALITY] = CameraView.QUALITY_MEDIUM
         constants[LOW_QUALITY] = CameraView.QUALITY_LOW
+        constants[MEDIA_TYPE_VIDEO] = FileUtils.VIDEO
+        constants[MEDIA_TYPE_AUDIO] = FileUtils.AUDIO
+        constants[MEDIA_TYPE_IMAGE] = FileUtils.IMAGE
         return constants
     }
 
     private fun prepareUploadingCallback(task: Task): IUploadingCallback {
         return object : UploadingCallback() {
-            override fun uploadProgress(videoToken: String, path: String, uploaded: Long, total: Long) {
+            override fun uploadProgress(
+                videoToken: String,
+                path: String,
+                uploaded: Long,
+                total: Long
+            ) {
                 super.uploadProgress(videoToken, path, uploaded, total)
                 ZLog.d("uploadProgress")
                 val params = Arguments.createMap()
@@ -718,11 +750,16 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
         private const val HIGH_QUALITY = "highQuality"
         private const val MEDIUM_QUALITY = "mediumQuality"
         private const val LOW_QUALITY = "lowQuality"
+        private const val MEDIA_TYPE_VIDEO = "video"
+        private const val MEDIA_TYPE_AUDIO = "audio"
+        private const val MEDIA_TYPE_IMAGE = "image"
+
         private const val ERR_UNKNOWN = "ERR_UNKNOWN"
         private const val ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED"
         private const val ERR_FILE_DOES_NOT_EXIST = "ERR_FILE_DOES_NOT_EXIST"
         private const val ERR_PERMISSION_DENIED = "ERR_PERMISSION_DENIED"
         private const val ARG_DURATION = "max_duration"
+        private const val ARG_MEDIA_TYPE = "media_type"
         private const val ARG_ENFORCE_DURATION = "enforce_duration"
     }
 }
