@@ -21,6 +21,10 @@
 @property (strong, nonatomic) RCTZiggeoRecorder *recorder;
 @property (nonatomic) int maxAllowedDurationInSeconds;
 @property (nonatomic) bool enforceDuration;
+@property (nonatomic) Ziggeo *currentZiggeo;
+@property (nonatomic) NSDictionary *extraArgs;
+
+- (void)cancelRequest;
 
 @end;
 

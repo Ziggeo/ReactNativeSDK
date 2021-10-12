@@ -15,7 +15,10 @@
 #import "ZiggeoConstants.h"
 
 
-@implementation ZiggeoRecorderContext
+
+@implementation ZiggeoRecorderContext {
+    NSURLSessionTask *currentTask;
+}
 
 - (void)resolve:(NSString*)token {
     if (_resolveBlock) {
@@ -43,6 +46,21 @@
         [_recorder.contexts removeObject:self];
     }
     _recorder = recorder;
+}
+
+- (void)cancelRequest {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:CANCELLED_BY_USER] body:@{}];
+    }
+
+    if (_currentZiggeo != nil) {
+        [_currentZiggeo cancelRequest];
+    }
+    
+//    if (currentTask == nil) {
+//        return;
+//    }
+//    [currentTask cancel];
 }
 
 
@@ -100,9 +118,10 @@
         m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.recorder.cacheConfig];
-        [m_ziggeo.config setDelegate:self];
+        [m_ziggeo checkHardwarePermission:self];
         m_ziggeo.videos.uploadDelegate = self;
-        [m_ziggeo.videos uploadVideoWithPath:path];
+        [m_ziggeo.videos uploadVideoWithPath:path Data:self->_extraArgs];
+        self.currentZiggeo = m_ziggeo;
         [picker dismissViewControllerAnimated:true completion:nil];
         
     } else if (CFStringCompare ((__bridge_retained CFStringRef) mediaType, kUTTypeImage, 0) == kCFCompareEqualTo) {
@@ -124,9 +143,10 @@
         Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
         m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
-        [m_ziggeo.config setDelegate:self];
+        [m_ziggeo checkHardwarePermission:self];
         m_ziggeo.images.uploadDelegate = self;
         [m_ziggeo.images uploadImageWithPath:imageFilePath];
+        self.currentZiggeo = m_ziggeo;
         // [m_ziggeo.images uploadImageWithFile:imageFile];
         [picker dismissViewControllerAnimated:true completion:nil];
         
@@ -162,6 +182,7 @@
     if (_recorder != nil) {
         [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:UPLOADING_STARTED] body:@{@"path": sourcePath, @"token": token, @"streamToken": streamToken}];
     }
+    currentTask = uploadingTask;
 }
 
 - (void)uploadProgressForPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes {

@@ -161,8 +161,8 @@ export default {
     },
 
     // Video Player
-    playVideo: function (videoId: string) {
-        ZiggeoPlayer.playVideo(videoId);
+    play: function (videoId: string) {
+        ZiggeoPlayer.play(videoId);
     },
     playFromUri: function (path_or_url: string) {
         ZiggeoPlayer.playFromUri(path_or_url);
@@ -178,9 +178,6 @@ export default {
     },
     setAdsURL: function (url) {
         ZiggeoPlayer.setAdsURL(url);
-    },
-    downloadVideo: async function (videoToken: string) {
-        ZiggeoPlayer.downloadVideo(videoToken);
     },
 
     // Constants

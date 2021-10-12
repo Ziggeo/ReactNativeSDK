@@ -201,7 +201,10 @@ RCT_EXPORT_METHOD(setAudioBitrate:(NSInteger)audioBitrate)
 
 RCT_EXPORT_METHOD(cancelRequest)
 {
-    
+    if (context == nil) {
+        context = [[ZiggeoRecorderContext alloc] init];
+    }
+    [context cancelRequest];
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -235,7 +238,8 @@ RCT_REMAP_METHOD(record,
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
+        context.currentZiggeo = m_ziggeo;
 
         ZiggeoRecorder* recorder = [[ZiggeoRecorder alloc] initWithZiggeoApplication:m_ziggeo];
         recorder.coverSelectorEnabled = self->_coverSelectorEnabled;
@@ -286,7 +290,8 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
         Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
+        context.currentZiggeo = m_ziggeo;
 
         UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -297,6 +302,8 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
 }
 
 - (void)applyAdditionalParams:(NSDictionary*)map context:(ZiggeoRecorderContext*)context {
+    context.extraArgs = map;
+    
     if (map != nil) {
         if ([map objectForKey:@"max_duration"] != nil) {
             context.maxAllowedDurationInSeconds = [[map objectForKey:@"max_duration"] intValue];
@@ -325,9 +332,10 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
         [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
         m_ziggeo.videos.uploadDelegate = context;
-        [m_ziggeo.videos uploadVideoWithPath:fileName];
+        [m_ziggeo.videos uploadVideoWithPath:fileName Data:map];
+        context.currentZiggeo = m_ziggeo;
     } else {
         reject(@"ERR_NOFILE", @"empty filename", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"ERR_NOFILE":@"empty filename"}]);
     }
@@ -365,10 +373,11 @@ RCT_REMAP_METHOD(startAudioRecorder,
     context.recorder = self;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
+        Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
+        context.currentZiggeo = m_ziggeo;
 
         ZiggeoAudioRecorder *audioRecorder = [[ZiggeoAudioRecorder alloc] initWithZiggeoApplication:m_ziggeo];
         audioRecorder.recorderDelegate = context;
@@ -391,7 +400,8 @@ RCT_EXPORT_METHOD(startAudioPlayer:(NSString *)audioToken
         Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
+        context.currentZiggeo = m_ziggeo;
 
         [m_ziggeo.audios downloadAudioWithToken:audioToken Callback:^(NSString *filePath) {
             dispatch_async(dispatch_get_global_queue(0,0), ^{
@@ -432,7 +442,8 @@ RCT_REMAP_METHOD(startImageRecorder,
         Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
+        context.currentZiggeo = m_ziggeo;
 
         UIImagePickerController *imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -458,7 +469,8 @@ RCT_REMAP_METHOD(uploadImageFromFileSelector,
         Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:self->_appToken];
         m_ziggeo.connect.serverAuthToken = self.serverAuthToken;
         m_ziggeo.connect.clientAuthToken = self.clientAuthToken;
-        [m_ziggeo.config setDelegate:context];
+        [m_ziggeo checkHardwarePermission:context];
+        context.currentZiggeo = m_ziggeo;
 
         UIImagePickerController* imagePicker = [[RotatingImagePickerController alloc] init];
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
