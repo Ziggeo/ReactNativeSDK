@@ -6,7 +6,6 @@
 #import <React/RCTEventEmitter.h>
 #import <React/RCTComponent.h>
 #import <React/RCTEventDispatcher.h>
-
 #import "RCTZVideoViewModule.h"
 #import "RCTVideos.h"
 @import AVKit;
@@ -60,14 +59,13 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
     }
 }
 
--(void)dealloc {
+- (void)dealloc {
     if (lastPlayerItem != nil) {
         [lastPlayerItem removeObserver:self forKeyPath:@"status" context:RCTZiggeoVideoViewKVOContext];
     }
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey, id> *)change context:(void *)context {
-
     // Only handle observations for the playerItemContext
     if (context != RCTZiggeoVideoViewKVOContext) {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -85,7 +83,6 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
 
     if (keyPath == @"status") {
         AVPlayerStatus status = [change[NSKeyValueChangeNewKey] integerValue];
-
         switch (status) {
             case AVPlayerStatusUnknown:
                 break;
