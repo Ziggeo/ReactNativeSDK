@@ -18,6 +18,7 @@ import com.ziggeo.androidsdk.qr.QrScannerCallback
 import com.ziggeo.androidsdk.qr.QrScannerConfig
 import com.ziggeo.androidsdk.recorder.MicSoundLevel
 import com.ziggeo.androidsdk.recorder.RecorderConfig
+import com.ziggeo.androidsdk.utils.FileUtils
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Quality
 import com.ziggeo.androidsdk.widgets.cameraview.Size
@@ -28,8 +29,6 @@ import com.ziggeo.utils.ConversionUtil.dataToCacheConfig
 import com.ziggeo.utils.ConversionUtil.dataToUploadingConfig
 import com.ziggeo.utils.ConversionUtil.toMap
 import com.ziggeo.utils.Events
-import com.ziggeo.utils.FileUtils
-import com.ziggeo.utils.FileUtils.getVideoDurationInSeconds
 import com.ziggeo.utils.Keys
 import com.ziggeo.utils.ThemeKeys
 import java.io.File
@@ -259,17 +258,32 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
                         if (!videoFile.exists()) {
                             ZLog.e("File does not exist: %s", actualPath)
                             reject(task, ERR_FILE_DOES_NOT_EXIST, actualPath)
-                        } else if (enforceDuration && maxDurationInSeconds > 0 && getVideoDurationInSeconds(actualPath, reactApplicationContext) > maxDurationInSeconds) {
+                        } else if (enforceDuration && maxDurationInSeconds > 0
+                                && FileUtils.getDurationSeconds(
+                                        Uri.parse(actualPath),
+                                        reactApplicationContext
+                                ) > maxDurationInSeconds
+                        ) {
                             val errorMsg = "Video duration is more than allowed."
                             ZLog.e(errorMsg)
                             ZLog.e("Path: %s", actualPath)
-                            ZLog.e("Duration: %s", getVideoDurationInSeconds(actualPath, reactApplicationContext))
+                            ZLog.e(
+                                    "Duration: %s",
+                                    FileUtils.getDurationSeconds(
+                                            Uri.parse(actualPath),
+                                            reactApplicationContext
+                                    )
+                            )
                             ZLog.e("Max allowed duration: %s", maxDurationInSeconds)
                             reject(task, ERR_DURATION_EXCEEDED, errorMsg)
                         } else {
                             ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
-                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(actualPath),
-                                    null, task.extraArgs))
+                            ziggeo.uploadingHandler.uploadNow(
+                                    RecordingInfo(
+                                            File(actualPath),
+                                            null, task.extraArgs, FileUtils.VIDEO
+                                    )
+                            )
                         }
                     }
 
@@ -278,7 +292,10 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
                         reject(task, ERR_PERMISSION_DENIED)
                     }
 
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
+                    override fun onPermissionRationaleShouldBeShown(
+                            permission: PermissionRequest,
+                            token: PermissionToken
+                    ) {
                         ZLog.d("onPermissionRationaleShouldBeShown")
                     }
                 }).check()
@@ -330,7 +347,12 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
 
     private fun prepareUploadingCallback(task: Task): IUploadingCallback {
         return object : UploadingCallback() {
-            override fun uploadProgress(videoToken: String, path: String, uploaded: Long, total: Long) {
+            override fun uploadProgress(
+                    videoToken: String,
+                    path: String,
+                    uploaded: Long,
+                    total: Long
+            ) {
                 super.uploadProgress(videoToken, path, uploaded, total)
                 ZLog.d("uploadProgress")
                 val params = Arguments.createMap()
