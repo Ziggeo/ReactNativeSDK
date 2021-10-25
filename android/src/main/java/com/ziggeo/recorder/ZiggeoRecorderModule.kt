@@ -18,6 +18,7 @@ import com.ziggeo.androidsdk.qr.QrScannerCallback
 import com.ziggeo.androidsdk.qr.QrScannerConfig
 import com.ziggeo.androidsdk.recorder.MicSoundLevel
 import com.ziggeo.androidsdk.recorder.RecorderConfig
+import com.ziggeo.androidsdk.utils.FileUtils
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView
 import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Quality
 import com.ziggeo.androidsdk.widgets.cameraview.Size
@@ -28,8 +29,6 @@ import com.ziggeo.utils.ConversionUtil.dataToCacheConfig
 import com.ziggeo.utils.ConversionUtil.dataToUploadingConfig
 import com.ziggeo.utils.ConversionUtil.toMap
 import com.ziggeo.utils.Events
-import com.ziggeo.utils.FileUtils
-import com.ziggeo.utils.FileUtils.getVideoDurationInSeconds
 import com.ziggeo.utils.Keys
 import com.ziggeo.utils.ThemeKeys
 import java.io.File
@@ -100,8 +99,8 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     fun setLiveStreamingEnabled(enabled: Boolean) {
         ZLog.d("setLiveStreamingEnabled:%s", enabled)
         ziggeo.recorderConfig = RecorderConfig.Builder(ziggeo.recorderConfig)
-                .isLiveStreaming(enabled)
-                .build()
+            .isLiveStreaming(enabled)
+            .build()
     }
 
     @ReactMethod
@@ -195,8 +194,15 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
-    fun cancelRequest() {
-        ZLog.d("cancelRequest")
+    fun cancelUploadByPath(path: String, deleteFile: Boolean, promise: Promise?) {
+        ziggeo.cancelUpload(path, deleteFile)
+        promise?.resolve(null)
+    }
+
+    @ReactMethod
+    fun cancelCurrentUpload(deleteFile: Boolean, promise: Promise?) {
+        ziggeo.cancelUpload(deleteFile)
+        promise?.resolve(null)
     }
 
     @ReactMethod
@@ -209,15 +215,15 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
             close = java.lang.Boolean.parseBoolean(config[keyClose])
         }
         ziggeo.qrScannerConfig = QrScannerConfig.Builder()
-                .callback(object : QrScannerCallback() {
-                    override fun onDecoded(value: String) {
-                        super.onDecoded(value)
-                        val params = Arguments.createMap()
-                        params.putString(Keys.QR, value)
-                        sendEvent(Events.QR_DECODED, params)
-                    }
-                })
-                .build()
+            .callback(object : QrScannerCallback() {
+                override fun onDecoded(value: String) {
+                    super.onDecoded(value)
+                    val params = Arguments.createMap()
+                    params.putString(Keys.QR, value)
+                    sendEvent(Events.QR_DECODED, params)
+                }
+            })
+            .build()
         ziggeo.startQrScanner()
     }
 
@@ -232,56 +238,74 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
             task.extraArgs = args
         }
         Dexter.withContext(currentActivity)
-                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        ZLog.d("onPermissionGranted")
-                        var enforceDuration = false
-                        var maxDurationInSeconds = 0
-                        task.extraArgs?.let {
-                            val strDuration = it[ARG_DURATION]
-                            if (strDuration?.isNotEmpty() == true) {
-                                maxDurationInSeconds = strDuration.toInt()
-                            }
-                            val enforce = it[ARG_ENFORCE_DURATION]
-                            if (enforce?.isNotEmpty() == true) {
-                                enforceDuration = enforce.toBoolean()
-                            }
+            .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                    ZLog.d("onPermissionGranted")
+                    var enforceDuration = false
+                    var maxDurationInSeconds = 0
+                    task.extraArgs?.let {
+                        val strDuration = it[ARG_DURATION]
+                        if (strDuration?.isNotEmpty() == true) {
+                            maxDurationInSeconds = strDuration.toInt()
                         }
-                        var actualPath = path
-                        if (FileUtils.isUri("://")) {
-                            FileUtils.getPath(reactApplicationContext, Uri.parse(path))?.let {
-                                actualPath = it
-                            }
+                        val enforce = it[ARG_ENFORCE_DURATION]
+                        if (enforce?.isNotEmpty() == true) {
+                            enforceDuration = enforce.toBoolean()
                         }
-
-                        val videoFile = File(actualPath)
-                        if (!videoFile.exists()) {
-                            ZLog.e("File does not exist: %s", actualPath)
-                            reject(task, ERR_FILE_DOES_NOT_EXIST, actualPath)
-                        } else if (enforceDuration && maxDurationInSeconds > 0 && getVideoDurationInSeconds(actualPath, reactApplicationContext) > maxDurationInSeconds) {
-                            val errorMsg = "Video duration is more than allowed."
-                            ZLog.e(errorMsg)
-                            ZLog.e("Path: %s", actualPath)
-                            ZLog.e("Duration: %s", getVideoDurationInSeconds(actualPath, reactApplicationContext))
-                            ZLog.e("Max allowed duration: %s", maxDurationInSeconds)
-                            reject(task, ERR_DURATION_EXCEEDED, errorMsg)
-                        } else {
-                            ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
-                            ziggeo.uploadingHandler.uploadNow(RecordingInfo(File(actualPath),
-                                    null, task.extraArgs))
+                    }
+                    var actualPath = path
+                    if (FileUtils.isUri("://")) {
+                        FileUtils.getPath(reactApplicationContext, Uri.parse(path))?.let {
+                            actualPath = it
                         }
                     }
 
-                    override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        ZLog.d("onPermissionDenied")
-                        reject(task, ERR_PERMISSION_DENIED)
+                    val videoFile = File(actualPath)
+                    if (!videoFile.exists()) {
+                        ZLog.e("File does not exist: %s", actualPath)
+                        reject(task, ERR_FILE_DOES_NOT_EXIST, actualPath)
+                    } else if (enforceDuration && maxDurationInSeconds > 0
+                        && FileUtils.getDurationSeconds(
+                            Uri.parse(actualPath),
+                            reactApplicationContext
+                        ) > maxDurationInSeconds
+                    ) {
+                        val errorMsg = "Video duration is more than allowed."
+                        ZLog.e(errorMsg)
+                        ZLog.e("Path: %s", actualPath)
+                        ZLog.e(
+                            "Duration: %s",
+                            FileUtils.getDurationSeconds(
+                                Uri.parse(actualPath),
+                                reactApplicationContext
+                            )
+                        )
+                        ZLog.e("Max allowed duration: %s", maxDurationInSeconds)
+                        reject(task, ERR_DURATION_EXCEEDED, errorMsg)
+                    } else {
+                        ziggeo.uploadingConfig.callback = prepareUploadingCallback(task)
+                        ziggeo.uploadingHandler.uploadNow(
+                            RecordingInfo(
+                                File(actualPath),
+                                null, task.extraArgs, FileUtils.VIDEO
+                            )
+                        )
                     }
+                }
 
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        ZLog.d("onPermissionRationaleShouldBeShown")
-                    }
-                }).check()
+                override fun onPermissionDenied(response: PermissionDeniedResponse) {
+                    ZLog.d("onPermissionDenied")
+                    reject(task, ERR_PERMISSION_DENIED)
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest,
+                    token: PermissionToken
+                ) {
+                    ZLog.d("onPermissionRationaleShouldBeShown")
+                }
+            }).check()
     }
 
     @ReactMethod
@@ -330,7 +354,12 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
 
     private fun prepareUploadingCallback(task: Task): IUploadingCallback {
         return object : UploadingCallback() {
-            override fun uploadProgress(videoToken: String, path: String, uploaded: Long, total: Long) {
+            override fun uploadProgress(
+                videoToken: String,
+                path: String,
+                uploaded: Long,
+                total: Long
+            ) {
                 super.uploadProgress(videoToken, path, uploaded, total)
                 ZLog.d("uploadProgress")
                 val params = Arguments.createMap()

@@ -5,6 +5,7 @@ const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
 import ZiggeoVideoView from './video_view.js';
 import ZiggeoCameraView from './camera_view.js';
+
 const {Videos} = NativeModules;
 const {ContactUs} = NativeModules;
 
@@ -118,9 +119,6 @@ export default {
         var argsMap = {'max_duration': maxAllowedDurationInSeconds, 'enforce_duration': enforceDuration};
         return ZiggeoRecorder.uploadFromFileSelector(argsMap);
     },
-    cancelRequest: function () {
-        ZiggeoRecorder.cancelRequest();
-    },
     startQrScanner: function (data) {
         ZiggeoRecorder.startQrScanner(data);
     },
@@ -152,6 +150,12 @@ export default {
     },
     setAdsURL: function (url) {
         ZiggeoPlayer.setAdsURL(url);
+    },
+    cancelCurrentUpload: function (delete_file: boolean) {
+        ZiggeoRecorder.cancelCurrentUpload(delete_file);
+    },
+    cancelUploadByPath: function (path: string, delete_file: boolean) {
+        ZiggeoRecorder.cancelUploadByPath(path, delete_file);
     },
 
     // Constants
