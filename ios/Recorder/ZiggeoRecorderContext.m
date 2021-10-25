@@ -48,16 +48,6 @@
     _recorder = recorder;
 }
 
-- (void)cancelRequest {
-    if (_recorder != nil) {
-        [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:CANCELLED_BY_USER] body:@{}];
-    }
-    
-//    if (currentTask != nil) {
-//        [currentTask cancel];
-//    }
-}
-
 // MARK: - ZiggeoUploadDelegate
 
 - (void)preparingToUploadWithPath:(NSString *)sourcePath {

@@ -23,8 +23,6 @@
 @property (nonatomic) bool enforceDuration;
 @property (nonatomic) NSDictionary *extraArgs;
 
-- (void)cancelRequest;
-
 @end;
 
 #endif /* ZiggeoRecorderContext_h */

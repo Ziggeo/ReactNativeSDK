@@ -365,7 +365,6 @@ RCT_EXPORT_METHOD(cancelRequest)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo cancelRequest];
-    [m_context cancelRequest];
 }
 
 RCT_EXPORT_METHOD(startQrScanner:(NSDictionary*)map
