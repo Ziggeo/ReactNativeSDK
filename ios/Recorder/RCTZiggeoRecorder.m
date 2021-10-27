@@ -361,10 +361,27 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
     });
 }
 
-RCT_EXPORT_METHOD(cancelRequest)
+RCT_EXPORT_METHOD(cancelCurrentUpload:(BOOL)delete_file
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo cancelRequest];
+    m_context.resolveBlock = resolve;
+    m_context.rejectBlock = reject;
+    
+    [m_ziggeo cancelUpload:@"" delete_file: delete_file];
+}
+
+RCT_EXPORT_METHOD(cancelUploadByPath:(NSString *)path
+                  delete_file:(BOOL)delete_file
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (m_ziggeo == nil) return;
+    m_context.resolveBlock = resolve;
+    m_context.rejectBlock = reject;
+    
+    [m_ziggeo cancelUpload:path delete_file: delete_file];
 }
 
 RCT_EXPORT_METHOD(startQrScanner:(NSDictionary*)map
