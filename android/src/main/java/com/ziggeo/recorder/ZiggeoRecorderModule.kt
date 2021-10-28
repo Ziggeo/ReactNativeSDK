@@ -195,13 +195,13 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
 
     @ReactMethod
     fun cancelUploadByPath(path: String, deleteFile: Boolean, promise: Promise?) {
-        ziggeo.cancelUpload(path, deleteFile)
+        ziggeo.cancelUploadByPath(path, deleteFile)
         promise?.resolve(null)
     }
 
     @ReactMethod
     fun cancelCurrentUpload(deleteFile: Boolean, promise: Promise?) {
-        ziggeo.cancelUpload(deleteFile)
+        ziggeo.cancelCurrentUpload(deleteFile)
         promise?.resolve(null)
     }
 
