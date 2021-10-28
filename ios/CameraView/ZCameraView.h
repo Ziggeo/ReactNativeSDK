@@ -28,7 +28,6 @@
 //@property (nonatomic) bool showLightIndicatorproperty (nonatomic) bool showSoundIndicator;
 @property (nonatomic) ZiggeoRecorderInterfaceConfig *interfaceConfig;
 @property (nonatomic) UIImagePickerControllerCameraDevice cameraDevice;
-@property (nonatomic) id<ZiggeoRecorderDelegate> recorderDelegate;
 @property (nonatomic) NSDictionary* extraArgsForCreateVideo;
 @property (nonatomic) double maxRecordedDurationSeconds;
 @property (nonatomic) double autostartRecordingAfterSeconds;

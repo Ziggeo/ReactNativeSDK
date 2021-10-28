@@ -5,7 +5,7 @@
 #import "RotatingImagePickerController.h"
 
 
-@interface VideosContext: NSObject<ZiggeoUploadDelegate>
+@interface VideosContext: NSObject<ZiggeoDelegate>
 
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
@@ -147,17 +147,14 @@ RCT_EXPORT_METHOD(destroy:(NSString *)token resolver:(RCTPromiseResolveBlock)res
         context.rejectBlock = reject;
         context.videos = self;
 
-        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:[RCTVideos _appToken]];
-        ziggeo.connect.serverAuthToken = [RCTVideos _serverAuthToken];
-        ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
-        ziggeo.videos.uploadDelegate = context;
-        [ziggeo.videos deleteVideoByToken:token StreamToken:@"" Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
-            if (error == nil) {
-                resolve(nil);
-            } else {
-                reject(nil, nil, error);
-            }
-        }];
+//        Ziggeo* ziggeo = [[Ziggeo alloc] initWithToken:[RCTVideos _appToken]];
+//        [ziggeo.videos deleteVideoByToken:token StreamToken:@"" Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+//            if (error == nil) {
+//                resolve(nil);
+//            } else {
+//                reject(nil, nil, error);
+//            }
+//        }];
     });
 }
 

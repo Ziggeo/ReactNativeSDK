@@ -7,7 +7,6 @@
 #import <UIKit/UIKit.h>
 #import "ZVideoViewManagerManager.h"
 #import "RCTZCameraModule.h"
-#import "RCTVideos.h"
 #import "RCTZiggeoVideoView.h"
 #import "RCTZVideoViewModule.h"
 

@@ -15,7 +15,10 @@
 #import "ZiggeoConstants.h"
 
 
-@implementation ZiggeoRecorderContext
+
+@implementation ZiggeoRecorderContext {
+    NSURLSessionTask *currentTask;
+}
 
 - (void)resolve:(NSString*)token {
     if (_resolveBlock) {
@@ -37,114 +40,13 @@
 
 - (void)setRecorder:(RCTZiggeoRecorder *)recorder {
     if (recorder != nil) {
-        if(recorder.contexts == nil) recorder.contexts = [[NSMutableArray alloc] init];
+        if (recorder.contexts == nil) recorder.contexts = [[NSMutableArray alloc] init];
         [recorder.contexts addObject:self];
     } else if(_recorder != nil) {
         [_recorder.contexts removeObject:self];
     }
     _recorder = recorder;
 }
-
-
-// MARK: - UIImagePickerControllerDelegate, UINavigationControllerDelegate
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    NSString *mediaType = info[UIImagePickerControllerMediaType];
-    if (CFStringCompare ((__bridge_retained CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo) {
-        NSURL *url = info[UIImagePickerControllerMediaURL];
-
-        NSMutableDictionary *recordingParams = [[NSMutableDictionary alloc] init];
-        if (self.recorder.additionalRecordingParams != nil) {
-            [recordingParams addEntriesFromDictionary:self.recorder.additionalRecordingParams];
-        }
-        if (self.maxAllowedDurationInSeconds > 0) {
-            if (self.enforceDuration) {
-                AVAsset* audioAsset = [AVURLAsset assetWithURL:url];
-                CMTime assetTime = [audioAsset duration];
-                Float64 duration = CMTimeGetSeconds(assetTime);
-                if (duration > self.maxAllowedDurationInSeconds) {
-                    [self reject:@"ERR_DURATION_EXCEEDED" message:@"video duration is more than allowed"];
-                    if (_recorder != nil) {
-                        [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:ERROR] body:@{}];
-                    }
-                    [picker dismissViewControllerAnimated:true completion:nil];
-                    return;
-                }
-            } else {
-                NSDictionary *durationRecordingParams = @{ @"max_duration" : @(self.maxAllowedDurationInSeconds), @"enforce_duration": @"false"};
-                [recordingParams addEntriesFromDictionary:durationRecordingParams];
-            }
-        }
-        
-        NSString *path = url.path;
-        NSString *documentsDirectory = NSTemporaryDirectory();
-        NSString *newFilePath = [documentsDirectory stringByAppendingPathComponent:@"video.mp4"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:newFilePath]) {
-            [[NSFileManager defaultManager] fileExistsAtPath:newFilePath];
-        }
-        
-        NSError *error = nil;
-        BOOL success = [[NSFileManager defaultManager] copyItemAtPath:path toPath:newFilePath error:&error];
-        if (success) {
-            path = newFilePath;
-        }
-
-        if (_recorder != nil) {
-            NSMutableArray *pathList = [NSMutableArray array];
-            [pathList addObject: path];
-            NSString *strList = [[pathList valueForKey:@"description"] componentsJoinedByString:@""];
-            [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:UPLOAD_SELECTED] body:@{@"paths": strList}];
-        }
-        
-        Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
-        m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
-        m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
-        [m_ziggeo.config setRecorderCacheConfig:self.recorder.cacheConfig];
-        [m_ziggeo.config setDelegate:self];
-        m_ziggeo.videos.uploadDelegate = self;
-        [m_ziggeo.videos uploadVideoWithPath:path];
-        [picker dismissViewControllerAnimated:true completion:nil];
-        
-    } else if (CFStringCompare ((__bridge_retained CFStringRef) mediaType, kUTTypeImage, 0) == kCFCompareEqualTo) {
-        UIImage* imageFile = info[UIImagePickerControllerOriginalImage];
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *imageFilePath = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"image.jpg"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:imageFilePath]) {
-            [[NSFileManager defaultManager] fileExistsAtPath:imageFilePath];
-        }
-        [UIImageJPEGRepresentation(imageFile, 0) writeToFile:imageFilePath atomically:YES];
-
-        if (_recorder != nil) {
-            NSMutableArray *pathList = [NSMutableArray array];
-            [pathList addObject: imageFilePath];
-            NSString *strList = [[pathList valueForKey:@"description"] componentsJoinedByString:@""];
-            [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:UPLOAD_SELECTED] body:@{@"paths": strList}];
-        }
-
-        Ziggeo *m_ziggeo = [[Ziggeo alloc] initWithToken:_recorder.appToken];
-        m_ziggeo.connect.serverAuthToken = _recorder.serverAuthToken;
-        m_ziggeo.connect.clientAuthToken = _recorder.clientAuthToken;
-        [m_ziggeo.config setDelegate:self];
-        m_ziggeo.images.uploadDelegate = self;
-        [m_ziggeo.images uploadImageWithPath:imageFilePath];
-        // [m_ziggeo.images uploadImageWithFile:imageFile];
-        [picker dismissViewControllerAnimated:true completion:nil];
-        
-    } else {
-        [picker dismissViewControllerAnimated:true completion:nil];
-    }
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
-
-    if (_recorder != nil) {
-        [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:CANCELLED_BY_USER] body:@{}];
-    }
-
-    [picker dismissViewControllerAnimated:true completion:nil];
-}
-
 
 // MARK: - ZiggeoUploadDelegate
 
@@ -162,6 +64,7 @@
     if (_recorder != nil) {
         [_recorder sendEventWithName:[ZiggeoConstants getStringFromEvent:UPLOADING_STARTED] body:@{@"path": sourcePath, @"token": token, @"streamToken": streamToken}];
     }
+    currentTask = uploadingTask;
 }
 
 - (void)uploadProgressForPath:(NSString *)sourcePath token:(NSString *)token streamToken:(NSString *)streamToken totalBytesSent:(int)bytesSent totalBytesExpectedToSend:(int)totalBytes {
