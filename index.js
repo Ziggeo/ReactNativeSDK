@@ -174,7 +174,7 @@ export default {
     },
 
     // Constants
-    REAR_CAMERA: ZiggeoRecorder.rearCamera,
+    REAR_CAMERA: ZiggeoRecorder.rearCamera(),
     FRONT_CAMERA: ZiggeoRecorder.frontCamera,
     HIGH_QUALITY: ZiggeoRecorder.highQuality,
     MEDIUM_QUALITY: ZiggeoRecorder.mediumQuality,
