@@ -72,40 +72,18 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
 }
 
 
-// NSString *const rearCamera     = @"rearCamera";
-NSString *const frontCamera    = @"frontCamera";
-NSString *const highQuality    = @"highQuality";
-NSString *const mediumQuality  = @"mediumQuality";
-NSString *const lowQuality     = @"lowQuality";
-NSString *const ERR_UNKNOWN             = @"ERR_UNKNOWN";
-NSString *const ERR_DURATION_EXCEEDED   = @"ERR_DURATION_EXCEEDED";
-NSString *const ERR_FILE_DOES_NOT_EXIST = @"ERR_FILE_DOES_NOT_EXIST";
-NSString *const ERR_PERMISSION_DENIED   = @"ERR_PERMISSION_DENIED";
-NSString *const max_duration     = @"max_duration";
-NSString *const enforce_duration = @"enforce_duration";
-
-// NSString *const video = @"video";
-// NSString *const audio = @"audio";
-// NSString *const image = @"image";
-
 @implementation RCTZiggeoRecorder {
     ZiggeoRecorderContext *m_context;
     Ziggeo *m_ziggeo;
 }
 
-// RCT_REMAP_METHOD(rearCamera, resolver: (RCTPromiseResolveBlock)resolve
-//      rejecter:(RCTPromiseRejectBlock)reject)
-// {
-//   NSString *thingToReturn = @"ALL OK";
-//     resolve(thingToReturn);
-// }
-
-//NSString *const rearCamera = @"ssss";
-
-
-
 RCT_EXPORT_MODULE();
 
+
+- (NSDictionary *)constantsToExport
+{
+ return kZiggeoConstants;
+}
 
 - (NSArray<NSString *> *)supportedEvents
 {

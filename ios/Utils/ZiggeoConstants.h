@@ -82,6 +82,19 @@ typedef enum {
         @"Playing", @"Paused", @"Ended", @"Seek", @"ReadyToPlay", \
         @"QrDecoded", nil
 
+#define kZiggeoConstants  @{  @"rearCamera": @"rearCamera", \
+            @"frontCamera": @"frontCamera", \
+            @"highQuality": @"highQuality", \
+            @"mediumQuality": @"mediumQuality", \
+            @"lowQuality": @"lowQuality", \
+            @"ERR_UNKNOWN": @"ERR_UNKNOWN", \
+            @"ERR_DURATION_EXCEEDED": @"ERR_DURATION_EXCEEDED", \
+            @"ERR_FILE_DOES_NOT_EXIST": @"ERR_FILE_DOES_NOT_EXIST", \
+            @"ERR_PERMISSION_DENIED": @"ERR_PERMISSION_DENIED", \
+            @"max_duration": @"max_duration", \
+            @"enforce_duration": @"enforce_duration", \
+        };
+
 @interface ZiggeoConstants: NSObject
 
 + (NSString *)getStringFromEvent:(ZIGGEO_EVENTS)event;

@@ -174,7 +174,7 @@ export default {
     },
 
     // Constants
-    REAR_CAMERA: ZiggeoRecorder.rearCamera(),
+    REAR_CAMERA: ZiggeoRecorder.rearCamera,
     FRONT_CAMERA: ZiggeoRecorder.frontCamera,
     HIGH_QUALITY: ZiggeoRecorder.highQuality,
     MEDIUM_QUALITY: ZiggeoRecorder.mediumQuality,
@@ -183,5 +183,4 @@ export default {
     MEDIA_TYPE_VIDEO: ZiggeoRecorder.video,
     MEDIA_TYPE_AUDIO: ZiggeoRecorder.audio,
     MEDIA_TYPE_IMAGE: ZiggeoRecorder.image,
-
 };
