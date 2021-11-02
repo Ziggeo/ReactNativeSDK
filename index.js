@@ -183,5 +183,4 @@ export default {
     MEDIA_TYPE_VIDEO: ZiggeoRecorder.video,
     MEDIA_TYPE_AUDIO: ZiggeoRecorder.audio,
     MEDIA_TYPE_IMAGE: ZiggeoRecorder.image,
-
 };

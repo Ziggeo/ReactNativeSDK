@@ -77,8 +77,13 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
     Ziggeo *m_ziggeo;
 }
 
-
 RCT_EXPORT_MODULE();
+
+
+- (NSDictionary *)constantsToExport
+{
+ return kZiggeoConstants;
+}
 
 - (NSArray<NSString *> *)supportedEvents
 {
@@ -162,13 +167,13 @@ RCT_EXPORT_METHOD(setLiveStreamingEnabled:(BOOL)enabled)
 RCT_EXPORT_METHOD(setAutostartRecordingAfter:(NSInteger)seconds)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setAutostartRecordingAfter:seconds];
+    [m_ziggeo setAutostartRecordingAfter:(int)seconds];
 }
 
 RCT_EXPORT_METHOD(setStartDelay:(NSInteger)delay)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setStartDelay:delay];
+    [m_ziggeo setStartDelay:(int)delay];
 }
 
 RCT_EXPORT_METHOD(setExtraArgsForRecorder:(NSDictionary*)map)
@@ -192,37 +197,37 @@ RCT_EXPORT_METHOD(setCoverSelectorEnabled:(BOOL)enabled)
 RCT_EXPORT_METHOD(setMaxRecordingDuration:(NSInteger)seconds)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setMaxRecordingDuration:seconds];
+    [m_ziggeo setMaxRecordingDuration:(int)seconds];
 }
 
 RCT_EXPORT_METHOD(setVideoWidth:(NSInteger)videoWidth)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setVideoWidth:videoWidth];
+    [m_ziggeo setVideoWidth:(int)videoWidth];
 }
 
 RCT_EXPORT_METHOD(setVideoHeight:(NSInteger)videoHeight)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setVideoHeight:videoHeight];
+    [m_ziggeo setVideoHeight:(int)videoHeight];
 }
 
 RCT_EXPORT_METHOD(setVideoBitrate:(NSInteger)videoBitrate)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setVideoBitrate:videoBitrate];
+    [m_ziggeo setVideoBitrate:(int)videoBitrate];
 }
 
 RCT_EXPORT_METHOD(setAudioSampleRate:(NSInteger)audioSampleRate)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setAudioSampleRate:audioSampleRate];
+    [m_ziggeo setAudioSampleRate:(int)audioSampleRate];
 }
 
 RCT_EXPORT_METHOD(setAudioBitrate:(NSInteger)audioBitrate)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setAudioBitrate:audioBitrate];
+    [m_ziggeo setAudioBitrate:(int)audioBitrate];
 }
 
 RCT_EXPORT_METHOD(setCameraSwitchEnabled:(BOOL)visible)
@@ -237,16 +242,16 @@ RCT_EXPORT_METHOD(setSendImmediately:(BOOL)sendImmediately)
     [m_ziggeo setSendImmediately:sendImmediately];
 }
 
-RCT_EXPORT_METHOD(setQuality:(NSInteger)quality)
+RCT_EXPORT_METHOD(setQuality:(id)quality)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setQuality:quality];
+    [m_ziggeo setQuality:(int)quality];
 }
 
-RCT_EXPORT_METHOD(setCamera:(NSInteger)cameraDevice)
+RCT_EXPORT_METHOD(setCamera:(id)cameraDevice)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setCamera:cameraDevice];
+    [m_ziggeo setCamera:(int)cameraDevice];
 }
 
 // MARK: - Videos
@@ -369,7 +374,7 @@ RCT_EXPORT_METHOD(cancelCurrentUpload:(BOOL)delete_file
     m_context.resolveBlock = resolve;
     m_context.rejectBlock = reject;
     
-    [m_ziggeo cancelUpload:@"" delete_file: delete_file];
+    [m_ziggeo cancelUpload:@"" :delete_file];
 }
 
 RCT_EXPORT_METHOD(cancelUploadByPath:(NSString *)path
@@ -381,7 +386,7 @@ RCT_EXPORT_METHOD(cancelUploadByPath:(NSString *)path
     m_context.resolveBlock = resolve;
     m_context.rejectBlock = reject;
     
-    [m_ziggeo cancelUpload:path delete_file: delete_file];
+    [m_ziggeo cancelUpload:path :delete_file];
 }
 
 RCT_EXPORT_METHOD(startQrScanner:(NSDictionary*)map
@@ -398,4 +403,3 @@ RCT_EXPORT_METHOD(startQrScanner:(NSDictionary*)map
 }
 
 @end
-

@@ -82,29 +82,22 @@ typedef enum {
         @"Playing", @"Paused", @"Ended", @"Seek", @"ReadyToPlay", \
         @"QrDecoded", nil
 
-
-typedef enum {
-    // constants for mapping native constants in JS
-    REAR_CAMERA,
-    FRONT_CAMERA,
-    HIGH_QUALITY,
-    MEDIUM_QUALITY,
-    LOW_QUALITY,
-    ERR_UNKNOWN,
-    ERR_DURATION_EXCEEDED,
-    ERR_FILE_DOES_NOT_EXIST,
-    ERR_PERMISSION_DENIED,
-    ARG_DURATION,
-    ARG_ENFORCE_DURATION,
-} ZIGGEO_CONSTANTS;
-
-#define kZiggeoConstantsArray @"rearCamera", @"frontCamera", @"highQuality", @"mediumQuality", @"lowQuality", @"ERR_UNKNOWN", @"ERR_DURATION_EXCEEDED", @"ERR_FILE_DOES_NOT_EXIST", @"ERR_PERMISSION_DENIED", @"max_duration", @"enforce_duration", nil
-
+#define kZiggeoConstants  @{  @"rearCamera": @"rearCamera", \
+            @"frontCamera": @"frontCamera", \
+            @"highQuality": @"highQuality", \
+            @"mediumQuality": @"mediumQuality", \
+            @"lowQuality": @"lowQuality", \
+            @"ERR_UNKNOWN": @"ERR_UNKNOWN", \
+            @"ERR_DURATION_EXCEEDED": @"ERR_DURATION_EXCEEDED", \
+            @"ERR_FILE_DOES_NOT_EXIST": @"ERR_FILE_DOES_NOT_EXIST", \
+            @"ERR_PERMISSION_DENIED": @"ERR_PERMISSION_DENIED", \
+            @"max_duration": @"max_duration", \
+            @"enforce_duration": @"enforce_duration", \
+        };
 
 @interface ZiggeoConstants: NSObject
 
 + (NSString *)getStringFromEvent:(ZIGGEO_EVENTS)event;
-+ (NSString *)getStringFromConstants:(ZIGGEO_CONSTANTS)constants;
 
 @end
 
