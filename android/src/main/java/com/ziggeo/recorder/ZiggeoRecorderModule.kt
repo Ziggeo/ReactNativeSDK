@@ -361,7 +361,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
 
     @ReactMethod
     fun startAudioPlayer(token: String) {
-        ziggeo.startAudioPlayer(null, token)
+        ziggeo.startAudioPlayer(token)
     }
 
     @ReactMethod
