@@ -34,7 +34,7 @@ class ZiggeoPlayerModule(reactContext: ReactApplicationContext) : BaseModule(rea
     }
 
     @ReactMethod
-    fun play(videoToken: String) {
+    fun playVideo(videoToken: String) {
         ziggeo.startPlayer(videoToken)
     }
 
