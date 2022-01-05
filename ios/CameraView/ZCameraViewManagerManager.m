@@ -20,9 +20,9 @@ RCT_EXPORT_VIEW_PROPERTY(ref, NSString);
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
-    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken: [RCTVideos _appToken]];
-    m_ziggeo.connect.serverAuthToken = [RCTVideos _serverAuthToken];
-    m_ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
+    Ziggeo* m_ziggeo = [[Ziggeo alloc] initWithToken: [RCTVideos appToken]];
+    m_ziggeo.connect.serverAuthToken = [RCTVideos serverAuthToken];
+    m_ziggeo.connect.clientAuthToken = [RCTVideos clientAuthToken];
     // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
 
     ZiggeoRecorder* recorder = [[ZiggeoRecorder alloc] initWithZiggeoApplication:m_ziggeo];

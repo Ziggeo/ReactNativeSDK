@@ -9,9 +9,9 @@
 
 @interface RCTVideos : RCTEventEmitter <RCTBridgeModule>
 
-+ (NSString *) _appToken;
-+ (NSString *) _serverAuthToken;
-+ (NSString *) _clientAuthToken;
++ (NSString *)appToken;
++ (NSString *)serverAuthToken;
++ (NSString *)clientAuthToken;
 
 @end
 

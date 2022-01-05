@@ -87,7 +87,7 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-    return [[NSArray alloc] initWithObjects:kZiggeoEventsArray];;
+    return [[NSArray alloc] initWithObjects:kZiggeoEventsArray];
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -264,6 +264,10 @@ RCT_REMAP_METHOD(record,
     m_context.rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        // [self->m_ziggeo setBlurringEffect:true];
+        // [self->m_ziggeo setBlurringMaskColor:UIColor.redColor];
+        // [self->m_ziggeo setBlurringMaskAlpha:0.6];
+        // [self->m_ziggeo setMaxRecordingDuration:30];
         [self->m_ziggeo record];
     });
 }

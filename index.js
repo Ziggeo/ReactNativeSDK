@@ -10,6 +10,7 @@ import ZiggeoCameraView from './camera_view.js';
 
 const {Videos} = NativeModules;
 const {Audios} = NativeModules;
+const {Images} = NativeModules;
 const {ContactUs} = NativeModules;
 
 export default {
@@ -21,16 +22,22 @@ export default {
         ZiggeoPlayer.setAppToken(appToken);
         ZiggeoRecorder.setAppToken(appToken);
         Videos.setAppToken(appToken);
+        Audios.setAppToken(appToken);
+        Images.setAppToken(appToken);
     },
     setClientAuthToken: function (token: string) {
         ZiggeoPlayer.setClientAuthToken(token);
         ZiggeoRecorder.setClientAuthToken(token);
         Videos.setClientAuthToken(token);
+        Audios.setClientAuthToken(appToken);
+        Images.setClientAuthToken(appToken);
     },
     setServerAuthToken: function (token: string) {
         ZiggeoPlayer.setServerAuthToken(token);
         ZiggeoRecorder.setServerAuthToken(token);
         Videos.setServerAuthToken(token);
+        Audios.setServerAuthToken(appToken);
+        Images.setServerAuthToken(appToken);
     },
     sendReport(logsList) {
         ContactUs.sendReport(logsList);

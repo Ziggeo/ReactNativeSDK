@@ -28,15 +28,15 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
 }
 
 - (void)setVideoToken:(NSString *)token {
-    NSLog(@"__appToken: %@", [RCTVideos _appToken]);
+    NSLog(@"__appToken: %@", [RCTVideos appToken]);
 
-    _m_ziggeo = [[Ziggeo alloc] initWithToken: [RCTVideos _appToken]];
-    _m_ziggeo.connect.serverAuthToken = [RCTVideos _serverAuthToken];
-    _m_ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
+    _m_ziggeo = [[Ziggeo alloc] initWithToken: [RCTVideos appToken]];
+    _m_ziggeo.connect.serverAuthToken = [RCTVideos serverAuthToken];
+    _m_ziggeo.connect.clientAuthToken = [RCTVideos clientAuthToken];
 
-    _m_ziggeo.token = [RCTVideos _appToken];
-    _m_ziggeo.connect.serverAuthToken = [RCTVideos _serverAuthToken];
-    _m_ziggeo.connect.clientAuthToken = [RCTVideos _clientAuthToken];
+    _m_ziggeo.token = [RCTVideos appToken];
+    _m_ziggeo.connect.serverAuthToken = [RCTVideos serverAuthToken];
+    _m_ziggeo.connect.clientAuthToken = [RCTVideos clientAuthToken];
 
     ZiggeoPlayer* player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:_m_ziggeo videoToken:token];
 
