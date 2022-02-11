@@ -65,6 +65,10 @@ export default {
     setStartDelay: function (seconds) {
         ZiggeoRecorder.setStartDelay(seconds);
     },
+    setBlurMode: function (enabled) {
+        ZiggeoRecorder.setBlurMode(enabled);
+    },
+
     /**
      * @deprecated Use `setExtraArgsForRecorder` instead.
      */

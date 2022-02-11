@@ -31,7 +31,6 @@ object ConversionUtil {
             ReadableType.Boolean -> readableMap.getBoolean(key)
             ReadableType.Number -> readableMap.getDouble(key)
             ReadableType.String -> readableMap.getString(key)
-            ReadableType.Array -> toList(readableMap.getArray(key)!!)
             else -> throw IllegalArgumentException("Could not convert object with key: $key.")
         }
         return result?.toString()
