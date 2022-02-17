@@ -9,8 +9,8 @@ import com.facebook.react.uimanager.annotations.ReactProp
 import com.ziggeo.BaseViewManager
 import com.ziggeo.androidsdk.callbacks.RecorderCallback
 import com.ziggeo.androidsdk.log.ZLog
-import com.ziggeo.androidsdk.widgets.cameraview.CameraView
-import com.ziggeo.androidsdk.widgets.cameraview.CameraView.*
+import com.ziggeo.androidsdk.widgets.cameraview.BaseCameraView
+import com.ziggeo.androidsdk.widgets.cameraview.BaseCameraView.*
 import com.ziggeo.androidsdk.widgets.cameraview.Size
 import com.ziggeo.utils.Events
 import com.ziggeo.utils.Keys
@@ -34,7 +34,7 @@ class RnCameraViewManager(reactContext: ReactApplicationContext) : BaseViewManag
 
 
     @ReactProp(name = "cameraFaceFront")
-    fun setCameraFaceFront(cameraView: CameraView, cameraFaceFront: Boolean) {
+    fun setCameraFaceFront(cameraView: BaseCameraView, cameraFaceFront: Boolean) {
         cameraView.facing = if (cameraFaceFront) {
             FACING_FRONT
         } else {
@@ -43,37 +43,37 @@ class RnCameraViewManager(reactContext: ReactApplicationContext) : BaseViewManag
     }
 
     @ReactProp(name = "quality")
-    fun setQuality(cameraView: CameraView, @Quality quality: Int) {
+    fun setQuality(cameraView: BaseCameraView, @Quality quality: Int) {
         cameraView.quality = quality
     }
 
     @ReactProp(name = "autoFocus")
-    fun setAutoFocus(cameraView: CameraView, autoFocus: Boolean) {
+    fun setAutoFocus(cameraView: BaseCameraView, autoFocus: Boolean) {
         cameraView.autoFocus = autoFocus
     }
 
     @ReactProp(name = "flash")
-    fun setFlash(cameraView: CameraView, @Flash flash: Int) {
+    fun setFlash(cameraView: BaseCameraView, @Flash flash: Int) {
         cameraView.flash = flash
     }
 
     @ReactProp(name = "resolution")
-    fun setResolution(cameraView: CameraView, array: ReadableArray) {
+    fun setResolution(cameraView: BaseCameraView, array: ReadableArray) {
         cameraView.setResolution(Size(array.getInt(0), array.getInt(1)))
     }
 
     @ReactProp(name = "videoBitrate")
-    fun setVideoBitrate(cameraView: CameraView, bitrate: Int) {
+    fun setVideoBitrate(cameraView: BaseCameraView, bitrate: Int) {
         cameraView.setVideoBitrate(bitrate)
     }
 
     @ReactProp(name = "audioBitrate")
-    fun setAudioBitrate(cameraView: CameraView, bitrate: Int) {
+    fun setAudioBitrate(cameraView: BaseCameraView, bitrate: Int) {
         cameraView.setAudioBitrate(bitrate)
     }
 
     @ReactProp(name = "audioSampleRate")
-    fun setAudioSampleRate(cameraView: CameraView, sampleRate: Int) {
+    fun setAudioSampleRate(cameraView: BaseCameraView, sampleRate: Int) {
         cameraView.setAudioSampleRate(sampleRate)
     }
 

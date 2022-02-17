@@ -19,8 +19,8 @@ import com.ziggeo.androidsdk.qr.QrScannerConfig
 import com.ziggeo.androidsdk.recorder.MicSoundLevel
 import com.ziggeo.androidsdk.recorder.RecorderConfig
 import com.ziggeo.androidsdk.utils.FileUtils
-import com.ziggeo.androidsdk.widgets.cameraview.CameraView
-import com.ziggeo.androidsdk.widgets.cameraview.CameraView.Quality
+import com.ziggeo.androidsdk.widgets.cameraview.BaseCameraView
+import com.ziggeo.androidsdk.widgets.cameraview.BaseCameraView.Quality
 import com.ziggeo.androidsdk.widgets.cameraview.Size
 import com.ziggeo.tasks.RecordVideoTask
 import com.ziggeo.tasks.Task
@@ -63,7 +63,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     @ReactMethod
     fun setBlurMode(blurMode: Boolean) {
         ZLog.d("setBlurMode:%s", blurMode)
-        ziggeo.blurMode = blurMode
+        ziggeo.recorderConfig.blurMode = blurMode
     }
 
     @ReactMethod
@@ -160,7 +160,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
-    fun setCamera(@CameraView.Facing facing: Int) {
+    fun setCamera(@BaseCameraView.Facing facing: Int) {
         ZLog.d("setCamera:%s", facing)
         ziggeo.recorderConfig.facing = facing
     }
@@ -377,11 +377,11 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
 
     override fun getConstants(): Map<String, Any>? {
         val constants: MutableMap<String, Any> = HashMap()
-        constants[REAR_CAMERA] = CameraView.FACING_BACK
-        constants[FRONT_CAMERA] = CameraView.FACING_FRONT
-        constants[HIGH_QUALITY] = CameraView.QUALITY_HIGH
-        constants[MEDIUM_QUALITY] = CameraView.QUALITY_MEDIUM
-        constants[LOW_QUALITY] = CameraView.QUALITY_LOW
+        constants[REAR_CAMERA] = BaseCameraView.FACING_BACK
+        constants[FRONT_CAMERA] = BaseCameraView.FACING_FRONT
+        constants[HIGH_QUALITY] = BaseCameraView.QUALITY_HIGH
+        constants[MEDIUM_QUALITY] = BaseCameraView.QUALITY_MEDIUM
+        constants[LOW_QUALITY] = BaseCameraView.QUALITY_LOW
         constants[MEDIA_TYPE_VIDEO] = FileUtils.VIDEO
         constants[MEDIA_TYPE_AUDIO] = FileUtils.AUDIO
         constants[MEDIA_TYPE_IMAGE] = FileUtils.IMAGE
