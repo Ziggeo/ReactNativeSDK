@@ -93,6 +93,9 @@ export default {
     setVideoBitrate: function (videoBitrate) {
         ZiggeoRecorder.setVideoBitrate(videoBitrate);
     },
+    setBlurMode: function (blurMode) {
+        ZiggeoRecorder.setBlurMode(blurMode);
+    },
     setAudioSampleRate: function (audioSampleRate) {
         ZiggeoRecorder.setAudioSampleRate(audioSampleRate);
     },
