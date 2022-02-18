@@ -61,6 +61,12 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
+    fun setBlurMode(blurMode: Boolean) {
+        ZLog.d("setBlurMode:%s", blurMode)
+        ziggeo.blurMode = blurMode
+    }
+
+    @ReactMethod
     fun setVideoWidth(w: Int) {
         this.width = w
         if (width != 0 && height != 0) {
