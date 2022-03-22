@@ -176,6 +176,12 @@ RCT_EXPORT_METHOD(setStartDelay:(NSInteger)delay)
     [m_ziggeo setStartDelay:(int)delay];
 }
 
+RCT_EXPORT_METHOD(setBlurMode:(BOOL)enabled)
+{
+    if (m_ziggeo == nil) return;
+    [m_ziggeo setBlurMode:enabled];
+}
+
 RCT_EXPORT_METHOD(setExtraArgsForRecorder:(NSDictionary*)map)
 {
     if (m_ziggeo == nil) return;
@@ -251,7 +257,7 @@ RCT_EXPORT_METHOD(setQuality:(id)quality)
 RCT_EXPORT_METHOD(setCamera:(id)cameraDevice)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo setCamera:(int)cameraDevice];
+    [m_ziggeo setCamera:(NSString *)cameraDevice];
 }
 
 // MARK: - Videos
