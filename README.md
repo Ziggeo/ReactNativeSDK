@@ -13,11 +13,32 @@
 4. [Codes](#codes)
 	1. [Init](#init)
 	2. [Recorder](#recorder)
+		1. [Video Camera Recorder](#video-recorder)
+		2. [Video Screen Recorder](#screen-recorder)
+		3. [Audio Recorder](#audio-recorder)
+		3. [Image Capture](#image-capture)
+		4. [Uploader](#upload-recorder)
 	3. [Player](#player)
-	3. [QR Scanner](#qr-scanner)
-	4. [Events / Callbacks](#events)
-	5. [API](#API)
-	6. [Examples](#examples)
+		1. [Video Player](#video-player)
+		2. [Audio Player](#audio-player)
+		2. [Image Preview](#image-preview)
+	4. [QR Scanner](#qr-scanner)
+	5. [Configs](#configs)
+		1. [Theming](#theming)
+		2. [Recorder Configs](#recorder-config)
+		2. [Player Configs](#player-config)
+	6. [Events / Callbacks](#events)
+		1. [Global Callbacks](#callbacks-global)
+		2. [Recorder Callbacks](#callbacks-recorder)
+		3. [Player Callbacks](#callbacks-player)
+		4. [Sensor Callbacks](#callbacks-sensor)
+	7. [API](#api)
+		1. [Request Cancellation](#api-cancel)
+		2. [Videos API](#api-videos)
+		3. [Video Streams API](#api-video-streams)
+	8. [Authentication](#authentication)
+		1. [Client Side Auth](#authentication-client)
+		2 .[Server Side Auth](#authentication-server)
 5. [Compiling and Publishing App](#compile)
 6. [Update Information](#update)
 7. [Changelog](#changelog)
@@ -165,7 +186,7 @@ $ xcodebuild clean
 
 Add these lines to your Podfile and run 'pod install'
 ```
-  pod 'iOS-Client-SDK', :git => 'https://github.com/Ziggeo/iOS-Client-SDK.git'
+	pod 'iOS-Client-SDK', :git => 'https://github.com/Ziggeo/iOS-Client-SDK.git'
 ```
 
 ##### Installing for iOS Manually
@@ -483,6 +504,7 @@ Ziggeo.setBlurMode(true);
 ```
 
 **Set Extra Arguments**
+
 This can be used to specify effect profiles, video profiles, custom data, tags, etc.
 
 ```javascript
@@ -600,12 +622,14 @@ The callbacks are listed in the order that they should appear in within your cod
 If you want to know if the needed access was provided, the following callbacks will help you with the same.
 
 ```javascript
-recorderEmitter.addListener('accessForbidden', data =>
-	console.log('accessForbidden'),
-);
-
 recorderEmitter.addListener('accessGranted', data =>
 	console.log('accessGranted'),
+);
+```
+
+```javascript
+recorderEmitter.addListener('accessForbidden', data =>
+	console.log('accessForbidden'),
 );
 ```
 
@@ -950,12 +974,12 @@ A way to find the videos based on your query and show them off. By default it is
 
 ```javascript
 /**
-  * @param args  - limit: Limit the number of returned videos. Can be set up to 100.
-  *              - skip: Skip the first [n] entries.
-  *              - reverse: Reverse the order in which videos are returned.
-  *              - states: Filter videos by state
-  *              - tags: Filter the search result to certain tags
-  */
+	* @param args  - limit: Limit the number of returned videos. Can be set up to 100.
+	*              - skip: Skip the first [n] entries.
+	*              - reverse: Reverse the order in which videos are returned.
+	*              - states: Filter videos by state
+	*              - tags: Filter the search result to certain tags
+	*/
 await Ziggeo.VideosApi.index(args);
 ```
 
@@ -967,8 +991,8 @@ A way for you to get info about the specific video, utilizing its video token or
 
 ```javascript
 /**
-  * @param keyOrToken - video token or key.
-  */
+	* @param keyOrToken - video token or key.
+	*/
 await Ziggeo.VideosApi.get(keyOrToken);
 ```
 
@@ -980,13 +1004,13 @@ If you have video uploading code that you can not remove right away, however wan
 
 ```javascript
 /**
-  * @param file  - Video file to be uploaded
-  * @param args  - min_duration: Minimal duration of video
-  *              - max_duration: Maximal duration of video
-  *              - tags: Video Tags
-  *              - key: Unique (optional) name of video
-  *              - volatile: Automatically removed this video if it remains empty
-  */
+	* @param file  - Video file to be uploaded
+	* @param args  - min_duration: Minimal duration of video
+	*              - max_duration: Maximal duration of video
+	*              - tags: Video Tags
+	*              - key: Unique (optional) name of video
+	*              - volatile: Automatically removed this video if it remains empty
+	*/
 await Ziggeo.VideosApi.create(file, args);
 ```
 
@@ -998,14 +1022,14 @@ Sometimes you might want to update the video with some tags, key or some other v
 
 ```javascript
 /**
-  * @param keyOrToken - video token or key.
-  * @param args       - min_duration: Minimal duration of video
-  *                   - max_duration: Maximal duration of video
-  *                   - tags: Video Tags
-  *                   - key: Unique (optional) name of video
-  *                   - volatile: Automatically removed this video if it remains empty
-  *                   - expiration_days: After how many days will this video be deleted
-  */
+	* @param keyOrToken - video token or key.
+	* @param args       - min_duration: Minimal duration of video
+	*                   - max_duration: Maximal duration of video
+	*                   - tags: Video Tags
+	*                   - key: Unique (optional) name of video
+	*                   - volatile: Automatically removed this video if it remains empty
+	*                   - expiration_days: After how many days will this video be deleted
+	*/
 await Ziggeo.VideosApi.update(keyOrToken, args);
 ```
 
@@ -1017,8 +1041,8 @@ Use your video token or key to permanently remove the video from your app.
 
 ```javascript
 /**
-  * @param keyOrToken - video token or key.
-  */
+	* @param keyOrToken - video token or key.
+	*/
 await Ziggeo.VideosApi.destroy(String keyOrToken);
 ```
 
