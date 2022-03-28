@@ -9,7 +9,6 @@
 #import <Ziggeo/Ziggeo.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
-#import "ButtonConfig+parse.h"
 #import "ZiggeoRecorderContext.h"
 #import "ZiggeoConstants.h"
 
