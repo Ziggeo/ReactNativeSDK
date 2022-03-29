@@ -92,11 +92,10 @@ You can start using Ziggeo by utilizing automatic install steps, or by going thr
 
 These are the current values:
 
-compileSdkVersion = `28`
-targetSdkVersion = `28`
-minSdkVersion >= `16`
-buildToolsVersion = `28.0.3`
-com.android.support libs = `28.0.0`
+compileSdkVersion = `31`
+targetSdkVersion = `31`
+minSdkVersion >= `21`
+buildToolsVersion = `30.0.3`
 
 ##### Installing for Android Manually
 
