@@ -139,7 +139,7 @@ class ImagesModule(reactContext: ReactApplicationContext) : BaseModule(reactCont
 
     @SuppressLint("CheckResult")
     @ReactMethod
-    fun getAudioUrl(tokenOrKey: String, promise: Promise) {
+    fun getImagesUrl(tokenOrKey: String, promise: Promise) {
         ziggeo.apiRx()
                 .images()
                 .getImageUrl(tokenOrKey)
