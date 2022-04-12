@@ -56,6 +56,38 @@ class ZiggeoPlayerModule(reactContext: ReactApplicationContext) : BaseModule(rea
                 val hideControls = it.getBoolean(ThemeKeys.KEY_HIDE_PLAYER_CONTROLS)
                 ziggeo.playerConfig.style.isHideControls = hideControls
             }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_CONTROLLER_STYLE)) {
+                val controllerStyle = it.getInt(ThemeKeys.KEY_PLAYER_CONTROLLER_STYLE)
+                ziggeo.playerConfig.style.controllerStyle = controllerStyle
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_TEXT_COLOR)) {
+                val textColor = it.getInt(ThemeKeys.KEY_PLAYER_TEXT_COLOR)
+                ziggeo.playerConfig.style.textColor = textColor
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_UNPLAYED_COLOR)) {
+                val unplayedColor = it.getInt(ThemeKeys.KEY_PLAYER_UNPLAYED_COLOR)
+                ziggeo.playerConfig.style.unplayedColor = unplayedColor
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_PLAYED_COLOR)) {
+                val playedColor = it.getInt(ThemeKeys.KEY_PLAYER_PLAYED_COLOR)
+                ziggeo.playerConfig.style.playedColor = playedColor
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_BUFFERED_COLOR)) {
+                val bufferedColor = it.getInt(ThemeKeys.KEY_PLAYER_BUFFERED_COLOR)
+                ziggeo.playerConfig.style.bufferedColor = bufferedColor
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_TINT_COLOR)) {
+                val tintColor = it.getInt(ThemeKeys.KEY_PLAYER_TINT_COLOR)
+                ziggeo.playerConfig.style.tintColor = tintColor
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_MUTE_OFF_DRAWABLE)) {
+                val muteOffImageDrawable = it.getInt(ThemeKeys.KEY_PLAYER_MUTE_OFF_DRAWABLE)
+                ziggeo.playerConfig.style.muteOffImageDrawable = muteOffImageDrawable
+            }
+            if (it.hasKey(ThemeKeys.KEY_PLAYER_MUTE_ON_DRAWABLE)) {
+                val muteOnImageDrawable = it.getInt(ThemeKeys.KEY_PLAYER_MUTE_ON_DRAWABLE)
+                ziggeo.playerConfig.style.muteOnImageDrawable = muteOnImageDrawable
+            }
         }
     }
 
