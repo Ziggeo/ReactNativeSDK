@@ -58,4 +58,7 @@ object Events {
 
     // QR scanner
     const val QR_DECODED = "QrDecoded"
+
+    // SensorManager
+    const val LIGNT_SENSOR_LEVEL = "lightSensorLevel"
 }

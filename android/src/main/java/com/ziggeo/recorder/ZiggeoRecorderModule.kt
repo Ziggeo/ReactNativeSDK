@@ -11,6 +11,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.ziggeo.BaseModule
 import com.ziggeo.androidsdk.callbacks.*
+import com.ziggeo.androidsdk.SensorManager
 import com.ziggeo.androidsdk.db.impl.room.models.RecordingInfo
 import com.ziggeo.androidsdk.log.ZLog
 import com.ziggeo.androidsdk.qr.IQrScanner
@@ -23,10 +24,12 @@ import com.ziggeo.androidsdk.widgets.cameraview.BaseCameraView
 import com.ziggeo.androidsdk.widgets.cameraview.BaseCameraView.Quality
 import com.ziggeo.androidsdk.widgets.cameraview.Size
 import com.ziggeo.tasks.RecordVideoTask
+import com.ziggeo.tasks.SensorTask
 import com.ziggeo.tasks.Task
 import com.ziggeo.tasks.UploadFileTask
 import com.ziggeo.utils.ConversionUtil.dataToCacheConfig
 import com.ziggeo.utils.ConversionUtil.dataToUploadingConfig
+import com.ziggeo.utils.ConversionUtil.dataToConfirmationDialogConfig
 import com.ziggeo.utils.ConversionUtil.toMap
 import com.ziggeo.utils.Events
 import com.ziggeo.utils.Keys
@@ -58,6 +61,20 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     fun setAppToken(appToken: String) {
         ZLog.d("setAppToken:%s", appToken)
         ziggeo.appToken = appToken
+    }
+
+    @ReactMethod
+    open fun setSensorManager(promise: Promise?) {
+        val task = SensorTask(promise!!)
+        ziggeo.setSensorCallback(prepareSensorCallback(task))
+    }
+
+    @ReactMethod
+    fun setStopRecordingConfirmationDialogConfig(data: ReadableMap?) {
+        data?.let {
+            ziggeo.recorderConfig.stopRecordingConfirmationDialogConfig =
+                    dataToConfirmationDialogConfig(it, reactApplicationContext)
+        }
     }
 
     @ReactMethod
@@ -458,6 +475,16 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
                 val map = Arguments.createMap()
                 map.putString(Keys.ERROR, throwable.toString())
                 sendEvent(Events.ERROR, map)
+            }
+        }
+    }
+
+    private fun prepareSensorCallback(task: Task): SensorManager.Callback {
+        return object : SensorManager.Callback {
+            override fun lightSensorLevel(level: Float) {
+                val params = Arguments.createMap()
+                params.putString("lightSensorLevel", level.toString())
+                sendEvent(Events.LIGNT_SENSOR_LEVEL, params)
             }
         }
     }

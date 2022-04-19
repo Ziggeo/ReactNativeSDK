@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
 import com.ziggeo.androidsdk.CacheConfig
+import com.ziggeo.androidsdk.StopRecordingConfirmationDialogConfig
 import com.ziggeo.androidsdk.net.uploading.UploadingConfig
 import java.io.File
 import java.util.*
@@ -114,6 +115,45 @@ object ConversionUtil {
         }
         if (data.hasKey(shouldStartAsForeground)) {
             builder.startAsForeground(data.getBoolean(shouldStartAsForeground))
+        }
+        return builder.build()
+    }
+
+    @JvmStatic
+    fun dataToConfirmationDialogConfig(data: ReadableMap, context: Context):
+            StopRecordingConfirmationDialogConfig {
+        val titleResId = "title_res_id"
+        val titleText = "title_text"
+        val mesResId = "mes_res_id"
+        val mesText = "mes_text"
+        val posBtnResId = "pos_btn_res_id"
+        val posBtnText = "pos_btn_text"
+        val negBtnResId = "neg_btn_res_id"
+        val negBtnText = "neg_btn_text"
+        val builder = StopRecordingConfirmationDialogConfig.Builder()
+        if (data.hasKey(titleResId)) {
+            builder.titleResId(data.getInt(titleResId))
+        }
+        if (data.hasKey(titleText)) {
+            builder.titleText(data.getString(titleText) as CharSequence)
+        }
+        if (data.hasKey(mesResId)) {
+            builder.mesResId(data.getInt(mesResId))
+        }
+        if (data.hasKey(mesText)) {
+            builder.mesText(data.getString(mesText) as CharSequence)
+        }
+        if (data.hasKey(posBtnResId)) {
+            builder.posBtnResId(data.getInt(posBtnResId))
+        }
+        if (data.hasKey(posBtnText)) {
+            builder.posBtnText(data.getString(posBtnText) as CharSequence)
+        }
+        if (data.hasKey(negBtnResId)) {
+            builder.negBtnResId(data.getInt(negBtnResId))
+        }
+        if (data.hasKey(negBtnText)) {
+            builder.negBtnText(data.getString(negBtnText) as CharSequence)
         }
         return builder.build()
     }
