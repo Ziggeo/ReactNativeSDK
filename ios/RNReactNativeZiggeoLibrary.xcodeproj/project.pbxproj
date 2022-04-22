@@ -13,7 +13,6 @@
 		14B77D67274F2A7100C98BD7 /* RCTImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B77D63274F2A7100C98BD7 /* RCTImages.m */; };
 		14B77D68274F2A7100C98BD7 /* RCTVideos.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B77D65274F2A7100C98BD7 /* RCTVideos.m */; };
 		14B77D6C274F2CA200C98BD7 /* RCTContactUs.m in Sources */ = {isa = PBXBuildFile; fileRef = 14B77D6A274F2CA100C98BD7 /* RCTContactUs.m */; };
-		586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603263C86843794188BB9C /* ButtonConfig+parse.m */; };
 		58603C1F09BE7D4B2D1EBED8 /* RCTZCameraModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */; };
 		843872862632EEAD00520AB0 /* ZVideoViewManagerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8438727E2632EEAC00520AB0 /* ZVideoViewManagerManager.m */; };
 		843872872632EEAD00520AB0 /* RCTZiggeoVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8438727F2632EEAC00520AB0 /* RCTZiggeoVideoView.m */; };
@@ -51,8 +50,6 @@
 		14B77D65274F2A7100C98BD7 /* RCTVideos.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTVideos.m; sourceTree = "<group>"; };
 		14B77D6A274F2CA100C98BD7 /* RCTContactUs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTContactUs.m; sourceTree = "<group>"; };
 		14B77D6B274F2CA100C98BD7 /* RCTContactUs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTContactUs.h; sourceTree = "<group>"; };
-		58603263C86843794188BB9C /* ButtonConfig+parse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ButtonConfig+parse.m"; sourceTree = "<group>"; };
-		58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ButtonConfig+parse.h"; sourceTree = "<group>"; };
 		58603D35859263FA0BCC6D0E /* RCTZCameraModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZCameraModule.m; sourceTree = "<group>"; };
 		58603EF5C18338BF365E9D35 /* RCTZCameraModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZCameraModule.h; sourceTree = "<group>"; };
 		8438727E2632EEAC00520AB0 /* ZVideoViewManagerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZVideoViewManagerManager.m; sourceTree = "<group>"; };
@@ -168,8 +165,6 @@
 		848D3E47264BEA4C00212143 /* Recorder */ = {
 			isa = PBXGroup;
 			children = (
-				58603619D0E1ED8638E98F70 /* ButtonConfig+parse.h */,
-				58603263C86843794188BB9C /* ButtonConfig+parse.m */,
 				FA441F361F2A562B00E51295 /* RCTZiggeoRecorder.h */,
 				FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */,
 				143E094026E259DA009FBC6B /* ZiggeoRecorderContext.h */,
@@ -256,7 +251,6 @@
 				FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */,
 				1494B82026F1975000DBD19F /* ZiggeoConstants.m in Sources */,
 				14B77D67274F2A7100C98BD7 /* RCTImages.m in Sources */,
-				586037366D688468D3715098 /* ButtonConfig+parse.m in Sources */,
 				58603C1F09BE7D4B2D1EBED8 /* RCTZCameraModule.m in Sources */,
 				843872872632EEAD00520AB0 /* RCTZiggeoVideoView.m in Sources */,
 				143E094226E259DB009FBC6B /* ZiggeoRecorderContext.m in Sources */,

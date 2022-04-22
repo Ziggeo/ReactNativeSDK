@@ -10,7 +10,6 @@
 #import <React/RCTLog.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "RotatingImagePickerController.h"
-#import "ButtonConfig+parse.h"
 #import "RCTZiggeoRecorder.h"
 #import "ZiggeoConstants.h"
 
