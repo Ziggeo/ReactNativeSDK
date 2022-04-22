@@ -46,6 +46,10 @@ export default {
         ContactUs.sendEmailToSupport();
     },
 
+    setSensorManager: function (map) {
+        ZiggeoRecorder.setSensorManager(map);
+    },
+
     // ZiggeoRecorder
     setRecorderCacheConfig: function (map) {
         ZiggeoRecorder.setRecorderCacheConfig(map);
@@ -113,6 +117,9 @@ export default {
     },
     setCamera: function (camera) {
         ZiggeoRecorder.setCamera(camera);
+    },
+    setStopRecordingConfirmationDialogConfig: function (config) {
+        ZiggeoRecorder.setStopRecordingConfirmationDialogConfig(config);
     },
     /**
      * @deprecated Use `startCameraRecorder()` instead.
