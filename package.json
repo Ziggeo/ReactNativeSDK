@@ -7,8 +7,11 @@
   },
   "description": "We will presume that you are already familiar and have set up everything needed for the React Native setup on your system.  If not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):",
   "devDependencies": {
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0",
     "react": "17.0.1",
-    "react-native": "^0.64.2"
+    "react-native": "^0.64.2",
+    "react-test-renderer": "16.9.0"
   },
   "homepage": "https://github.com/Ziggeo/ReactNativeSDK#readme",
   "keywords": [
@@ -26,8 +29,11 @@
     "url": "git+https://github.com/Ziggeo/ReactNativeSDK.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "title": "React Native Ziggeo SDK",
-  "version": "1.6.11"
+  "version": "1.6.11",
+  "jest": {
+    "preset": "react-native"
+  }
 }
