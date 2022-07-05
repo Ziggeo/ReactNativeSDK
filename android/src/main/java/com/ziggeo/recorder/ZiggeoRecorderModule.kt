@@ -9,6 +9,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import com.ziggeo.*
 import com.ziggeo.BaseModule
 import com.ziggeo.androidsdk.callbacks.*
 import com.ziggeo.androidsdk.SensorManager
@@ -28,14 +29,21 @@ import com.ziggeo.tasks.SensorTask
 import com.ziggeo.tasks.Task
 import com.ziggeo.tasks.UploadFileTask
 import com.ziggeo.utils.ConversionUtil.dataToCacheConfig
+import com.ziggeo.utils.ConversionUtil.dataFromCacheConfig
 import com.ziggeo.utils.ConversionUtil.dataToUploadingConfig
+import com.ziggeo.utils.ConversionUtil.dataFromUploadingConfig
 import com.ziggeo.utils.ConversionUtil.dataToConfirmationDialogConfig
+import com.ziggeo.utils.ConversionUtil.dataFromConfirmationDialogConfig
 import com.ziggeo.utils.ConversionUtil.toMap
 import com.ziggeo.utils.Events
 import com.ziggeo.utils.Keys
 import com.ziggeo.utils.ThemeKeys
+import com.ziggeo.utils.RecorderKeys
 import java.io.File
 import java.util.*
+
+import com.facebook.react.bridge.Promise
+import com.ziggeo.tasks.SimpleTask
 
 /**
  * Created by Alex Bedulin on 6/25/2017.
@@ -86,10 +94,10 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     @ReactMethod
     fun setVideoWidth(w: Int) {
         this.width = w
-        if (width != 0 && height != 0) {
-            ziggeo.recorderConfig.resolution = Size(width, height)
-        } else {
+        if (width == 0) {
             ziggeo.recorderConfig.resolution = Size(0, 0)
+        } else {
+            ziggeo.recorderConfig.resolution = Size(width, height)
         }
     }
 
@@ -111,10 +119,10 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     @ReactMethod
     fun setVideoHeight(h: Int) {
         this.height = h
-        if (width != 0 && height != 0) {
-            ziggeo.recorderConfig.resolution = Size(width, height)
-        } else {
+        if (height == 0) {
             ziggeo.recorderConfig.resolution = Size(0, 0)
+        } else {
+            ziggeo.recorderConfig.resolution = Size(width, height)
         }
     }
 
@@ -390,6 +398,134 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     @ReactMethod
     fun showImage(token: String) {
         ziggeo.showImage(token)
+    }
+
+    //getters
+    @ReactMethod
+    fun getAppToken(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.getAppToken());
+    }
+
+    @ReactMethod
+    fun getClientAuthToken(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.getClientAuthToken());
+    }
+
+    @ReactMethod
+    fun getServerAuthToken(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.getServerAuthToken());
+    }
+
+    @ReactMethod
+    fun getStopRecordingConfirmationDialogConfig(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, dataFromConfirmationDialogConfig(ziggeo.recorderConfig.stopRecordingConfirmationDialogConfig));
+    }
+
+
+    @ReactMethod
+    fun getBlurMode(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.blurMode);
+    }
+
+    @ReactMethod
+    fun getVideoWidth(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.resolution.toString());
+    }
+
+    @ReactMethod
+    fun getVideoBitrate(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.videoBitrate);
+    }
+
+    @ReactMethod
+    fun getAudioSampleRate(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.audioSampleRate);
+    }
+
+    @ReactMethod
+    fun getAudioBitrate(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.audioBitrate);
+    }
+
+    @ReactMethod
+    fun getVideoHeight(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.resolution.toString());
+    }
+
+    @ReactMethod
+    fun getLiveStreamingEnabled(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.isLiveStreaming());
+    }
+
+    @ReactMethod
+    fun getAutostartRecording(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.shouldAutoStartRecording);
+    }
+
+    @ReactMethod
+    fun getStartDelay(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.startDelay);
+    }
+
+    @ReactMethod
+    fun getCoverSelectorEnabled(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.shouldEnableCoverShot);
+    }
+
+    @ReactMethod
+    fun getMaxRecordingDuration(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, (ziggeo.recorderConfig.maxDuration/1000).toInt());
+    }
+
+    @ReactMethod
+    fun getCameraSwitchEnabled(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, !ziggeo.recorderConfig.shouldDisableCameraSwitch);
+    }
+
+    @ReactMethod
+    fun getSendImmediately(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.shouldSendImmediately);
+    }
+
+    @ReactMethod
+    fun getCamera(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.facing);
+    }
+
+    @ReactMethod
+    fun getQuality(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.videoQuality);
+    }
+
+    @ReactMethod
+    fun getRecorderCacheConfig(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, dataFromCacheConfig(ziggeo.recorderConfig.cacheConfig));
+    }
+
+    @ReactMethod
+    fun getUploadingConfig(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, dataFromUploadingConfig(ziggeo.uploadingConfig));
     }
 
     override fun getConstants(): Map<String, Any>? {
@@ -786,14 +922,14 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
 
     companion object {
         // constants for mapping native constants in JS
-        private const val REAR_CAMERA = "rearCamera"
-        private const val FRONT_CAMERA = "frontCamera"
-        private const val HIGH_QUALITY = "highQuality"
-        private const val MEDIUM_QUALITY = "mediumQuality"
-        private const val LOW_QUALITY = "lowQuality"
-        private const val MEDIA_TYPE_VIDEO = "video"
-        private const val MEDIA_TYPE_AUDIO = "audio"
-        private const val MEDIA_TYPE_IMAGE = "image"
+        public const val REAR_CAMERA = "rearCamera"
+        public const val FRONT_CAMERA = "frontCamera"
+        public const val HIGH_QUALITY = "highQuality"
+        public const val MEDIUM_QUALITY = "mediumQuality"
+        public const val LOW_QUALITY = "lowQuality"
+        public const val MEDIA_TYPE_VIDEO = "video"
+        public const val MEDIA_TYPE_AUDIO = "audio"
+        public const val MEDIA_TYPE_IMAGE = "image"
 
         private const val ERR_UNKNOWN = "ERR_UNKNOWN"
         private const val ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED"
