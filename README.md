@@ -124,7 +124,7 @@ maven { url 'https://jitpack.io' }
 In the same file also insert the following line inside the `dependencies` block:  
 
 ```
-compile project(':react-native-ziggeo-library')
+implementation project(':react-native-ziggeo-library')
 ```
 
 4. Modify `android/app/AndroidManifest.xml` by adding the following line inside the `manifest` block:
