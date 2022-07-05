@@ -1,13 +1,20 @@
 package com.ziggeo.player
 
+import com.ziggeo.*
 import android.net.Uri
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.Callback;
 import com.ziggeo.BaseModule
 import com.ziggeo.androidsdk.log.ZLog
+import com.ziggeo.utils.ConversionUtil.dataFromPlayerStyle
 import com.ziggeo.utils.ConversionUtil
 import com.ziggeo.utils.ThemeKeys
+
+import com.facebook.react.bridge.Promise
+import com.ziggeo.tasks.SimpleTask
+import com.ziggeo.tasks.Task
 
 /**
  * Created by alex on 6/25/2017.
@@ -95,5 +102,36 @@ class ZiggeoPlayerModule(reactContext: ReactApplicationContext) : BaseModule(rea
     fun setAdsURL(url: String) {
         ZLog.d("setAdsURL:%s", url)
         ziggeo.playerConfig.adsUri = Uri.parse(url);
+    }
+
+    //getters
+    @ReactMethod
+    fun getAppToken(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.appToken)
+    }
+
+    @ReactMethod
+    fun getClientAuthToken(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.getClientAuthToken());
+    }
+
+    @ReactMethod
+    fun getServerAuthToken(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.getServerAuthToken());
+    }
+
+    @ReactMethod
+    fun getThemeArgsForPlayer(promise: Promise){
+        val task: Task = SimpleTask(promise)
+        resolve(task, dataFromPlayerStyle(ziggeo.playerConfig.style));
+    }
+
+    @ReactMethod
+    fun getAdsURL(promise: Promise){
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.playerConfig.adsUri.toString());
     }
 }

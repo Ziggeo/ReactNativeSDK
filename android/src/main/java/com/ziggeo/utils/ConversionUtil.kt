@@ -3,11 +3,17 @@ package com.ziggeo.utils
 import android.content.Context
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.bridge.ReadableType
+import com.facebook.react.bridge.WritableNativeMap
+import com.facebook.react.bridge.Arguments
 import com.ziggeo.androidsdk.CacheConfig
 import com.ziggeo.androidsdk.StopRecordingConfirmationDialogConfig
 import com.ziggeo.androidsdk.net.uploading.UploadingConfig
+import com.ziggeo.androidsdk.ui.theming.PlayerStyle;
 import java.io.File
+import com.ziggeo.utils.ThemeKeys
+import com.ziggeo.utils.RecorderKeys
 import java.util.*
 
 /**
@@ -85,76 +91,116 @@ object ConversionUtil {
 
     @JvmStatic
     fun dataToCacheConfig(data: ReadableMap, context: Context): CacheConfig {
-        val cacheSize = "cache_size"
-        val cacheRoot = "cache_root"
         val builder = CacheConfig.Builder(context)
-        if (data.hasKey(cacheRoot)) {
-            builder.cacheDirectory(File(data.getString(cacheRoot)))
+        if (data.hasKey(RecorderKeys.KEY_CACHE_ROOT)) {
+            builder.cacheDirectory(File(data.getString(RecorderKeys.KEY_CACHE_ROOT)))
         }
-        if (data.hasKey(cacheSize)) {
-            builder.maxCacheSize(data.getInt(cacheSize).toLong())
+        if (data.hasKey(RecorderKeys.KEY_CACHE_SIZE)) {
+            builder.maxCacheSize(data.getInt(RecorderKeys.KEY_CACHE_SIZE).toLong())
         }
         return builder.build()
     }
 
     @JvmStatic
+    fun dataFromCacheConfig(data: CacheConfig): WritableMap {
+        val map: WritableMap = Arguments.createMap()
+        map.putInt(RecorderKeys.KEY_CACHE_SIZE, data.maxCacheSize.toInt())
+        map.putString(RecorderKeys.KEY_CACHE_ROOT, data.cacheRoot.toString())
+        return map;
+    }
+
+    @JvmStatic
     fun dataToUploadingConfig(data: ReadableMap, context: Context): UploadingConfig {
-        val useWifiOnly = "use_wifi_only"
-        val syncInterval = "sync_interval"
-        val turnOffUploader = "turn_off_uploader"
-        val shouldStartAsForeground = "start_as_foreground"
         val builder = UploadingConfig.Builder()
-        if (data.hasKey(useWifiOnly)) {
-            builder.useWifiOnly(data.getBoolean(useWifiOnly))
+        if (data.hasKey(RecorderKeys.KEY_USE_WIFI_ONLY)) {
+            builder.useWifiOnly(data.getBoolean(RecorderKeys.KEY_USE_WIFI_ONLY))
         }
-        if (data.hasKey(syncInterval)) {
-            builder.syncInterval(data.getInt(syncInterval).toLong())
+        if (data.hasKey(RecorderKeys.KEY_SYNC_INTERVAL)) {
+            builder.syncInterval(data.getInt(RecorderKeys.KEY_SYNC_INTERVAL).toLong())
         }
-        if (data.hasKey(turnOffUploader)) {
-            builder.turnOffUploader(data.getBoolean(turnOffUploader))
+        if (data.hasKey(RecorderKeys.KEY_TURN_OFF_UPLOADER)) {
+            builder.turnOffUploader(data.getBoolean(RecorderKeys.KEY_TURN_OFF_UPLOADER))
         }
-        if (data.hasKey(shouldStartAsForeground)) {
-            builder.startAsForeground(data.getBoolean(shouldStartAsForeground))
+        if (data.hasKey(RecorderKeys.KEY_START_AS_FOREGROUND)) {
+            builder.startAsForeground(data.getBoolean(RecorderKeys.KEY_START_AS_FOREGROUND))
         }
         return builder.build()
+    }
+
+    @JvmStatic
+    fun dataFromUploadingConfig(data: UploadingConfig): ReadableMap {
+        val map: WritableMap = Arguments.createMap()
+        map.putBoolean(RecorderKeys.KEY_USE_WIFI_ONLY, data.shouldUseWifiOnly)
+        map.putInt(RecorderKeys.KEY_SYNC_INTERVAL, data.syncInterval.toInt())
+        map.putBoolean(RecorderKeys.KEY_TURN_OFF_UPLOADER, data.shouldTurnOffUploader)
+        return map;
     }
 
     @JvmStatic
     fun dataToConfirmationDialogConfig(data: ReadableMap, context: Context):
             StopRecordingConfirmationDialogConfig {
-        val titleResId = "title_res_id"
-        val titleText = "title_text"
-        val mesResId = "mes_res_id"
-        val mesText = "mes_text"
-        val posBtnResId = "pos_btn_res_id"
-        val posBtnText = "pos_btn_text"
-        val negBtnResId = "neg_btn_res_id"
-        val negBtnText = "neg_btn_text"
         val builder = StopRecordingConfirmationDialogConfig.Builder()
-        if (data.hasKey(titleResId)) {
-            builder.titleResId(data.getInt(titleResId))
+        if (data.hasKey(RecorderKeys.KEY_TITLE_RES_ID)) {
+            builder.titleResId(data.getInt(RecorderKeys.KEY_TITLE_RES_ID))
         }
-        if (data.hasKey(titleText)) {
-            builder.titleText(data.getString(titleText) as CharSequence)
+        if (data.hasKey(RecorderKeys.KEY_TITLE_TEXT)) {
+            builder.titleText(data.getString(RecorderKeys.KEY_TITLE_TEXT) as CharSequence)
         }
-        if (data.hasKey(mesResId)) {
-            builder.mesResId(data.getInt(mesResId))
+        if (data.hasKey(RecorderKeys.KEY_MESSAGE_RES_ID)) {
+            builder.mesResId(data.getInt(RecorderKeys.KEY_MESSAGE_RES_ID))
         }
-        if (data.hasKey(mesText)) {
-            builder.mesText(data.getString(mesText) as CharSequence)
+        if (data.hasKey(RecorderKeys.KEY_MESSAGE_TEXT)) {
+            builder.mesText(data.getString(RecorderKeys.KEY_MESSAGE_TEXT) as CharSequence)
         }
-        if (data.hasKey(posBtnResId)) {
-            builder.posBtnResId(data.getInt(posBtnResId))
+        if (data.hasKey(RecorderKeys.KEY_POSITIVE_BUTTON_RES_ID)) {
+            builder.posBtnResId(data.getInt(RecorderKeys.KEY_POSITIVE_BUTTON_RES_ID))
         }
-        if (data.hasKey(posBtnText)) {
-            builder.posBtnText(data.getString(posBtnText) as CharSequence)
+        if (data.hasKey(RecorderKeys.KEY_POSITIVE_BUTTON_TEXT)) {
+            builder.posBtnText(data.getString(RecorderKeys.KEY_POSITIVE_BUTTON_TEXT) as CharSequence)
         }
-        if (data.hasKey(negBtnResId)) {
-            builder.negBtnResId(data.getInt(negBtnResId))
+        if (data.hasKey(RecorderKeys.KEY_NEGATIVE_BUTTON_RES_ID)) {
+            builder.negBtnResId(data.getInt(RecorderKeys.KEY_NEGATIVE_BUTTON_RES_ID))
         }
-        if (data.hasKey(negBtnText)) {
-            builder.negBtnText(data.getString(negBtnText) as CharSequence)
+        if (data.hasKey(RecorderKeys.KEY_NEGATIVE_BUTTON_TEXT)) {
+            builder.negBtnText(data.getString(RecorderKeys.KEY_NEGATIVE_BUTTON_TEXT) as CharSequence)
         }
         return builder.build()
+    }
+
+    @JvmStatic
+    fun dataFromConfirmationDialogConfig(data: StopRecordingConfirmationDialogConfig): ReadableMap {
+        val map: WritableMap = Arguments.createMap()
+        map.putInt(RecorderKeys.KEY_TITLE_RES_ID, data.titleResId)
+        if (data.titleText != null) {
+            map.putString(RecorderKeys.KEY_TITLE_TEXT, data.titleText.toString())
+        }
+        map.putInt(RecorderKeys.KEY_MESSAGE_RES_ID, data.mesResId)
+        if (data.mesText != null) {
+            map.putString(RecorderKeys.KEY_MESSAGE_TEXT, data.mesText.toString())
+        }
+        map.putInt(RecorderKeys.KEY_POSITIVE_BUTTON_RES_ID, data.posBtnResId)
+        if (data.posBtnText != null) {
+            map.putString(RecorderKeys.KEY_POSITIVE_BUTTON_TEXT, data.posBtnText.toString())
+        }
+        map.putInt(RecorderKeys.KEY_NEGATIVE_BUTTON_RES_ID, data.negBtnResId)
+        if (data.negBtnText != null) {
+            map.putString(RecorderKeys.KEY_NEGATIVE_BUTTON_TEXT, data.negBtnText.toString())
+        }
+        return map;
+    }
+
+    @JvmStatic
+    fun dataFromPlayerStyle(data: PlayerStyle): ReadableMap {
+        val map: WritableMap = Arguments.createMap()
+        map.putBoolean(ThemeKeys.KEY_HIDE_PLAYER_CONTROLS, data.isHideControls)
+        map.putInt(ThemeKeys.KEY_PLAYER_CONTROLLER_STYLE, data.controllerStyle)
+        map.putInt(ThemeKeys.KEY_PLAYER_TEXT_COLOR, data.textColor)
+        map.putInt(ThemeKeys.KEY_PLAYER_UNPLAYED_COLOR, data.unplayedColor)
+        map.putInt(ThemeKeys.KEY_PLAYER_PLAYED_COLOR, data.playedColor)
+        map.putInt(ThemeKeys.KEY_PLAYER_BUFFERED_COLOR, data.bufferedColor)
+        map.putInt(ThemeKeys.KEY_PLAYER_TINT_COLOR, data.tintColor)
+        map.putInt(ThemeKeys.KEY_PLAYER_MUTE_OFF_DRAWABLE, data.muteOffImageDrawable)
+        map.putInt(ThemeKeys.KEY_PLAYER_MUTE_ON_DRAWABLE, data.muteOnImageDrawable)
+        return map;
     }
 }

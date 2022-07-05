@@ -2,11 +2,11 @@ import {NativeEventEmitter, NativeModules} from 'react-native';
 import VideosApi from './videos';
 import AudiosApi from './audios';
 import ImagesApi from './images';
+import ZiggeoVideoView from './video_view.js';
+import ZiggeoCameraView from './camera_view.js';
 
 const {ZiggeoPlayer} = NativeModules;
 const {ZiggeoRecorder} = NativeModules;
-import ZiggeoVideoView from './video_view.js';
-import ZiggeoCameraView from './camera_view.js';
 
 const {Videos} = NativeModules;
 const {Audios} = NativeModules;
@@ -29,15 +29,15 @@ export default {
         ZiggeoPlayer.setClientAuthToken(token);
         ZiggeoRecorder.setClientAuthToken(token);
         Videos.setClientAuthToken(token);
-        Audios.setClientAuthToken(appToken);
-        Images.setClientAuthToken(appToken);
+        Audios.setClientAuthToken(token);
+        Images.setClientAuthToken(token);
     },
     setServerAuthToken: function (token: string) {
         ZiggeoPlayer.setServerAuthToken(token);
         ZiggeoRecorder.setServerAuthToken(token);
         Videos.setServerAuthToken(token);
-        Audios.setServerAuthToken(appToken);
-        Images.setServerAuthToken(appToken);
+        Audios.setServerAuthToken(token);
+        Images.setServerAuthToken(token);
     },
     sendReport(logsList) {
         ContactUs.sendReport(logsList);
@@ -136,10 +136,10 @@ export default {
     startAudioRecorder: async function () {
         return ZiggeoRecorder.startAudioRecorder();
     },
-    startAudioPlayer:async function (token: string) {
+    startAudioPlayer: async function (token: string) {
         return ZiggeoRecorder.startAudioPlayer(token);
     },
-    showImage:async function (token: string) {
+    showImage: async function (token: string) {
         return ZiggeoRecorder.showImage(token);
     },
     startScreenRecorder: async function () {
@@ -188,6 +188,80 @@ export default {
     },
     cancelUploadByPath: function (path: string, delete_file: boolean) {
         ZiggeoRecorder.cancelUploadByPath(path, delete_file);
+    },
+
+    getAppToken: function () {
+        return ZiggeoPlayer.getAppToken();
+    },
+    getClientAuthToken: function () {
+        return ZiggeoPlayer.getClientAuthToken();
+    },
+    getServerAuthToken: function () {
+        return ZiggeoPlayer.getServerAuthToken();
+    },
+    getAdsURL: function () {
+        return ZiggeoPlayer.getAdsURL();
+    },
+    getThemeArgsForPlayer: function () {
+        return ZiggeoPlayer.getThemeArgsForPlayer();
+    },
+
+    getStopRecordingConfirmationDialogConfig: function () {
+        return ZiggeoRecorder.getStopRecordingConfirmationDialogConfig();
+    },
+    getBlurMode: function () {
+        return ZiggeoRecorder.getBlurMode();
+    },
+    getVideoWidth: function () {
+        return ZiggeoRecorder.getVideoWidth();
+    },
+    getVideoBitrate: function () {
+        return ZiggeoRecorder.getVideoBitrate();
+    },
+    getAudioSampleRate: function () {
+        return ZiggeoRecorder.getAudioSampleRate();
+    },
+    getAudioBitrate: function () {
+        return ZiggeoRecorder.getAudioBitrate();
+    },
+    getVideoHeight: function () {
+        return ZiggeoRecorder.getVideoHeight();
+    },
+    getLiveStreamingEnabled: function () {
+        return ZiggeoRecorder.getLiveStreamingEnabled();
+    },
+    getAutostartRecording: function () {
+        return ZiggeoRecorder.getAutostartRecording();
+    },
+    getStartDelay: function () {
+        return ZiggeoRecorder.getStartDelay();
+    },
+    getExtraArgsForRecorder: function () {
+        return ZiggeoRecorder.getExtraArgsForRecorder();
+    },
+    getCoverSelectorEnabled: function (){
+        return ZiggeoRecorder.getCoverSelectorEnabled();
+    },
+    getMaxRecordingDuration: function () {
+        return ZiggeoRecorder.getMaxRecordingDuration();
+    },
+    getCameraSwitchEnabled: function () {
+        return ZiggeoRecorder.getCameraSwitchEnabled();
+    },
+    getSendImmediately: function () {
+        return ZiggeoRecorder.getSendImmediately();
+    },
+    getCamera: function () {
+        return ZiggeoRecorder.getCamera();
+    },
+    getQuality: function () {
+        return ZiggeoRecorder.getQuality();
+    },
+    getRecorderCacheConfig: function () {
+        return ZiggeoRecorder.getRecorderCacheConfig();
+    },
+    getUploadingConfig: function () {
+        return ZiggeoRecorder.getUploadingConfig();
     },
 
     // Constants

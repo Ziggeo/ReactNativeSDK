@@ -11,7 +11,7 @@
     "jest": "^25.1.0",
     "react": "17.0.1",
     "react-native": "^0.64.2",
-    "react-test-renderer": "16.9.0"
+    "react-test-renderer": "17.0.2"
   },
   "homepage": "https://github.com/Ziggeo/ReactNativeSDK#readme",
   "keywords": [
