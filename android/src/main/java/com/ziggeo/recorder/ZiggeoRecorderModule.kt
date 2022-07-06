@@ -94,7 +94,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     @ReactMethod
     fun setPausableMode(isPausableMode: Boolean) {
         ZLog.d("setPausableMode:%s", isPausableMode)
-        ziggeo.recorderConfig.isPausedMode = isPausableMode
+        ziggeo.recorderConfig.setIsPausedMode(isPausableMode)
     }
 
     @ReactMethod
