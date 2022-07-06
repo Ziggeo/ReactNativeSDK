@@ -100,6 +100,9 @@ export default {
     setBlurMode: function (blurMode) {
         ZiggeoRecorder.setBlurMode(blurMode);
     },
+    setPausableMode: function (pausableMode) {
+        ZiggeoRecorder.setPausableMode(pausableMode);
+    },
     setAudioSampleRate: function (audioSampleRate) {
         ZiggeoRecorder.setAudioSampleRate(audioSampleRate);
     },
@@ -211,6 +214,9 @@ export default {
     },
     getBlurMode: function () {
         return ZiggeoRecorder.getBlurMode();
+    },
+    getPausableMode: function() {
+        return  ZiggeoRecorder.getPausableMode();
     },
     getVideoWidth: function () {
         return ZiggeoRecorder.getVideoWidth();

@@ -92,6 +92,12 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
+    fun setPausableMode(isPausableMode: Boolean) {
+        ZLog.d("setPausableMode:%s", isPausableMode)
+        ziggeo.recorderConfig.isPausedMode = isPausableMode
+    }
+
+    @ReactMethod
     fun setVideoWidth(w: Int) {
         this.width = w
         if (width == 0) {
@@ -433,6 +439,12 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
+    fun getPausableMode(promise: Promise) {
+        val task: Task = SimpleTask(promise)
+        resolve(task, ziggeo.recorderConfig.isPausedMode);
+    }
+
+    @ReactMethod
     fun getVideoWidth(promise: Promise) {
         val task: Task = SimpleTask(promise)
         resolve(task, ziggeo.recorderConfig.resolution.toString());
@@ -489,7 +501,7 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     @ReactMethod
     fun getMaxRecordingDuration(promise: Promise) {
         val task: Task = SimpleTask(promise)
-        resolve(task, (ziggeo.recorderConfig.maxDuration/1000).toInt());
+        resolve(task, (ziggeo.recorderConfig.maxDuration / 1000).toInt());
     }
 
     @ReactMethod
