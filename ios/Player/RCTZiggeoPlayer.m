@@ -41,10 +41,16 @@ RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 }
 
 
-RCT_EXPORT_METHOD(playVideo:(NSString*)videoToken)
+RCT_EXPORT_METHOD(playVideo:(NSString *)videoToken)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo playVideo:videoToken];
+}
+
+RCT_EXPORT_METHOD(playVideos:(NSArray *)videoTokens)
+{
+    if (m_ziggeo == nil) return;
+    [m_ziggeo playVideos:videoTokens];
 }
 
 RCT_EXPORT_METHOD(playFromUri:(NSString *)url)
@@ -53,13 +59,19 @@ RCT_EXPORT_METHOD(playFromUri:(NSString *)url)
     [m_ziggeo playFromUri:url];
 }
 
-RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary*)map)
+RCT_EXPORT_METHOD(playFromUris:(NSArray *)urls)
+{
+    if (m_ziggeo == nil) return;
+    [m_ziggeo playFromUris:urls];
+}
+
+RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary *)map)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo setExtraArgsForPlayer:map];
 }
 
-RCT_EXPORT_METHOD(setThemeArgsForPlayer:(NSDictionary*)map)
+RCT_EXPORT_METHOD(setThemeArgsForPlayer:(NSDictionary *)map)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo setThemeArgsForPlayer:map];
@@ -71,7 +83,7 @@ RCT_EXPORT_METHOD(setPlayerCacheConfig:(NSDictionary *)config)
     [m_ziggeo setPlayerCacheConfig:config];
 }
 
-RCT_EXPORT_METHOD(setAdsURL:(NSString*)url)
+RCT_EXPORT_METHOD(setAdsURL:(NSString *)url)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo setAdsURL:url];

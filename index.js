@@ -24,6 +24,7 @@ export default {
         Videos.setAppToken(appToken);
         Audios.setAppToken(appToken);
         Images.setAppToken(appToken);
+        ContactUs.setAppToken(appToken);
     },
     setClientAuthToken: function (token: string) {
         ZiggeoPlayer.setClientAuthToken(token);
@@ -31,6 +32,7 @@ export default {
         Videos.setClientAuthToken(token);
         Audios.setClientAuthToken(token);
         Images.setClientAuthToken(token);
+        ContactUs.setClientAuthToken(appToken);
     },
     setServerAuthToken: function (token: string) {
         ZiggeoPlayer.setServerAuthToken(token);
@@ -38,6 +40,7 @@ export default {
         Videos.setServerAuthToken(token);
         Audios.setServerAuthToken(token);
         Images.setServerAuthToken(token);
+        ContactUs.setServerAuthToken(appToken);
     },
     sendReport(logsList) {
         ContactUs.sendReport(logsList);
@@ -142,9 +145,31 @@ export default {
     startAudioPlayer: async function (token: string) {
         return ZiggeoRecorder.startAudioPlayer(token);
     },
-    showImage: async function (token: string) {
-        return ZiggeoRecorder.showImage(token);
+    /**
+     * New added function
+     */
+    trimVideo: async function(videoUrl: string) {
+        ZiggeoRecorder.trimVideo(videoUrl);
     },
+    playAudio: async function (token: string) {
+        ZiggeoRecorder.playAudio(token);
+    },
+    playAudios: async function (token: string[]) {
+        ZiggeoRecorder.playAudios(token);
+    },
+    showImage: async function (token: string) {
+        ZiggeoRecorder.showImage(token);
+    },
+    showImages: async function (tokens: string[]) {
+        ZiggeoRecorder.showImages(tokens);
+    },
+    playVideos: function (tokens: string[]) {
+        ZiggeoPlayer.playVideos(tokens);
+    },
+    playFromUris: function (urls: string[]) {
+        ZiggeoPlayer.playFromUris(urls);
+    },
+    /***********************/
     startScreenRecorder: async function () {
         return ZiggeoRecorder.startScreenRecorder();
     },

@@ -303,6 +303,19 @@ RCT_EXPORT_METHOD(showImage:(NSString *)imageToken
     });
 }
 
+RCT_EXPORT_METHOD(showImages:(NSArray *)imageTokens
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (m_ziggeo == nil) return;
+    m_context.resolveBlock = resolve;
+    m_context.rejectBlock = reject;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->m_ziggeo showImages:imageTokens];
+    });
+}
+
 RCT_REMAP_METHOD(startAudioRecorder,
                  startAudioRecorderResolver:(RCTPromiseResolveBlock)resolve
                  startAudioRecorderRejecter:(RCTPromiseRejectBlock)reject)
@@ -329,6 +342,45 @@ RCT_EXPORT_METHOD(startAudioPlayer:(NSString *)audioToken
     });
 }
 
+RCT_EXPORT_METHOD(startAudiosPlayer:(NSArray *)audioTokens
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (m_ziggeo == nil) return;
+    m_context.resolveBlock = resolve;
+    m_context.rejectBlock = reject;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->m_ziggeo startAudiosPlayer:audioTokens];
+    });
+}
+
+RCT_EXPORT_METHOD(playAudio:(NSString *)audioToken
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (m_ziggeo == nil) return;
+    m_context.resolveBlock = resolve;
+    m_context.rejectBlock = reject;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->m_ziggeo playAudio:audioToken];
+    });
+}
+
+RCT_EXPORT_METHOD(playAudios:(NSArray *)audioTokens
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    if (m_ziggeo == nil) return;
+    m_context.resolveBlock = resolve;
+    m_context.rejectBlock = reject;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->m_ziggeo playAudios:audioTokens];
+    });
+}
+
 RCT_REMAP_METHOD(startScreenRecorder,
                  startScreenRecorderResolver:(RCTPromiseResolveBlock)resolve
                  startScreenRecorderRejecter:(RCTPromiseRejectBlock)reject)
@@ -352,7 +404,12 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
     m_context.rejectBlock = reject;
     
     if (fileName != nil) {
-        [m_ziggeo uploadFromPath:fileName :map];
+        [m_ziggeo uploadFromPath:fileName
+                            Data:map
+                        Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+        } Progress:^(int totalBytesSent, int totalBytesExpectedToSend) {
+        } ConfirmCallback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+        }];
     } else {
         reject(@"ERR_NOFILE", @"empty filename", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"ERR_NOFILE": @"empty filename"}]);
     }

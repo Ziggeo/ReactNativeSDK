@@ -100,8 +100,8 @@ RCT_EXPORT_METHOD(destroy:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBloc
 
 RCT_EXPORT_METHOD(get:(NSString *)tokenOrKey resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [[m_ziggeo audios] get:tokenOrKey Callback:^(NSString *filePath) {
-        resolve(filePath);
+    [[m_ziggeo audios] get:tokenOrKey Data:NULL Callback:^(ContentModel *content, NSURLResponse *response, NSError *error) {
+        resolve(content);
     }];
 }
 
@@ -121,11 +121,11 @@ RCT_EXPORT_METHOD(create:(NSString *)file map:(NSDictionary *)map resolver:(RCTP
     }];
 }
 
-RCT_EXPORT_METHOD(update:(NSString *)model resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(update:(NSString *)token map:(NSDictionary *)map resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [[m_ziggeo audios] update:model ModelInJson:model Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+    [[m_ziggeo audios] update:token Data:map Callback:^(ContentModel *content, NSURLResponse *response, NSError *error) {
         if (error == NULL) {
-            resolve(jsonObject);
+            resolve(content);
         } else {
             reject(@"ERR_AUDIOS", @"audio update error", error);
         }

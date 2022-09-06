@@ -9,6 +9,10 @@
 
 @interface RCTContactUs : RCTEventEmitter <RCTBridgeModule>
 
++ (NSString *)appToken;
++ (NSString *)serverAuthToken;
++ (NSString *)clientAuthToken;
+
 @end
 
 #endif /* ZiggeoRCTContactUs_h */
