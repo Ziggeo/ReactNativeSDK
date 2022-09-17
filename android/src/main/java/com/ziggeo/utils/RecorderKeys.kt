@@ -17,4 +17,5 @@ object RecorderKeys {
     const val KEY_SYNC_INTERVAL = "sync_interval"
     const val KEY_TURN_OFF_UPLOADER = "turn_off_uploader"
     const val KEY_START_AS_FOREGROUND = "start_as_foreground"
+    const val KEY_LOST_CONNECTION_ACTION = "lost_connection_action"
 }

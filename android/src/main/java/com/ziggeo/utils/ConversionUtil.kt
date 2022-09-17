@@ -124,6 +124,9 @@ object ConversionUtil {
         if (data.hasKey(RecorderKeys.KEY_START_AS_FOREGROUND)) {
             builder.startAsForeground(data.getBoolean(RecorderKeys.KEY_START_AS_FOREGROUND))
         }
+        if (data.hasKey(RecorderKeys.KEY_LOST_CONNECTION_ACTION)) {
+            builder.lostConnectionAction(data.getInt(RecorderKeys.KEY_LOST_CONNECTION_ACTION))
+        }
         return builder.build()
     }
 
@@ -133,6 +136,7 @@ object ConversionUtil {
         map.putBoolean(RecorderKeys.KEY_USE_WIFI_ONLY, data.shouldUseWifiOnly)
         map.putInt(RecorderKeys.KEY_SYNC_INTERVAL, data.syncInterval.toInt())
         map.putBoolean(RecorderKeys.KEY_TURN_OFF_UPLOADER, data.shouldTurnOffUploader)
+        map.putInt(RecorderKeys.KEY_LOST_CONNECTION_ACTION, data.lostConnectionAction)
         return map;
     }
 
