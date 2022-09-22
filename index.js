@@ -139,10 +139,10 @@ export default {
     startAudioRecorder: async function () {
         return ZiggeoRecorder.startAudioRecorder();
     },
-    startAudioPlayer: async function (token: string) {
+    startAudioPlayer: async function (...token: string) {
         return ZiggeoRecorder.startAudioPlayer(token);
     },
-    showImage: async function (token: string) {
+    showImage: async function (...token: string) {
         return ZiggeoRecorder.showImage(token);
     },
     startScreenRecorder: async function () {
@@ -168,10 +168,10 @@ export default {
     },
 
     // Video Player
-    playVideo: function (videoId: string) {
+    playVideo: function (...videoId: string) {
         ZiggeoPlayer.playVideo(videoId);
     },
-    playFromUri: function (path_or_url: string) {
+    playFromUri: function (...path_or_url: string) {
         ZiggeoPlayer.playFromUri(path_or_url);
     },
     setExtraArgsForPlayer: function (map) {

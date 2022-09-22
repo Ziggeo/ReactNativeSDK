@@ -35,6 +35,7 @@ import com.ziggeo.utils.ConversionUtil.dataFromUploadingConfig
 import com.ziggeo.utils.ConversionUtil.dataToConfirmationDialogConfig
 import com.ziggeo.utils.ConversionUtil.dataFromConfirmationDialogConfig
 import com.ziggeo.utils.ConversionUtil.toMap
+import com.ziggeo.utils.ConversionUtil.toList
 import com.ziggeo.utils.Events
 import com.ziggeo.utils.Keys
 import com.ziggeo.utils.ThemeKeys
@@ -397,13 +398,15 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
     }
 
     @ReactMethod
-    fun startAudioPlayer(token: String) {
-        ziggeo.startAudioPlayer(token)
+    fun startAudioPlayer(token: ReadableArray) {
+        var tokens = (toList(token) as List<String>).toTypedArray() as Array<String>
+        ziggeo.startAudioPlayer(*tokens)
     }
 
     @ReactMethod
-    fun showImage(token: String) {
-        ziggeo.showImage(token)
+    fun showImage(token: ReadableArray) {
+        var tokens = toList(token) as List<String>
+        ziggeo.showImage(tokens.get(0))
     }
 
     //getters

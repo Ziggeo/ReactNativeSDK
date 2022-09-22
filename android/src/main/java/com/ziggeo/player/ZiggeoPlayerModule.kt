@@ -5,11 +5,13 @@ import android.net.Uri
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.Callback;
 import com.ziggeo.BaseModule
 import com.ziggeo.androidsdk.log.ZLog
 import com.ziggeo.utils.ConversionUtil.dataFromPlayerStyle
 import com.ziggeo.utils.ConversionUtil
+import com.ziggeo.utils.ConversionUtil.toList
 import com.ziggeo.utils.ThemeKeys
 
 import com.facebook.react.bridge.Promise
@@ -41,13 +43,17 @@ class ZiggeoPlayerModule(reactContext: ReactApplicationContext) : BaseModule(rea
     }
 
     @ReactMethod
-    fun playVideo(videoToken: String) {
-        ziggeo.startPlayer(videoToken)
+    fun playVideo(videoToken: ReadableArray) {
+        var tokens = toList(videoToken) as List<String>
+        var tokensArray = tokens.toTypedArray() as Array<String>
+        ziggeo.startPlayer(*tokensArray)
     }
 
     @ReactMethod
-    fun playFromUri(path_or_uri: String) {
-        ziggeo.startPlayer(Uri.parse(path_or_uri))
+    fun playFromUri(path_or_uri: ReadableArray) {
+        var dataList = (toList(path_or_uri) as List<String>).forEach { Uri.parse(it) } as List<Uri>
+        var uris = (dataList).toTypedArray() as Array<Uri>
+        ziggeo.startPlayer(*uris)
     }
 
     @ReactMethod
