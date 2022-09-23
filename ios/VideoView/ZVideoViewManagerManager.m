@@ -2,7 +2,7 @@
 #import <AVKit/AVKit.h>
 
 #import "RCTBridge.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 #import <UIKit/UIKit.h>
 #import "ZVideoViewManagerManager.h"

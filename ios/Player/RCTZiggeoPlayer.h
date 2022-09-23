@@ -11,7 +11,7 @@
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 
 @interface RCTZiggeoPlayer : NSObject <RCTBridgeModule>
 

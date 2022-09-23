@@ -6,7 +6,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RCTZiggeoRecorder.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
 #import "ZiggeoRecorderContext.h"

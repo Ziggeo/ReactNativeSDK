@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ZiggeoRN'
-  s.version          = '1.6.8'
+  s.version          = '1.6.20'
   s.summary          = 'Ziggeo iOS ReactNative SDK'
   s.description      = 'Ziggeo iOS recording and playback SDK'
 
@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/Ziggeo/ReactNativeSDK.git' }
   s.source_files     = "ios/**/*.{m,mm,h}"
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '11.0'
   s.dependency 'React-Core'
-  s.dependency 'iOS-Client-SDK'
+  s.dependency 'ZiggeoMediaSDK'
 end

@@ -185,7 +185,7 @@ $ xcodebuild clean
 
 Add these lines to your Podfile and run 'pod install'
 ```
-	pod 'iOS-Client-SDK', :git => 'https://github.com/Ziggeo/iOS-Client-SDK.git'
+	pod 'ZiggeoMediaSDK', :git => 'https://github.com/Ziggeo/iOS-Client-SDK.git'
 ```
 
 ##### Installing for iOS Manually
@@ -199,11 +199,11 @@ $ react-native link
 
 Following this there are few more steps you would need to do:
 
-1. You should download `Ziggeo.framework` from `Ziggeo-Client-SDK` repository: https://github.com/Ziggeo/iOS-Client-SDK/tree/master/Ziggeo/Output/.
+1. You should download `ZiggeoMediaSDK.framework` from `iOS-Client-SDK` repository: https://github.com/Ziggeo/iOS-Client-SDK/tree/master/Frameworks/.
 
 - note: There are two framework versions: release and universal. Use universal framework for development and debugging purposes and switch to Release framework to build the application for App Store
 
-2. open the iOS project in XCode and add the `Ziggeo.framework` into `Embedded and Linked Frameworks` at the project settings
+2. open the iOS project in XCode and add the `ZiggeoMediaSDK.framework` into `Embedded and Linked Frameworks` at the project settings
 
 ## Demo<a name="demo"></a>
 

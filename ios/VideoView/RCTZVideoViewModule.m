@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTEventEmitter.h>
 #import "RCTZVideoViewModule.h"
 

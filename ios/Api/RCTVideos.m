@@ -1,6 +1,6 @@
 #import "RCTVideos.h"
 #import <Foundation/Foundation.h>
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 
 

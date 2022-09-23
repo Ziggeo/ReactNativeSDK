@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 #import "RCTZiggeoPlayer.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 @import AVKit;
 #import "ZiggeoRecorderContext.h"
