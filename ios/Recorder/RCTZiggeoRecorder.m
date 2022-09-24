@@ -6,7 +6,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RCTZiggeoRecorder.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 #import "RotatingImagePickerController.h"
 #import "ZiggeoRecorderContext.h"
@@ -290,7 +290,7 @@ RCT_REMAP_METHOD(startImageRecorder,
     });
 }
 
-RCT_EXPORT_METHOD(showImage:(NSString *)imageToken
+RCT_EXPORT_METHOD(showImage:(NSArray *)imageTokens
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -299,7 +299,7 @@ RCT_EXPORT_METHOD(showImage:(NSString *)imageToken
     m_context.rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo showImage:imageToken];
+        [self->m_ziggeo showImage:imageTokens];
     });
 }
 
@@ -316,7 +316,7 @@ RCT_REMAP_METHOD(startAudioRecorder,
     });
 }
 
-RCT_EXPORT_METHOD(startAudioPlayer:(NSString *)audioToken
+RCT_EXPORT_METHOD(startAudioPlayer:(NSArray *)audioTokens
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -325,7 +325,7 @@ RCT_EXPORT_METHOD(startAudioPlayer:(NSString *)audioToken
     m_context.rejectBlock = reject;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo startAudioPlayer:audioToken];
+        [self->m_ziggeo startAudioPlayer:audioTokens];
     });
 }
 
@@ -352,7 +352,12 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
     m_context.rejectBlock = reject;
     
     if (fileName != nil) {
-        [m_ziggeo uploadFromPath:fileName :map];
+        [m_ziggeo uploadFromPath:fileName
+                            Data:map
+                        Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+        } Progress:^(int totalBytesSent, int totalBytesExpectedToSend) {
+        } ConfirmCallback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+        }];
     } else {
         reject(@"ERR_NOFILE", @"empty filename", [NSError errorWithDomain:@"recorder" code:0 userInfo:@{@"ERR_NOFILE": @"empty filename"}]);
     }
