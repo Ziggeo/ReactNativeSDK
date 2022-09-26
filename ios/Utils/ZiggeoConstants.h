@@ -8,6 +8,7 @@
 #define Constants_h
 
 #import <Foundation/Foundation.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 
 typedef enum {
     // Camera
@@ -70,34 +71,40 @@ typedef enum {
 } ZIGGEO_EVENTS;
 
 #define kZiggeoEventsArray @"CameraOpened", @"CameraClosed", \
-        @"Loaded", @"CancelledByUser", \
-        @"Error", \
-        @"ManuallySubmitted", @"RecordingStarted", @"RecordingStopped", @"Countdown", @"RecordingProgress", @"ReadyToRecord", @"Rerecord", \
-        @"StreamingStarted", @"StreamingStopped", \
-        @"NoCamera", @"HasCamera", \
-        @"MicrophoneHealth", @"NoMicrophone", @"HasMicrophone", \
-        @"AccessGranted", @"AccessForbidden", \
-        @"UploadingStarted", @"UploadProgress", @"Verified", @"Processing", @"Processed", @"Uploaded", \
-        @"UploadSelected", \
-        @"Playing", @"Paused", @"Ended", @"Seek", @"ReadyToPlay", \
-        @"QrDecoded", nil
+    @"Loaded", @"CancelledByUser", \
+    @"Error", \
+    @"ManuallySubmitted", @"RecordingStarted", @"RecordingStopped", @"Countdown", @"RecordingProgress", @"ReadyToRecord", @"Rerecord", \
+    @"StreamingStarted", @"StreamingStopped", \
+    @"NoCamera", @"HasCamera", \
+    @"MicrophoneHealth", @"NoMicrophone", @"HasMicrophone", \
+    @"AccessGranted", @"AccessForbidden", \
+    @"UploadingStarted", @"UploadProgress", @"Verified", @"Processing", @"Processed", @"Uploaded", \
+    @"UploadSelected", \
+    @"Playing", @"Paused", @"Ended", @"Seek", @"ReadyToPlay", \
+    @"QrDecoded", nil
 
-#define kZiggeoConstants  @{  @"rearCamera": @"rearCamera", \
-            @"frontCamera": @"frontCamera", \
-            @"highQuality": @"highQuality", \
-            @"mediumQuality": @"mediumQuality", \
-            @"lowQuality": @"lowQuality", \
-            @"ERR_UNKNOWN": @"ERR_UNKNOWN", \
-            @"ERR_DURATION_EXCEEDED": @"ERR_DURATION_EXCEEDED", \
-            @"ERR_FILE_DOES_NOT_EXIST": @"ERR_FILE_DOES_NOT_EXIST", \
-            @"ERR_PERMISSION_DENIED": @"ERR_PERMISSION_DENIED", \
-            @"max_duration": @"max_duration", \
-            @"enforce_duration": @"enforce_duration", \
-        };
+#define kZiggeoKeysArray @"bytesSent", @"totalBytes", @"fileName", @"path", @"qr", @"token", \
+    @"permissions", @"sound_level", @"seconds_left", @"millis_passed", @"millis", @"files", @"value", \
+    @"media_types", @"blur_effect", @"client_auth", @"server_auth", @"tags", nil
+
+#define kZiggeoConstants  @{  \
+    @"rearCamera": @"rearCamera", \
+    @"frontCamera": @"frontCamera", \
+    @"highQuality": @"highQuality", \
+    @"mediumQuality": @"mediumQuality", \
+    @"lowQuality": @"lowQuality", \
+    @"ERR_UNKNOWN": @"ERR_UNKNOWN", \
+    @"ERR_DURATION_EXCEEDED": @"ERR_DURATION_EXCEEDED", \
+    @"ERR_FILE_DOES_NOT_EXIST": @"ERR_FILE_DOES_NOT_EXIST", \
+    @"ERR_PERMISSION_DENIED": @"ERR_PERMISSION_DENIED", \
+    @"max_duration": @"max_duration", \
+    @"enforce_duration": @"enforce_duration", \
+};
 
 @interface ZiggeoConstants: NSObject
 
-+ (NSString *)getStringFromEvent:(ZIGGEO_EVENTS)event;
++ (NSString *)getEventString:(ZIGGEO_EVENTS)event;
++ (NSString *)getKeyString:(Ziggeo_Key_Type)key;
 
 @end
 

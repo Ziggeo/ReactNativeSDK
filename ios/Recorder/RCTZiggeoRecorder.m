@@ -8,10 +8,9 @@
 #import "RCTZiggeoRecorder.h"
 #import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
-#import "RotatingImagePickerController.h"
 #import "ZiggeoRecorderContext.h"
 #import "ZiggeoConstants.h"
-
+#import "ZiggeoQRCodeReaderContext.h"
 
 ButtonConfig *parseButtonConfig(NSDictionary *dictionary) {
     ButtonConfig *config = [ButtonConfig new];
@@ -407,12 +406,15 @@ RCT_EXPORT_METHOD(startQrScanner:(NSDictionary*)map
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    ZiggeoQRCodeReaderContext *context = [[ZiggeoQRCodeReaderContext alloc] init];
+    context.recorder = self;
+    Ziggeo *ziggeo = [[Ziggeo alloc] initWithQrCodeReaderDelegate:context];
+
+    context.resolveBlock = resolve;
+    context.rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo startQrScanner:map];
+        [ziggeo startQrScanner:map];
     });
 }
 
