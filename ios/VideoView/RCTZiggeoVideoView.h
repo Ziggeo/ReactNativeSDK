@@ -3,7 +3,7 @@
 #import <React/RCTEventEmitter.h>
 #import <React/RCTComponent.h>
 #import <React/RCTEventDispatcher.h>
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <AVKit/AVKit.h>
 
 typedef void (^ZiggeoPlayerReferenceBlock) (ZiggeoPlayer *player);

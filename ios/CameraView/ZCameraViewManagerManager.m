@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 #import "RCTBridge.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 #import <UIKit/UIKit.h>
 #import "ZCameraView.h"

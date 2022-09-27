@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 #import "RCTZiggeoPlayer.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 @import AVKit;
 #import "ZiggeoRecorderContext.h"
@@ -41,25 +41,25 @@ RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 }
 
 
-RCT_EXPORT_METHOD(playVideo:(NSString*)videoToken)
+RCT_EXPORT_METHOD(playVideo:(NSArray *)videoTokens)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo playVideo:videoToken];
+    [m_ziggeo playVideo:videoTokens];
 }
 
-RCT_EXPORT_METHOD(playFromUri:(NSString *)url)
+RCT_EXPORT_METHOD(playFromUri:(NSArray *)urls)
 {
     if (m_ziggeo == nil) return;
-    [m_ziggeo playFromUri:url];
+    [m_ziggeo playFromUri:urls];
 }
 
-RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary*)map)
+RCT_EXPORT_METHOD(setExtraArgsForPlayer:(NSDictionary *)map)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo setExtraArgsForPlayer:map];
 }
 
-RCT_EXPORT_METHOD(setThemeArgsForPlayer:(NSDictionary*)map)
+RCT_EXPORT_METHOD(setThemeArgsForPlayer:(NSDictionary *)map)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo setThemeArgsForPlayer:map];
@@ -71,7 +71,7 @@ RCT_EXPORT_METHOD(setPlayerCacheConfig:(NSDictionary *)config)
     [m_ziggeo setPlayerCacheConfig:config];
 }
 
-RCT_EXPORT_METHOD(setAdsURL:(NSString*)url)
+RCT_EXPORT_METHOD(setAdsURL:(NSString *)url)
 {
     if (m_ziggeo == nil) return;
     [m_ziggeo setAdsURL:url];

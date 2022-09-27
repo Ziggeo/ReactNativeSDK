@@ -3,7 +3,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RCTEventDispatcher.h"
-#import <Ziggeo/Ziggeo.h>
+#import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 
 @interface ZCameraView: UIView
 
