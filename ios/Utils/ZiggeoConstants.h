@@ -98,6 +98,7 @@ typedef enum {
     @"ERR_FILE_DOES_NOT_EXIST": @"ERR_FILE_DOES_NOT_EXIST", \
     @"ERR_PERMISSION_DENIED": @"ERR_PERMISSION_DENIED", \
     @"max_duration": @"max_duration", \
+    @"media_type":  @"media_type", \
     @"enforce_duration": @"enforce_duration", \
 };
 

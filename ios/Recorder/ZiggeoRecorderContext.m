@@ -47,6 +47,21 @@
 
 // MARK: - ZiggeoUploadDelegate
 
+- (void)ziggeoUploadCancelledByUser {
+    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
+
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:[ZiggeoConstants getEventString:CANCELLED_BY_USER] body:@{}];
+    }
+}
+
+- (void)ziggeoUploadSelected:(NSArray *)paths {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:[ZiggeoConstants getEventString:UPLOAD_SELECTED]
+                                body:@{[ZiggeoConstants getKeyString:FILES]: paths}];
+    }
+}
+
 - (void)preparingToUploadWithPath:(NSString *)sourcePath {
 }
 
@@ -140,18 +155,6 @@
 
 // MARK: - ZiggeoRecorderDelegate
 
-- (void)luxMeter:(double)luminousity {
-    
-}
-
-- (void)audioMeter:(double)audioLevel {
-    
-}
-
-- (void)faceDetected:(int)faceID rect:(CGRect)rect {
-    
-}
-
 - (void)ziggeoRecorderReady {
     if (_recorder != nil) {
         [_recorder sendEventWithName:[ZiggeoConstants getEventString:READY_TO_RECORD] body:@{}];
@@ -163,6 +166,13 @@
 
     if (_recorder != nil) {
         [_recorder sendEventWithName:[ZiggeoConstants getEventString:CANCELLED_BY_USER] body:@{}];
+    }
+}
+
+- (void)ziggeoRecorderCountdown:(int)secondsLeft {
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:[ZiggeoConstants getEventString:COUNTDOWN]
+                                body:@{[ZiggeoConstants getKeyString:SECONDS_LEFT]: @(secondsLeft)}];
     }
 }
 
@@ -216,6 +226,18 @@
     if (_recorder != nil) {
        [_recorder sendEventWithName:[ZiggeoConstants getEventString:STREAMING_STOPPED] body:@{}];
     }
+}
+
+- (void)luxMeter:(double)luminousity {
+    
+}
+
+- (void)audioMeter:(double)audioLevel {
+    
+}
+
+- (void)faceDetected:(int)faceID rect:(CGRect)rect {
+    
 }
 
 
@@ -308,6 +330,14 @@
 - (void)ziggeoPlayerReadyToPlay {
     if (_recorder != nil) {
        [_recorder sendEventWithName:[ZiggeoConstants getEventString:READY_TO_PLAY] body:@{}];
+    }
+}
+
+- (void)ziggeoPlayerCancelledByUser {
+    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
+
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:[ZiggeoConstants getEventString:CANCELLED_BY_USER] body:@{}];
     }
 }
 

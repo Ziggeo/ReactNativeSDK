@@ -80,7 +80,7 @@ RCT_EXPORT_MODULE();
 
 - (NSDictionary *)constantsToExport
 {
- return kZiggeoConstants;
+    return kZiggeoConstants;
 }
 
 - (NSArray<NSString *> *)supportedEvents
@@ -373,9 +373,7 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
     [self applyAdditionalParams:map context:m_context];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSMutableDictionary *data = [NSMutableDictionary dictionary];
-        data[@"media_types"] = @[@"video", @"audio", @"image"];
-        [self->m_ziggeo uploadFromFileSelector:data];
+        [self->m_ziggeo uploadFromFileSelector:map];
     });
 }
 
