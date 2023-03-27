@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <AVKit/AVKit.h>
-
 #import "RCTBridge.h"
 #import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
@@ -33,16 +32,12 @@ RCT_CUSTOM_VIEW_PROPERTY(tokens, NSArray *, NSString *)
 @synthesize bridge = _bridge;
 
 - (UIView *)view {
-    // todo? [m_ziggeo.config setRecorderCacheConfig:self.cacheConfig];
-
     NSLog(@"Video tokens to play: %@", _tokens);
 
     // todo implement playback of playlist consisting of video tokens
     
     playerController = [[AVPlayerViewController alloc] init];
     playerController.showsPlaybackControls = false;
-
-    // todo? m_ziggeo.videos.delegate = context;
 
     RCTZiggeoVideoView *view = [[RCTZiggeoVideoView alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
 

@@ -1,5 +1,5 @@
 //
-//  ZiggeoRecorderRCT.m
+//  RCTZiggeoRecorder.m
 //
 //  Copyright © 2017 Ziggeo. All rights reserved.
 //
@@ -10,7 +10,7 @@
 #import <React/RCTLog.h>
 #import "ZiggeoRecorderContext.h"
 #import "ZiggeoConstants.h"
-#import "ZiggeoQRCodeReaderContext.h"
+#import "ZiggeoQRScannerContext.h"
 
 ButtonConfig *parseButtonConfig(NSDictionary *dictionary) {
     ButtonConfig *config = [ButtonConfig new];
@@ -71,8 +71,6 @@ ZiggeoRecorderInterfaceConfig *parseRecorderInterfaceConfig(NSDictionary *config
 
 
 @implementation RCTZiggeoRecorder {
-    ZiggeoRecorderContext *m_context;
-    Ziggeo *m_ziggeo;
 }
 
 RCT_EXPORT_MODULE();
@@ -119,10 +117,9 @@ RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
 {
     RCTLogInfo(@"application token set: %@", token);
     _appToken = token;
-
-    m_context = [[ZiggeoRecorderContext alloc] init];
-    m_context.recorder = self;
-    m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken Delegate:m_context];
+    
+    [ZiggeoConstants setAppToken:_appToken];
+    [[ZiggeoConstants sharedZiggeoRecorderContextInstance] setRecorder:self];
 }
 
 RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
@@ -138,124 +135,125 @@ RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 }
 
 
+
 RCT_EXPORT_METHOD(setRecorderCacheConfig:(NSDictionary *)config)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setRecorderCacheConfig:config];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setRecorderCacheConfig:config];
 }
 
 RCT_EXPORT_METHOD(setRecorderInterfaceConfig:(NSDictionary *)config)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setRecorderInterfaceConfig:config];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setRecorderInterfaceConfig:config];
 }
 
 RCT_EXPORT_METHOD(setUploadingConfig:(NSDictionary *)config)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setUploadingConfig:config];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setUploadingConfig:config];
 }
 
 RCT_EXPORT_METHOD(setLiveStreamingEnabled:(BOOL)enabled)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setLiveStreamingEnabled:enabled];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setLiveStreamingEnabled:enabled];
 }
 
 RCT_EXPORT_METHOD(setAutostartRecordingAfter:(NSInteger)seconds)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setAutostartRecordingAfter:(int)seconds];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setAutostartRecordingAfter:(int)seconds];
 }
 
 RCT_EXPORT_METHOD(setStartDelay:(NSInteger)delay)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setStartDelay:(int)delay];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setStartDelay:(int)delay];
 }
 
 RCT_EXPORT_METHOD(setBlurMode:(BOOL)enabled)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setBlurMode:enabled];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setBlurMode:enabled];
 }
 
 RCT_EXPORT_METHOD(setExtraArgsForRecorder:(NSDictionary*)map)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setExtraArgsForRecorder:map];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setExtraArgsForRecorder:map];
 }
 
 RCT_EXPORT_METHOD(setThemeArgsForRecorder:(NSDictionary*)map)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setThemeArgsForRecorder:map];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setThemeArgsForRecorder:map];
 }
 
 RCT_EXPORT_METHOD(setCoverSelectorEnabled:(BOOL)enabled)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setCoverSelectorEnabled:enabled];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setCoverSelectorEnabled:enabled];
 }
 
 RCT_EXPORT_METHOD(setMaxRecordingDuration:(NSInteger)seconds)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setMaxRecordingDuration:(int)seconds];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setMaxRecordingDuration:(int)seconds];
 }
 
 RCT_EXPORT_METHOD(setVideoWidth:(NSInteger)videoWidth)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setVideoWidth:(int)videoWidth];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setVideoWidth:(int)videoWidth];
 }
 
 RCT_EXPORT_METHOD(setVideoHeight:(NSInteger)videoHeight)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setVideoHeight:(int)videoHeight];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setVideoHeight:(int)videoHeight];
 }
 
 RCT_EXPORT_METHOD(setVideoBitrate:(NSInteger)videoBitrate)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setVideoBitrate:(int)videoBitrate];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setVideoBitrate:(int)videoBitrate];
 }
 
 RCT_EXPORT_METHOD(setAudioSampleRate:(NSInteger)audioSampleRate)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setAudioSampleRate:(int)audioSampleRate];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setAudioSampleRate:(int)audioSampleRate];
 }
 
 RCT_EXPORT_METHOD(setAudioBitrate:(NSInteger)audioBitrate)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setAudioBitrate:(int)audioBitrate];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setAudioBitrate:(int)audioBitrate];
 }
 
 RCT_EXPORT_METHOD(setCameraSwitchEnabled:(BOOL)visible)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setCameraSwitchEnabled:visible];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setCameraSwitchEnabled:visible];
 }
 
 RCT_EXPORT_METHOD(setSendImmediately:(BOOL)sendImmediately)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setSendImmediately:sendImmediately];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setSendImmediately:sendImmediately];
 }
 
 RCT_EXPORT_METHOD(setQuality:(id)quality)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setQuality:(int)quality];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setQuality:(int)quality];
 }
 
 RCT_EXPORT_METHOD(setCamera:(id)cameraDevice)
 {
-    if (m_ziggeo == nil) return;
-    [m_ziggeo setCamera:(NSString *)cameraDevice];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] setCamera:(NSString *)cameraDevice];
 }
 
 // MARK: - Videos
@@ -263,16 +261,16 @@ RCT_REMAP_METHOD(record,
                  recordWithResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        // [self->m_ziggeo setBlurringEffect:true];
-        // [self->m_ziggeo setBlurringMaskColor:UIColor.redColor];
-        // [self->m_ziggeo setBlurringMaskAlpha:0.6];
-        // [self->m_ziggeo setMaxRecordingDuration:30];
-        [self->m_ziggeo record];
+        // [[ZiggeoConstants sharedZiggeoInstance] setBlurringEffect:true];
+        // [[ZiggeoConstants sharedZiggeoInstance] setBlurringMaskColor:UIColor.redColor];
+        // [[ZiggeoConstants sharedZiggeoInstance] setBlurringMaskAlpha:0.6];
+        // [[ZiggeoConstants sharedZiggeoInstance] setMaxRecordingDuration:30];
+        [[ZiggeoConstants sharedZiggeoInstance] record];
     });
 }
 
@@ -280,12 +278,12 @@ RCT_REMAP_METHOD(startImageRecorder,
                  startImageRecorderResolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo startImageRecorder];
+        [[ZiggeoConstants sharedZiggeoInstance] startImageRecorder];
     });
 }
 
@@ -293,12 +291,12 @@ RCT_EXPORT_METHOD(showImage:(NSArray *)imageTokens
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo showImage:imageTokens];
+        [[ZiggeoConstants sharedZiggeoInstance] showImage:imageTokens];
     });
 }
 
@@ -306,12 +304,12 @@ RCT_REMAP_METHOD(startAudioRecorder,
                  startAudioRecorderResolver:(RCTPromiseResolveBlock)resolve
                  startAudioRecorderRejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo startAudioRecorder];
+        [[ZiggeoConstants sharedZiggeoInstance] startAudioRecorder];
     });
 }
 
@@ -319,25 +317,26 @@ RCT_EXPORT_METHOD(startAudioPlayer:(NSArray *)audioTokens
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo startAudioPlayer:audioTokens];
+        [[ZiggeoConstants sharedZiggeoInstance] startAudioPlayer:audioTokens];
     });
 }
 
-RCT_REMAP_METHOD(startScreenRecorder,
-                 startScreenRecorderResolver:(RCTPromiseResolveBlock)resolve
-                 startScreenRecorderRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(startScreenRecorder:(NSString *)appGroup
+                  preferredExtension:(NSString *)preferredExtension
+                  startScreenRecorderResolver:(RCTPromiseResolveBlock)resolve
+                  startScreenRecorderRejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->m_ziggeo startScreenRecorder];
+        [[ZiggeoConstants sharedZiggeoInstance] startScreenRecorderWithAppGroup:appGroup preferredExtension:preferredExtension];
     });
 }
 
@@ -346,14 +345,14 @@ RCT_EXPORT_METHOD(uploadFromPath:(NSString*)fileName
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
     
     if (fileName != nil) {
-        [m_ziggeo uploadFromPath:fileName
-                            Data:map
-                        Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
+        [[ZiggeoConstants sharedZiggeoInstance] uploadFromPath:fileName
+                                                          Data:map
+                                                      Callback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
         } Progress:^(int totalBytesSent, int totalBytesExpectedToSend) {
         } ConfirmCallback:^(NSDictionary *jsonObject, NSURLResponse *response, NSError *error) {
         }];
@@ -366,16 +365,16 @@ RCT_EXPORT_METHOD(uploadFromFileSelector:(NSDictionary*)map
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
 
-    [self applyAdditionalParams:map context:m_context];
+    [self applyAdditionalParams:map context:[ZiggeoConstants sharedZiggeoRecorderContextInstance]];
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSMutableDictionary *data = [NSMutableDictionary dictionary];
         data[@"media_types"] = @[@"video", @"audio", @"image"];
-        [self->m_ziggeo uploadFromFileSelector:data];
+        [[ZiggeoConstants sharedZiggeoInstance] uploadFromFileSelector:data];
     });
 }
 
@@ -383,11 +382,11 @@ RCT_EXPORT_METHOD(cancelCurrentUpload:(BOOL)delete_file
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
     
-    [m_ziggeo cancelUpload:@"" :delete_file];
+    [[ZiggeoConstants sharedZiggeoInstance] cancelUpload:@"" :delete_file];
 }
 
 RCT_EXPORT_METHOD(cancelUploadByPath:(NSString *)path
@@ -395,20 +394,21 @@ RCT_EXPORT_METHOD(cancelUploadByPath:(NSString *)path
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    if (m_ziggeo == nil) return;
-    m_context.resolveBlock = resolve;
-    m_context.rejectBlock = reject;
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].resolveBlock = resolve;
+    [ZiggeoConstants sharedZiggeoRecorderContextInstance].rejectBlock = reject;
     
-    [m_ziggeo cancelUpload:path :delete_file];
+    [[ZiggeoConstants sharedZiggeoInstance] cancelUpload:path :delete_file];
 }
 
 RCT_EXPORT_METHOD(startQrScanner:(NSDictionary*)map
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-    ZiggeoQRCodeReaderContext *context = [[ZiggeoQRCodeReaderContext alloc] init];
-    context.recorder = self;
-    Ziggeo *ziggeo = [[Ziggeo alloc] initWithQrCodeReaderDelegate:context];
+    ZiggeoQRScannerContext *context = [[ZiggeoQRScannerContext alloc] init];
+    [context setRecorder:self];
+    Ziggeo *ziggeo = [[Ziggeo alloc] init];
+    [ziggeo setQRScannerDelegate:context];
 
     context.resolveBlock = resolve;
     context.rejectBlock = reject;

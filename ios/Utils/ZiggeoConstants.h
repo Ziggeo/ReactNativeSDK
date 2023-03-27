@@ -9,6 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
+#import "ZiggeoRecorderContext.h"
 
 typedef enum {
     // Camera
@@ -105,6 +106,9 @@ typedef enum {
 
 + (NSString *)getEventString:(ZIGGEO_EVENTS)event;
 + (NSString *)getKeyString:(Ziggeo_Key_Type)key;
++ (void)setAppToken:(NSString *)appToken;
++ (Ziggeo *)sharedZiggeoInstance;
++ (ZiggeoRecorderContext *)sharedZiggeoRecorderContextInstance;
 
 @end
 

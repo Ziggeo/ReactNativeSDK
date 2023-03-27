@@ -946,6 +946,11 @@ class ZiggeoRecorderModule(reactContext: ReactApplicationContext) : BaseModule(r
         public const val MEDIA_TYPE_AUDIO = "audio"
         public const val MEDIA_TYPE_IMAGE = "image"
 
+        public const val UPLOADING_ERROR_ACTION_DELETE_MEDIA = 554
+        public const val UPLOADING_ERROR_ACTION_ERROR_NOTIFICATION = 553
+        public const val UPLOADING_ERROR_ACTION_RELOAD_MEDIA = 552
+        public const val UPLOADING_ERROR_ACTION_CONTINUE_UPLOADING_MEDIA = 551
+
         private const val ERR_UNKNOWN = "ERR_UNKNOWN"
         private const val ERR_DURATION_EXCEEDED = "ERR_DURATION_EXCEEDED"
         private const val ERR_FILE_DOES_NOT_EXIST = "ERR_FILE_DOES_NOT_EXIST"

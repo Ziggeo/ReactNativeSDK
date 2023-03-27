@@ -1,11 +1,11 @@
 //
-//  ZiggeoQRCodeReaderContext.h
+//  ZiggeoQRScannerContext.h
 //
 //  Copyright © 2017 Ziggeo. All rights reserved.
 //
 
-#ifndef ZiggeoQRCodeReaderContext_h
-#define ZiggeoQRCodeReaderContext_h
+#ifndef ZiggeoQRScannerContext_h
+#define ZiggeoQRScannerContext_h
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
@@ -14,7 +14,7 @@
 @class RCTZiggeoRecorder;
 
 
-@interface ZiggeoQRCodeReaderContext: NSObject<ZiggeoQRCodeReaderDelegate>
+@interface ZiggeoQRScannerContext: NSObject<ZiggeoQRScannerDelegate>
 
 @property (strong, nonatomic) RCTPromiseResolveBlock resolveBlock;
 @property (strong, nonatomic) RCTPromiseRejectBlock rejectBlock;
@@ -22,5 +22,5 @@
 
 @end;
 
-#endif /* ZiggeoQRCodeReaderContext_h */
+#endif /* ZiggeoQRScannerContext_h */
 

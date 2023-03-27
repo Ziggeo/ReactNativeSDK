@@ -19,7 +19,7 @@
 		843872882632EEAD00520AB0 /* RCTZVideoViewModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 843872812632EEAD00520AB0 /* RCTZVideoViewModule.m */; };
 		844A42EC2617607E00FFC8DA /* ZCameraViewManagerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 844A42EA2617607E00FFC8DA /* ZCameraViewManagerManager.m */; };
 		8462CE5E26051C1C00FAE178 /* ZCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8462CE5D26051C1C00FAE178 /* ZCameraView.m */; };
-		D8B6A7DB28E163EB008165ED /* ZiggeoQRCodeReaderContext.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B6A7D928E163EA008165ED /* ZiggeoQRCodeReaderContext.m */; };
+		D8B6A7DB28E163EB008165ED /* ZiggeoQRScannerContext.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B6A7D928E163EA008165ED /* ZiggeoQRScannerContext.m */; };
 		FA441F381F2A562B00E51295 /* RCTZiggeoPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */; };
 		FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */; };
 /* End PBXBuildFile section */
@@ -62,8 +62,8 @@
 		844A42EB2617607E00FFC8DA /* ZCameraViewManagerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZCameraViewManagerManager.h; sourceTree = "<group>"; };
 		8462CE5C26051BAD00FAE178 /* ZCameraView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZCameraView.h; sourceTree = "<group>"; };
 		8462CE5D26051C1C00FAE178 /* ZCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZCameraView.m; sourceTree = "<group>"; };
-		D8B6A7D928E163EA008165ED /* ZiggeoQRCodeReaderContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZiggeoQRCodeReaderContext.m; sourceTree = "<group>"; };
-		D8B6A7DA28E163EA008165ED /* ZiggeoQRCodeReaderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZiggeoQRCodeReaderContext.h; sourceTree = "<group>"; };
+		D8B6A7D928E163EA008165ED /* ZiggeoQRScannerContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZiggeoQRScannerContext.m; sourceTree = "<group>"; };
+		D8B6A7DA28E163EA008165ED /* ZiggeoQRScannerContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZiggeoQRScannerContext.h; sourceTree = "<group>"; };
 		FA441F341F2A562B00E51295 /* RCTZiggeoPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoPlayer.h; sourceTree = "<group>"; };
 		FA441F351F2A562B00E51295 /* RCTZiggeoPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTZiggeoPlayer.m; sourceTree = "<group>"; };
 		FA441F361F2A562B00E51295 /* RCTZiggeoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTZiggeoRecorder.h; sourceTree = "<group>"; };
@@ -168,8 +168,8 @@
 				FA441F371F2A562B00E51295 /* RCTZiggeoRecorder.m */,
 				143E094026E259DA009FBC6B /* ZiggeoRecorderContext.h */,
 				143E094126E259DA009FBC6B /* ZiggeoRecorderContext.m */,
-				D8B6A7DA28E163EA008165ED /* ZiggeoQRCodeReaderContext.h */,
-				D8B6A7D928E163EA008165ED /* ZiggeoQRCodeReaderContext.m */,
+				D8B6A7DA28E163EA008165ED /* ZiggeoQRScannerContext.h */,
+				D8B6A7D928E163EA008165ED /* ZiggeoQRScannerContext.m */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -232,7 +232,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				843872862632EEAD00520AB0 /* ZVideoViewManagerManager.m in Sources */,
-				D8B6A7DB28E163EB008165ED /* ZiggeoQRCodeReaderContext.m in Sources */,
+				D8B6A7DB28E163EB008165ED /* ZiggeoQRScannerContext.m in Sources */,
 				14B77D66274F2A7100C98BD7 /* RCTAudios.m in Sources */,
 				844A42EC2617607E00FFC8DA /* ZCameraViewManagerManager.m in Sources */,
 				FA441F391F2A562B00E51295 /* RCTZiggeoRecorder.m in Sources */,
@@ -354,6 +354,7 @@
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -375,6 +376,7 @@
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

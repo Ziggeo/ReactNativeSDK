@@ -3,14 +3,14 @@
     "name": "Ziggeo"
   },
   "bugs": {
-    "url": "https://github.com/Ziggeo/ReactNativeSDK/issues"
+    "url": "https://github.com/ZiggeoJitpackService/ReactNativeSDK/issues"
   },
   "description": "We will presume that you are already familiar and have set up everything needed for the React Native setup on your system.  If not, we can suggest checking up the following [pages](https://facebook.github.io/react-native/docs/getting-started.html):",
   "devDependencies": {
     "react": "17.0.1",
     "react-native": "^0.64.2"
   },
-  "homepage": "https://github.com/Ziggeo/ReactNativeSDK#readme",
+  "homepage": "https://github.com/ZiggeoJitpackService/ReactNativeSDK#readme",
   "keywords": [
     "react-native"
   ],
@@ -23,11 +23,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ziggeo/ReactNativeSDK.git"
+    "url": "git+https://github.com/ZiggeoJitpackService/ReactNativeSDK.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "title": "React Native Ziggeo SDK",
-  "version": "1.6.20"
+  "version": "1.6.25"
 }
