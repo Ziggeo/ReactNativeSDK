@@ -148,6 +148,9 @@ export default {
     startScreenRecorder: async function () {
         return ZiggeoRecorder.startScreenRecorder();
     },
+    startScreenRecorder: async function (appGroup, preferredExtension) {
+        return ZiggeoRecorder.startScreenRecorder(appGroup, preferredExtension);
+    },
     uploadFromPath: async function (fileName, createObject: CreateObject) {
         return ZiggeoRecorder.uploadFromPath(fileName, createObject);
     },
@@ -280,4 +283,9 @@ export default {
     MEDIA_TYPE_VIDEO: ZiggeoRecorder.video,
     MEDIA_TYPE_AUDIO: ZiggeoRecorder.audio,
     MEDIA_TYPE_IMAGE: ZiggeoRecorder.image,
+
+    UPLOADING_ERROR_ACTION_DELETE_MEDIA: 554,
+    UPLOADING_ERROR_ACTION_ERROR_NOTIFICATION: 553,
+    UPLOADING_ERROR_ACTION_RELOAD_MEDIA: 552,
+    UPLOADING_ERROR_ACTION_CONTINUE_UPLOADING_MEDIA: 551,
 };

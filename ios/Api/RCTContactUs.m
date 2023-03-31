@@ -2,10 +2,10 @@
 #import <Foundation/Foundation.h>
 #import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
-
+#import "ZiggeoConstants.h"
 
 @implementation RCTContactUs {
-    Ziggeo *m_ziggeo;
+    
 }
 
 static NSString *_appToken;
@@ -29,7 +29,7 @@ RCT_EXPORT_METHOD(setAppToken:(NSString *)token)
 {
     RCTLogInfo(@"application token set: %@", token);
     _appToken = token;
-    m_ziggeo = [[Ziggeo alloc] initWithToken:_appToken Delegate:NULL];
+    [ZiggeoConstants setAppToken:_appToken];
 }
 
 RCT_EXPORT_METHOD(setServerAuthToken:(NSString *)token)
@@ -48,13 +48,15 @@ RCT_EXPORT_METHOD(setClientAuthToken:(NSString *)token)
 RCT_EXPORT_METHOD(sendReport:(NSArray *)logsList)
 {
     RCTLogInfo(@"sendReport: %@", logsList);
-    [m_ziggeo sendReport:logsList];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] sendReport:logsList];
 }
 
 RCT_EXPORT_METHOD(sendEmailToSupport)
 {
     RCTLogInfo(@"sendEmailToSupport");
-    [m_ziggeo sendEmailToSupport];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [[ZiggeoConstants sharedZiggeoInstance] sendEmailToSupport];
 }
 
 @end

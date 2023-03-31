@@ -253,8 +253,13 @@ Ziggeo.startCameraRecorder();
 
 By utilizing the following you will be creating a foreground service for screen recording
 
+##### Android
 ```javascript
 Ziggeo.startScreenRecorder();
+```
+##### iOS
+```javascript
+Ziggeo.startScreenRecorder("YOUR_APP_GROUP_NAME", "Preferred_Extension_Name");
 ```
 
 #### Audio Recorder<a name="audio-recorder"></a>

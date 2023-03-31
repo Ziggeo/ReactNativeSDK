@@ -8,6 +8,7 @@
 #import <React/RCTEventDispatcher.h>
 #import "RCTZVideoViewModule.h"
 #import "RCTVideos.h"
+#import "ZiggeoConstants.h"
 @import AVKit;
 
 @implementation RCTZiggeoVideoView {
@@ -30,15 +31,15 @@ static void * const RCTZiggeoVideoViewKVOContext = (void*)&RCTZiggeoVideoViewKVO
 - (void)setVideoToken:(NSString *)token {
     NSLog(@"__appToken: %@", [RCTVideos appToken]);
 
-    _m_ziggeo = [[Ziggeo alloc] initWithToken: [RCTVideos appToken]];
-    _m_ziggeo.connect.serverAuthToken = [RCTVideos serverAuthToken];
-    _m_ziggeo.connect.clientAuthToken = [RCTVideos clientAuthToken];
+    if ([ZiggeoConstants sharedZiggeoInstance] == nil) return;
+    [ZiggeoConstants sharedZiggeoInstance].connect.serverAuthToken = [RCTVideos serverAuthToken];
+    [ZiggeoConstants sharedZiggeoInstance].connect.clientAuthToken = [RCTVideos clientAuthToken];
 
-    _m_ziggeo.token = [RCTVideos appToken];
-    _m_ziggeo.connect.serverAuthToken = [RCTVideos serverAuthToken];
-    _m_ziggeo.connect.clientAuthToken = [RCTVideos clientAuthToken];
+    [ZiggeoConstants sharedZiggeoInstance].token = [RCTVideos appToken];
+    [ZiggeoConstants sharedZiggeoInstance].connect.serverAuthToken = [RCTVideos serverAuthToken];
+    [ZiggeoConstants sharedZiggeoInstance].connect.clientAuthToken = [RCTVideos clientAuthToken];
 
-    ZiggeoPlayer* player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:_m_ziggeo videoToken:token];
+    ZiggeoPlayer* player = [[ZiggeoPlayer alloc] initWithZiggeoApplication:[ZiggeoConstants sharedZiggeoInstance] videoToken:token];
 
     if (lastPlayerItem != nil) {
         [lastPlayerItem removeObserver:self forKeyPath:@"status" context:RCTZiggeoVideoViewKVOContext];

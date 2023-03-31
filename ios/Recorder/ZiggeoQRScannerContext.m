@@ -1,11 +1,11 @@
 //
-//  ZiggeoQRCodeReaderContext.m
+//  ZiggeoQRScannerContext.m
 //
 //  Copyright © 2017 Ziggeo. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "ZiggeoQRCodeReaderContext.h"
+#import "ZiggeoQRScannerContext.h"
 #import <ZiggeoMediaSDK/ZiggeoMediaSDK.h>
 #import <React/RCTLog.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -13,7 +13,7 @@
 #import "ZiggeoConstants.h"
 
 
-@implementation ZiggeoQRCodeReaderContext {
+@implementation ZiggeoQRScannerContext {
     NSURLSessionTask *currentTask;
 }
 
@@ -39,19 +39,29 @@
     if (recorder != nil) {
         if (recorder.contexts == nil) recorder.contexts = [[NSMutableArray alloc] init];
         [recorder.contexts addObject:self];
-    } else if(_recorder != nil) {
+    } 
+    if(_recorder != nil) {
         [_recorder.contexts removeObject:self];
     }
     _recorder = recorder;
 }
 
-// MARK: - ZiggeoQRCodeReaderDelegate
-- (void)ziggeoQRCodeScaned:(NSString *)qrCode {
-    NSLog(@"sdfsdfsdfd");
+// MARK: - ZiggeoQRScannerDelegate
+- (void)qrCodeScaned:(NSString *)qrCode {
     if (_recorder != nil) {
         [_recorder sendEventWithName:[ZiggeoConstants getEventString:QR_DECODED]
                                 body:@{[ZiggeoConstants getKeyString:VALUE]: qrCode}];
     }
+    [self resolve:qrCode];
+}
+
+- (void)qrCodeScanCancelledByUser {    
+    if (_recorder != nil) {
+        [_recorder sendEventWithName:[ZiggeoConstants getEventString:CANCELLED_BY_USER]
+                                body:@{@"type": @"QRScanner"}
+        ];
+    }
+    [self reject:@"ERR_CANCELLED" message:@"cancelled by the user"];
 }
 
 @end
